@@ -1,0 +1,82 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Copyright (c) 2009 The Chromium OS Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+CURS_OUT_DIR = $(CURDIR)/debian/chromeos-assets/usr/share/chromeos-assets/cursor-theme/cursors
+
+# alphabetical order
+REAL_CURSOR_NAMES = \
+	fleur \
+	hand2 \
+	left_ptr \
+	sb_h_double_arrow \
+	sb_v_double_arrow \
+	top_left_corner \
+	top_right_corner \
+	xterm
+
+# link_name:real_cursor_name in alphabetical order
+# for some historical reason i don't fully understand,
+# 08e8e1c95fe2fc01f976f1e063a24ccd is the name used for one type of waiting
+# cursor. Other cursor themes use it, and so do we. Chrome seems to use it
+# as the cursor for when a page is loading.
+LINK_CURSORS = \
+	08e8e1c95fe2fc01f976f1e063a24ccd:watch \
+	bottom_left_corner:top_right_corner \
+	bottom_right_corner:top_left_corner \
+	bottom_side:sb_v_double_arrow \
+	double_arrow:sb_v_double_arrow \
+	left_ptr_watch:left_ptr \
+	left_side:sb_h_double_arrow \
+	right_side:sb_h_double_arrow \
+	top_side:sb_v_double_arrow \
+	watch:left_ptr
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	mkdir -p $(CURDIR)/debian/chromeos-assets/usr/share/chromeos-assets/images
+	cp $(CURDIR)/images/* \
+	  $(CURDIR)/debian/chromeos-assets/usr/share/chromeos-assets/images/
+	mkdir -p $(CURS_OUT_DIR)
+	for i in $(REAL_CURSOR_NAMES); do \
+	  xcursorgen -p $(CURDIR)/cursors $(CURDIR)/cursors/$$i.cfg > $(CURS_OUT_DIR)/$$i; \
+	done
+	for i in $(LINK_CURSORS); do \
+	  ln -s $${i#*:} $(CURS_OUT_DIR)/$${i%:*}; \
+	done
+	ln -s /usr/share/chromeos-assets/cursor-theme \
+	  $(CURDIR)/debian/chromeos-assets/usr/share/icons/chromeos-cursors
+
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep
+
+.PHONY: build clean install binary-indep binary
