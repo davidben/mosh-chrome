@@ -6,7 +6,7 @@ Source: chromeos-assets
 Section: unknown
 Priority: extra
 Maintainer: The Chromium OS Authors <chromium-os-dev@googlegroups.com>
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 7.0.50)
 Standards-Version: 3.8.0
 
 Package: chromeos-assets

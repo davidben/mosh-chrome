@@ -1,3 +1,9 @@
+chromeos-assets (0.4) UNRELEASED; urgency=low
+
+  * Use dh(1).
+
+ -- Colin Watson <cjwatson@canonical.com>  Sat, 28 Nov 2009 10:35:17 +0000
+
 chromeos-assets (0.3) jaunty; urgency=low
 
   * Added assets for memento
