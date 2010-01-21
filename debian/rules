@@ -6,7 +6,8 @@
 %:
 	dh $@
 
-CURS_OUT_DIR = $(CURDIR)/debian/chromeos-assets/usr/share/chromeos-assets/cursor-theme/cursors
+CURS_OUT_DIR = \
+$(CURDIR)/debian/chromeos-assets/usr/share/chromeos-assets/cursor-theme/cursors
 
 # alphabetical order
 REAL_CURSOR_NAMES = \
@@ -40,7 +41,8 @@ override_dh_install:
 	dh_install
 	mkdir -p $(CURS_OUT_DIR)
 	for i in $(REAL_CURSOR_NAMES); do \
-	  xcursorgen -p $(CURDIR)/cursors $(CURDIR)/cursors/$$i.cfg > $(CURS_OUT_DIR)/$$i; \
+	  xcursorgen -p $(CURDIR)/cursors $(CURDIR)/cursors/$$i.cfg > \
+	    $(CURS_OUT_DIR)/$$i; \
 	done
 	for i in $(LINK_CURSORS); do \
 	  ln -s $${i#*:} $(CURS_OUT_DIR)/$${i%:*}; \
