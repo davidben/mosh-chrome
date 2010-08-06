@@ -10,9 +10,6 @@ mozc-dv  # ibus-mozc - Japanese (with Dvorak keyboard)
 mozc-jp  # ibus-mozc - Japanese (with Japanese keyboard)
 pinyin   # Pinyin engine in ibus-pinyin - Simplified Chinese
 
-# ibus-m17n input methods (language neutral ones).
-m17n:t:latn-pre
-m17n:t:latn-post
 # ibus-m17n input methods.
 m17n:ar:kbd         # Arabic
 m17n:he:kbd         # Hebrew
