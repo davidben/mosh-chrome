@@ -69,6 +69,7 @@ m17n:fa:isiri       # Persian
 # ibux-xkb-layouts input methods (keyboard layouts).
 xkb:br::por        # Brazil - Portuguese
 xkb:bg::bul        # Bulgaria - Bulgarian
+xkb:bg:phonetic:bul # Bulgaria - Phonetic - Bulgarian
 xkb:ca:eng:eng     # Canada - English
 xkb:cz::cze        # Czech Republic - Czech
 xkb:ee::est        # Estonia - Estonian
