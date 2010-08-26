@@ -29,13 +29,17 @@ mozc-jp            # ibus-mozc - Japanese (with Japanese keyboard)
 mozc-dv            # ibus-mozc - Japanese (with Dvorak keyboard)
 xkb:jp::jpn        # Japan - Japanese
 
+# Russian
+xkb:ru::rus         # Russia - Russian
+xkb:ru:phonetic:rus # Russia - Phonetic - Russian
+
 # Thai
 m17n:th:kesmanee    # Thai (simulate the Kesmanee keyboard)
 m17n:th:pattachote  # Thai (simulate the Pattachote keyboard)
 m17n:th:tis820      # Thai (simulate the TIS-820.2538 keyboard)
 
 # Traditional Chinese
-chewing            # ibus-chewing - Traditional Chinese
+chewing             # ibus-chewing - Traditional Chinese
 m17n:zh:cangjie     # Traditional Chinese (Cangjie)
 m17n:zh:quick       # Traditional Chinese (Quick) in m17n-contrib
 # TODO(suzhe): Add CantonHK and Stroke5 if (it's really) necessary.
@@ -51,13 +55,13 @@ m17n:vi:vni         # Vietnames (VNI key sequence)
 # feature.
 
 # U.S. English
-xkb:us::eng        # US - English
-xkb:us:dvorak:eng  # US - Dvorak - English
-
+xkb:us::eng           # US - English
+xkb:us:altgr-intl:eng # US - International (AltGr dead keys) - English
+xkb:us:dvorak:eng     # US - Dvorak - English
 
 # Other languages
 hangul             # ibus-hangul - Korean
-pinyin   # Pinyin engine in ibus-pinyin - Simplified Chinese
+pinyin             # Pinyin engine in ibus-pinyin - Simplified Chinese
 
 # ibus-m17n input methods.
 m17n:ar:kbd         # Arabic
@@ -92,7 +96,5 @@ xkb:se::swe        # Sweden - Swedish
 xkb:sk::slo        # Slovakia - Slovak
 xkb:si::slv        # Slovenia - Slovene (Slovenian)
 xkb:rs::srp        # Serbia - Serbian
-xkb:ru::rus        # Russia - Russian
 xkb:tr::tur        # Turkey - Turkish
 xkb:ua::ukr        # Ukraine - Ukrainian
-# TODO(satorux,jshin): Add more keyboard layouts.
