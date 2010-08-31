@@ -65,10 +65,10 @@ pinyin             # Pinyin engine in ibus-pinyin - Simplified Chinese
 
 # ibus-m17n input methods.
 m17n:ar:kbd         # Arabic
-m17n:he:kbd         # Hebrew
 m17n:hi:itrans      # Hindi
 # Note: the m17n-contrib package has some more Hindi definitions.
 m17n:fa:isiri       # Persian
+# TODO(yusukes,jshin): Check if we can use ibux-xkb-layouts for these languages.
 
 # ibux-xkb-layouts input methods (keyboard layouts).
 xkb:br::por        # Brazil - Portuguese
@@ -81,6 +81,7 @@ xkb:es::spa        # Spain - Spanish
 xkb:es:cat:cat     # Spain - Catalan
 xkb:dk::dan        # Denmark - Danish
 xkb:gr::gre        # Greece - Greek
+xkb:il::heb        # Israel - Hebrew
 xkb:lt::lit        # Lithuania - Lithuanian
 xkb:lv::lav        # Latvia - Latvian
 xkb:hr::scr        # Croatia - Croatian
