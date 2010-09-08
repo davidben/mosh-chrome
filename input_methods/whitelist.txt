@@ -82,6 +82,7 @@ xkb:es:cat:cat     # Spain - Catalan
 xkb:dk::dan        # Denmark - Danish
 xkb:gr::gre        # Greece - Greek
 xkb:il::heb        # Israel - Hebrew
+xkb:kr:kr104:kor   # Korea - Korean (101/104 key Compatible)
 xkb:lt::lit        # Lithuania - Lithuanian
 xkb:lv::lav        # Latvia - Latvian
 xkb:hr::scr        # Croatia - Croatian
