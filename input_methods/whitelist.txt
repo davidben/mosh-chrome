@@ -90,7 +90,7 @@ xkb:gb:extd:eng    # United Kingdom - English
 xkb:fi::fin        # Finland - Finnish
 xkb:hu::hun        # Hungary - Hungarian
 xkb:it::ita        # Italy - Italian
-xkb:no::nor        # Norway - Norwegian
+xkb:no::nob        # Norway - Norwegian Bokmal
 xkb:pl::pol        # Poland - Polish
 xkb:pt::por        # Portugal - Portuguese
 xkb:ro::rum        # Romania - Romanian
