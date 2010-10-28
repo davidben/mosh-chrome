@@ -1,3 +1,0 @@
-This directory contains sample OEM partner customization content.
-It is copied to the dedicated partner partition of the image
-and does not get copied to the rootfs.
