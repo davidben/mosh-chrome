@@ -83,6 +83,7 @@ xkb:dk::dan        # Denmark - Danish
 xkb:gr::gre        # Greece - Greek
 xkb:il::heb        # Israel - Hebrew
 xkb:kr:kr104:kor   # Korea - Korean (101/104 key Compatible)
+xkb:latam::spa     # Latin America - Spanish
 xkb:lt::lit        # Lithuania - Lithuanian
 xkb:lv::lav        # Latvia - Latvian
 xkb:hr::scr        # Croatia - Croatian
@@ -100,3 +101,6 @@ xkb:si::slv        # Slovenia - Slovene (Slovenian)
 xkb:rs::srp        # Serbia - Serbian
 xkb:tr::tur        # Turkey - Turkish
 xkb:ua::ukr        # Ukraine - Ukrainian
+
+# TODO(yusukes): Support xkb:latam:deadtilde:spa and/or xkb:latam:nodeadkeys:spa
+# if necessary.
