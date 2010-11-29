@@ -86,7 +86,7 @@ xkb:il::heb        # Israel - Hebrew
 xkb:kr:kr104:kor   # Korea - Korean (101/104 key Compatible)
 xkb:latam::spa     # Latin America - Spanish
 xkb:lt::lit        # Lithuania - Lithuanian
-xkb:lv::lav        # Latvia - Latvian
+xkb:lv:apostrophe:lav # Latvia - Latvian (Apostrophe variant)
 xkb:hr::scr        # Croatia - Croatian
 xkb:gb:extd:eng    # United Kingdom - English
 xkb:fi::fin        # Finland - Finnish
