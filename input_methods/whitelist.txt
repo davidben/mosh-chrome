@@ -56,6 +56,7 @@ m17n:vi:vni         # Vietnames (VNI key sequence)
 
 # U.S. English
 xkb:us::eng           # US - English
+xkb:us:intl:eng       # US - International (with dead keys) - English
 xkb:us:altgr-intl:eng # US - International (AltGr dead keys) - English
 xkb:us:dvorak:eng     # US - Dvorak - English
 
