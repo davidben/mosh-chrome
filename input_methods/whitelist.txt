@@ -8,113 +8,101 @@
 # page, we list input methods in this order, when more than one input methods
 # are available for a language (ex. French).
 
-# List items are formatted as follows.
-#
-# input_method_id     keyboard_overlay_id   # Comment
-#
-# input_method_id: The ID used internally by ibus.
-# keyboard_overlay_id: The ID to specify which keyboard layout is used for the
-#                      keyboard overlay dialog.
-# Each list item defines the correspondence between input_method_id and
-# keyboard_overlay_id.
-
 # Dutch
-xkb:nl::nld           nl           # Netherlands - Dutch
-xkb:be::nld           nl           # Belgium - Dutch
+xkb:nl::nld        # Netherlands - Dutch
+xkb:be::nld        # Belgium - Dutch
 
 # French
-xkb:fr::fra           fr           # France - French
-xkb:be::fra           fr           # Belgium - French
-xkb:ca::fra           fr_CA        # Canada - French
-xkb:ch:fr:fra         fr           # Switzerland - French
+xkb:fr::fra        # France - French
+xkb:be::fra        # Belgium - French
+xkb:ca::fra        # Canada - French
+xkb:ch:fr:fra      # Switzerland - French
 
 # German
-xkb:de::ger           de           # Germany - German
-xkb:be::ger           de           # Belgium - German
-xkb:ch::ger           de           # Switzerland - German
+xkb:de::ger        # Germany - German
+xkb:be::ger        # Belgium - German
+xkb:ch::ger        # Switzerland - German
 
 # Japanese
-mozc                  en_US        # ibus-mozc - Japanese (with US keyboard)
-mozc-jp               ja           # ibus-mozc - Japanese (with JP keyboard)
-mozc-dv               en_US_dvorak # ibus-mozc - Japanese (with Dvorak keyboard)
-xkb:jp::jpn           ja           # Japan - Japanese
+mozc               # ibus-mozc - Japanese (with English keyboard)
+mozc-jp            # ibus-mozc - Japanese (with Japanese keyboard)
+mozc-dv            # ibus-mozc - Japanese (with Dvorak keyboard)
+xkb:jp::jpn        # Japan - Japanese
 
 # Russian
-xkb:ru::rus           ru           # Russia - Russian
-xkb:ru:phonetic:rus   ru           # Russia - Phonetic - Russian
+xkb:ru::rus         # Russia - Russian
+xkb:ru:phonetic:rus # Russia - Phonetic - Russian
 
 # Thai
-m17n:th:kesmanee      th           # Thai (simulate the Kesmanee keyboard)
-m17n:th:pattachote    th           # Thai (simulate the Pattachote keyboard)
-m17n:th:tis820        th           # Thai (simulate the TIS-820.2538 keyboard)
+m17n:th:kesmanee    # Thai (simulate the Kesmanee keyboard)
+m17n:th:pattachote  # Thai (simulate the Pattachote keyboard)
+m17n:th:tis820      # Thai (simulate the TIS-820.2538 keyboard)
 
 # Traditional Chinese
-chewing               zh_TW        # ibus-chewing - Traditional Chinese
-m17n:zh:cangjie       zh_TW        # Traditional Chinese (Cangjie)
-m17n:zh:quick         zh_TW        # Traditional Chinese (Quick) in m17n-contrib
+chewing             # ibus-chewing - Traditional Chinese
+m17n:zh:cangjie     # Traditional Chinese (Cangjie)
+m17n:zh:quick       # Traditional Chinese (Quick) in m17n-contrib
 # TODO(suzhe): Add CantonHK and Stroke5 if (it's really) necessary.
 
 # Vietnamese
-m17n:vi:tcvn          vi           # Vietnames (TCVN6064 sequence)
-m17n:vi:telex         vi           # Vietnames (TELEX key sequence)
-m17n:vi:viqr          vi           # Vietnames (VIQR key sequence)
-m17n:vi:vni           vi           # Vietnames (VNI key sequence)
+m17n:vi:tcvn        # Vietnames (TCVN6064 sequence)
+m17n:vi:telex       # Vietnames (TELEX key sequence)
+m17n:vi:viqr        # Vietnames (VIQR key sequence)
+m17n:vi:vni         # Vietnames (VNI key sequence)
 # Note: Since ibus-m17n does not support "get-surrounding-text" feature yet,
 # Vietnames input methods, except 4 input methods above, in m17n-db should
 # not work fine. The 4 input methods in m17n-db (>= 1.6.0) don't require the
 # feature.
 
 # U.S. English
-xkb:us::eng           en_US        # US - English
-xkb:us:intl:eng       en_US        # US - International - English
-xkb:us:altgr-intl:eng en_US        # US - Extended (AltGr) - English
-xkb:us:dvorak:eng     en_US_dvorak # US - Dvorak - English
-# TODO(mazda): Add keyboard overlay definition for US Colemak
-# See http://crosbug.com/10398.
-xkb:us:colemak:eng    en_US        # US - Colemak - English
+xkb:us::eng           # US - English
+xkb:us:intl:eng       # US - International (with dead keys) - English
+xkb:us:altgr-intl:eng # US - International (AltGr dead keys) - English
+xkb:us:dvorak:eng     # US - Dvorak - English
+xkb:us:colemak:eng    # US - Colemak - English
 
 # Other languages
-hangul                ko           # ibus-hangul - Korean
-pinyin                zh_CN        # Pinyin engine in ibus-pinyin - Simplified Chinese
+hangul             # ibus-hangul - Korean
+pinyin             # Pinyin engine in ibus-pinyin - Simplified Chinese
 
 # ibus-m17n input methods.
-m17n:ar:kbd           ar           # Arabic
-m17n:hi:itrans        hi           # Hindi
+m17n:ar:kbd         # Arabic
+m17n:hi:itrans      # Hindi
 # Note: the m17n-contrib package has some more Hindi definitions.
-m17n:fa:isiri         ar           # Persian
+m17n:fa:isiri       # Persian
 # TODO(yusukes,jshin): Check if we can use ibux-xkb-layouts for these languages.
 
 # ibux-xkb-layouts input methods (keyboard layouts).
-xkb:br::por           pt_BR        # Brazil - Portuguese
-xkb:bg::bul           bg           # Bulgaria - Bulgarian
-xkb:bg:phonetic:bul   bg           # Bulgaria - Phonetic - Bulgarian
-xkb:ca:eng:eng        ca           # Canada - English
-xkb:cz::cze           cs           # Czech Republic - Czech
-xkb:ee::est           et           # Estonia - Estonian
-xkb:es::spa           es           # Spain - Spanish
-xkb:es:cat:cat        ca           # Spain - Catalan
-xkb:dk::dan           da           # Denmark - Danish
-xkb:gr::gre           el           # Greece - Greek
-xkb:il::heb           iw           # Israel - Hebrew
-xkb:kr:kr104:kor      ko           # Korea - Korean (101/104 key Compatible)
-xkb:latam::spa        es_419       # Latin America - Spanish
-xkb:lt::lit           lt           # Lithuania - Lithuanian
-xkb:lv:apostrophe:lav lv           # Latvia - Latvian (Apostrophe variant)
-xkb:hr::scr           hr           # Croatia - Croatian
-xkb:gb:extd:eng       en_GB        # United Kingdom - English
-xkb:fi::fin           fi           # Finland - Finnish
-xkb:hu::hun           hu           # Hungary - Hungarian
-xkb:it::ita           it           # Italy - Italian
-xkb:no::nob           no           # Norway - Norwegian Bokmal
-xkb:pl::pol           pl           # Poland - Polish
-xkb:pt::por           pt_PT        # Portugal - Portuguese
-xkb:ro::rum           ro           # Romania - Romanian
-xkb:se::swe           sv           # Sweden - Swedish
-xkb:sk::slo           sk           # Slovakia - Slovak
-xkb:si::slv           sl           # Slovenia - Slovene (Slovenian)
-xkb:rs::srp           sr           # Serbia - Serbian
-xkb:tr::tur           tr           # Turkey - Turkish
-xkb:ua::ukr           uk           # Ukraine - Ukrainian
+xkb:br::por        # Brazil - Portuguese
+xkb:bg::bul        # Bulgaria - Bulgarian
+xkb:bg:phonetic:bul # Bulgaria - Phonetic - Bulgarian
+xkb:ca:eng:eng     # Canada - English
+xkb:cz::cze        # Czech Republic - Czech
+xkb:ee::est        # Estonia - Estonian
+xkb:es::spa        # Spain - Spanish
+xkb:es:cat:cat     # Spain - Catalan
+xkb:dk::dan        # Denmark - Danish
+xkb:gr::gre        # Greece - Greek
+xkb:il::heb        # Israel - Hebrew
+xkb:kr:kr104:kor   # Korea - Korean (101/104 key Compatible)
+xkb:latam::spa     # Latin America - Spanish
+xkb:lt::lit        # Lithuania - Lithuanian
+xkb:lv:apostrophe:lav # Latvia - Latvian (Apostrophe variant)
+xkb:hr::scr        # Croatia - Croatian
+xkb:gb:extd:eng    # United Kingdom - English
+xkb:fi::fin        # Finland - Finnish
+xkb:hu::hun        # Hungary - Hungarian
+xkb:it::ita        # Italy - Italian
+xkb:no::nob        # Norway - Norwegian Bokmal
+xkb:pl::pol        # Poland - Polish
+xkb:pt::por        # Portugal - Portuguese
+xkb:ro::rum        # Romania - Romanian
+xkb:se::swe        # Sweden - Swedish
+xkb:sk::slo        # Slovakia - Slovak
+xkb:si::slv        # Slovenia - Slovene (Slovenian)
+xkb:rs::srp        # Serbia - Serbian
+xkb:tr::tur        # Turkey - Turkish
+xkb:ua::ukr        # Ukraine - Ukrainian
 
 # TODO(yusukes): Support xkb:latam:deadtilde:spa and/or xkb:latam:nodeadkeys:spa
 # if necessary.
