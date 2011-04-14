@@ -67,8 +67,8 @@ m17n:vi:vni           vi            # Vietnames (VNI key sequence)
 
 # U.S. English
 xkb:us::eng           en_US         # US - English
-xkb:us:intl:eng       en_US         # US - International - English
-xkb:us:altgr-intl:eng en_US         # US - Extended (AltGr) - English
+xkb:us:intl:eng       en_US_intl    # US - International - English
+xkb:us:altgr-intl:eng en_US_altgr_intl  # US - Extended (AltGr) - English
 xkb:us:dvorak:eng     en_US_dvorak  # US - Dvorak - English
 xkb:us:colemak:eng    en_US_colemak # US - Colemak - English
 
