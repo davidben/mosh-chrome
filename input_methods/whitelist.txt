@@ -101,6 +101,7 @@ xkb:lt::lit           lt            # Lithuania - Lithuanian
 xkb:lv:apostrophe:lav lv            # Latvia - Latvian (Apostrophe variant)
 xkb:hr::scr           hr            # Croatia - Croatian
 xkb:gb:extd:eng       en_GB         # United Kingdom - English
+xkb:gb:dvorak:eng     en_GB_dvorak  # United Kingdom - Dvorak - English
 xkb:fi::fin           fi            # Finland - Finnish
 xkb:hu::hun           hu            # Hungary - Hungarian
 xkb:it::ita           it            # Italy - Italian
