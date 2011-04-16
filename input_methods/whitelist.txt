@@ -50,7 +50,7 @@ m17n:th:pattachote    th            # Thai (simulate the Pattachote keyboard)
 m17n:th:tis820        th            # Thai (simulate the TIS-820.2538 keyboard)
 
 # Traditional Chinese
-chewing               zh_TW         # ibus-chewing - Traditional Chinese
+mozc-chewing          zh_TW         # ibus-mozc-chewing - Traditional Chinese
 m17n:zh:cangjie       zh_TW         # Traditional Chinese (Cangjie)
 m17n:zh:quick         zh_TW         # Traditional Chinese (Quick) in m17n-contrib
 # TODO(suzhe): Add CantonHK and Stroke5 if (it's really) necessary.
