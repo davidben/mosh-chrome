@@ -49,6 +49,11 @@ m17n:th:kesmanee      th            # Thai (simulate the Kesmanee keyboard)
 m17n:th:pattachote    th            # Thai (simulate the Pattachote keyboard)
 m17n:th:tis820        th            # Thai (simulate the TIS-820.2538 keyboard)
 
+# Simplified Chinese
+pinyin                zh_CN         # Pinyin engine in ibus-pinyin - Simplified Chinese
+pinyin-dv             en_US_dvorak  # Pinyin engine in ibus-pinyin - Simplified Chinese (with Dvorak keyboard)
+# TODO(yusukes): Define zh_CN_dvorak if it's *really* necessary.
+
 # Traditional Chinese
 mozc-chewing          zh_TW         # ibus-mozc-chewing - Traditional Chinese
 m17n:zh:cangjie       zh_TW         # Traditional Chinese (Cangjie)
@@ -74,7 +79,6 @@ xkb:us:colemak:eng    en_US_colemak # US - Colemak - English
 
 # Other languages
 hangul                ko            # ibus-hangul - Korean
-pinyin                zh_CN         # Pinyin engine in ibus-pinyin - Simplified Chinese
 
 # ibus-m17n input methods.
 m17n:ar:kbd           ar            # Arabic
