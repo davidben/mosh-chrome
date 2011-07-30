@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<style>
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+iframe {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}
+</style>
+<script>
+function $(id) {
+  return document.getElementById(id);
+}
+
+function Authenticator() {
+};
+
+Authenticator.getInstance = function() {
+  if (!Authenticator.instance_) {
+    Authenticator.instance_ = new Authenticator();
+  }
+  return Authenticator.instance_;
+}
+
+Authenticator.prototype = {
+  email_: null,
+  password_: null,
+  attemptToken_: null,
+  frameLoaded_: false,
+
+  //GAIA_PAGE_ORIGIN: 'https://gaiastaging.corp.google.com',
+  GAIA_PAGE_ORIGIN: 'https://www.google.com',
+  GAIA_PAGE_PATH: '/accounts/ServiceLogin?btmpl=chromeos' +
+      '&skipvpage=true&sarp=1' +
+      '&continue=chrome-extension://mfffpogegjflfpflabcdkioaeobkgjik/' +
+      'success.html',
+  THIS_EXTENSION_ORIGIN: 'chrome-extension://mfffpogegjflfpflabcdkioaeobkgjik',
+  PARENT_PAGE: 'chrome://oobe/',
+
+  initialize: function() {
+    this.frameLoaded_ = false;
+    console.log('### Authenticator.initialize');
+    window.addEventListener('offline', this.onOffline.bind(this), false);
+    window.addEventListener('online', this.onOnline.bind(this), false);
+    window.addEventListener('message', this.onMessage.bind(this), false);
+    document.addEventListener('DOMContentLoaded', this.onPageLoad.bind(this));
+  },
+
+  isGaiaMessage_: function(msg) {
+    return msg.origin == this.GAIA_PAGE_ORIGIN;
+  },
+
+  isInternalMessage_: function(msg) {
+    return msg.origin == this.THIS_EXTENSION_ORIGIN;
+  },
+
+  getFrameUrl_: function() {
+    return this.GAIA_PAGE_ORIGIN + this.GAIA_PAGE_PATH
+  },
+
+  loadFrame_: function() {
+    console.log('Loading GAIA frame');
+    var frame = $('gaia-frame');
+    var self = this;
+    frame.addEventListener('load', function(e) {
+      console.log('### Authenticator.loadFrame_: Frame loaded.');
+      self.frameLoaded_ = true;
+    });
+    frame.contentWindow.location.href = this.getFrameUrl_();
+  },
+
+  onPageLoad: function(e) {
+    console.log('#### Authenticator.onPageLoad: navigator.onLine = ' + navigator.onLine);
+    if (navigator.onLine || true) {
+      console.log('#### Authenticator.onPageLoad: loading frame...');
+      this.loadFrame_();
+    }
+  },
+
+  onOffline: function(e) {
+    if (frameLoaded_) {
+      console.log('#### Authenticator.onOffline: went offline, cancel auth...');
+      // TODO(zelidrag): Signal parent page that we can't complete auth process.
+    }
+  },
+
+  onOnline: function(e) {
+    if (!frameLoaded_) {
+      // console.log('#### Authenticator.onOnline: loading frame...');
+      this.loadFrame_();
+    }
+  },
+
+  onMessage: function(e) {
+    var msg = e.data;
+    // console.log('#### Authenticator.onMessage: ' + JSON.stringify(msg));
+    if (msg.method == 'attemptLogin' && this.isGaiaMessage_(e)) {
+      this.email_ = msg.email;
+      this.password_ = msg.password;
+      this.attemptToken_ = msg.attemptToken;
+    } else if (msg.method == 'clearOldAttempts' && this.isGaiaMessage_(e)) {
+      this.email_ = null;
+      this.password_ = null;
+      this.attemptToken_ = null;
+    } else if (msg.method == 'confirmLogin' && this.isInternalMessage_(e)) {
+      if (this.attemptToken_ == msg.attemptToken) {
+        var msg = {
+          'method': 'completeLogin',
+          'email': this.email_,
+          'password': this.password_
+        };
+        window.parent.postMessage(msg, this.PARENT_PAGE);
+      } else {
+      console.log('#### Authenticator.onMessage: unexpected attemptToken!?');
+      }
+    } else {
+      console.log('#### Authenticator.onMessage: unknown message + origin!?');
+    }
+  }
+};
+
+console.log('#### main.html start');
+Authenticator.getInstance().initialize();
+</script>
+<body><iframe id="gaia-frame" src="about:blank"
+  frameborder="0"></iframe></body></html>
+
