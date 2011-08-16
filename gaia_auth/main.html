@@ -96,6 +96,13 @@ Authenticator.prototype = {
     }
   },
 
+  onLoginUILoaded: function() {
+    var msg = {
+      'method': 'loginUILoaded'
+    };
+    window.parent.postMessage(msg, this.PARENT_PAGE);
+  },
+
   onMessage: function(e) {
     var msg = e.data;
     // console.log('#### Authenticator.onMessage: ' + JSON.stringify(msg));
@@ -107,6 +114,7 @@ Authenticator.prototype = {
       this.email_ = null;
       this.password_ = null;
       this.attemptToken_ = null;
+      this.onLoginUILoaded();
     } else if (msg.method == 'confirmLogin' && this.isInternalMessage_(e)) {
       if (this.attemptToken_ == msg.attemptToken) {
         var msg = {
@@ -116,7 +124,7 @@ Authenticator.prototype = {
         };
         window.parent.postMessage(msg, this.PARENT_PAGE);
       } else {
-      console.log('#### Authenticator.onMessage: unexpected attemptToken!?');
+        console.log('#### Authenticator.onMessage: unexpected attemptToken!?');
       }
     } else {
       console.log('#### Authenticator.onMessage: unknown message + origin!?');
