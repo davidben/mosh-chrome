@@ -13,11 +13,8 @@ iframe {
   margin: 0px;
 }
 </style>
+<script src="util.js"></script>
 <script>
-function $(id) {
-  return document.getElementById(id);
-}
-
 function Authenticator() {
 };
 
@@ -33,6 +30,7 @@ Authenticator.prototype = {
   password_: null,
   attemptToken_: null,
   frameLoaded_: false,
+  lang_ : undefined,
 
   GAIA_PAGE_ORIGIN: 'https://www.google.com',
   GAIA_PAGE_PATH: '/accounts/ServiceLogin?btmpl=chromeos' +
@@ -44,6 +42,10 @@ Authenticator.prototype = {
 
   initialize: function() {
     this.frameLoaded_ = false;
+
+    var params = getUrlSearchParams(location.search);
+    this.lang_ = params['hl'];
+
     console.log('### Authenticator.initialize');
     window.addEventListener('offline', this.onOffline.bind(this), false);
     window.addEventListener('online', this.onOnline.bind(this), false);
@@ -60,7 +62,10 @@ Authenticator.prototype = {
   },
 
   getFrameUrl_: function() {
-    return this.GAIA_PAGE_ORIGIN + this.GAIA_PAGE_PATH
+    var url = this.GAIA_PAGE_ORIGIN + this.GAIA_PAGE_PATH;
+    if (this.lang_)
+      url += '&hl=' + this.lang_;
+    return url;
   },
 
   loadFrame_: function() {
@@ -83,14 +88,14 @@ Authenticator.prototype = {
   },
 
   onOffline: function(e) {
-    if (frameLoaded_) {
+    if (this.frameLoaded_) {
       console.log('#### Authenticator.onOffline: went offline, cancel auth...');
       // TODO(zelidrag): Signal parent page that we can't complete auth process.
     }
   },
 
   onOnline: function(e) {
-    if (!frameLoaded_) {
+    if (!this.frameLoaded_) {
       // console.log('#### Authenticator.onOnline: loading frame...');
       this.loadFrame_();
     }
