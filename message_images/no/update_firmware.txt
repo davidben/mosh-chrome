@@ -1,0 +1,2 @@
+Systemet oppdaterer fastvaren. IKKE SLÅ AV.
+Når oppdateringen er fullført, kan det hende at datamaskinen starter på nytt eller fortsetter for pålogging.

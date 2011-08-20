@@ -1,0 +1,2 @@
+Se está actualizando el firmware del sistema, NO LO DESCONECTES.
+Cuando finalice la actualización, el ordenador puede reiniciarse o continuar para acceder al sistema.

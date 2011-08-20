@@ -1,0 +1,2 @@
+Une mise à jour de micrologiciel est en cours sur votre système. N'ÉTEIGNEZ PAS votre ordinateur.
+Une fois l'opération terminée, l'ordinateur redémarrera ou lancera le processus d'ouverture de session.

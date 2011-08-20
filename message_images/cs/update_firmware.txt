@@ -1,0 +1,2 @@
+Systém aktualizuje firmware, prosím NEVYPÍNEJTE JEJ.
+Po dokončení se počítač může restartovat nebo pokračovat v přihlášení.

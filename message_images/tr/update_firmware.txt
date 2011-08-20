@@ -1,0 +1,2 @@
+Sisteminiz donanım yazılımını güncelliyor, lütfen KAPATMAYIN.
+Güncelleme işlemi tamamlandıktan sonra giriş yapmak için makine yeniden başlatılabilir veya devam edebilir.

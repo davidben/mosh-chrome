@@ -1,0 +1,2 @@
+System aktualizuje oprogramowanie układowe. NIE WYŁĄCZAJ KOMPUTERA.
+Po zakończeniu komputer może zostać uruchomiony ponownie lub może zostać wyświetlony ekran logowania.

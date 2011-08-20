@@ -1,0 +1,2 @@
+Systemet uppdaterar den fasta programvaran. STÄNG INTE AV.
+När uppdateringen är slutförd startar datorn eventuellt om eller så får du logga in igen.

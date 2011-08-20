@@ -1,0 +1,2 @@
+Your system is updating firmware. Please DO NOT TURN OFF.
+Upon completion, the machine may reboot or continue to login.

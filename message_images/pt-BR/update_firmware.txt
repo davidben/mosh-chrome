@@ -1,0 +1,2 @@
+Seu sistema está atualizando o firmware. NÃO DESLIGUE.
+Após a conclusão, o computador pode reinicializar ou prosseguir para o login.
