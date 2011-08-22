@@ -33,6 +33,7 @@ Authenticator.prototype = {
   lang_ : undefined,
 
   GAIA_PAGE_ORIGIN: 'https://www.google.com',
+  GAIA_PAGE_ORIGIN_NEW: 'https://accounts.google.com',
   GAIA_PAGE_PATH: '/accounts/ServiceLogin?btmpl=chromeos' +
       '&skipvpage=true&sarp=1&rm=hide' +
       '&continue=chrome-extension://mfffpogegjflfpflabcdkioaeobkgjik/' +
@@ -54,7 +55,8 @@ Authenticator.prototype = {
   },
 
   isGaiaMessage_: function(msg) {
-    return msg.origin == this.GAIA_PAGE_ORIGIN;
+    return msg.origin == this.GAIA_PAGE_ORIGIN ||
+           msg.origin == this.GAIA_PAGE_ORIGIN_NEW;
   },
 
   isInternalMessage_: function(msg) {
