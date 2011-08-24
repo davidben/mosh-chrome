@@ -1,0 +1,4 @@
+Preparing system for Developer Mode (may take 5 - 10 minutes).
+Do not turn your computer off until it has restarted.
+
+On reboot, press Ctrl+Alt+[->] (F2) for information about Developer Mode.

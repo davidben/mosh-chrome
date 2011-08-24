@@ -50,14 +50,13 @@ def convert_to_image(input_file, output_file):
   """ Converts a UTF-8 encoded text message file to image file. """
   # Load message
   with open(input_file, 'r') as input_handle:
-    input_messages = input_handle.read().splitlines()
+    input_messages = input_handle.read().decode('utf-8').strip().splitlines()
 
-  # Strip spaces and blank lines
-  input_messages = [message.decode('utf-8').strip()
-                    for message in input_messages if message.strip()]
+  # Strip spaces in each line
+  input_messages = [message.strip() for message in input_messages]
 
   # Load fonts
-  font_file = find_font_file(os.path.splitext(os.path.basename(input_file))[0])
+  font_file = find_font_file(os.path.basename(os.path.dirname(input_file)))
   if not os.path.exists(font_file):
     die("Missing font file: %s.\n" % font_file)
 
