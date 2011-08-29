@@ -30,7 +30,10 @@ Authenticator.prototype = {
   password_: null,
   attemptToken_: null,
   frameLoaded_: false,
-  lang_ : undefined,
+
+  // Input params from extension initialization URL.
+  inputLang_ : undefined,
+  intputEmail_ : undefined,
 
   GAIA_PAGE_ORIGIN: 'https://www.google.com',
   GAIA_PAGE_ORIGIN_NEW: 'https://accounts.google.com',
@@ -45,7 +48,8 @@ Authenticator.prototype = {
     this.frameLoaded_ = false;
 
     var params = getUrlSearchParams(location.search);
-    this.lang_ = params['hl'];
+    this.inputLang_ = params['hl'];
+    this.inputEmail_ = params['email'];
 
     console.log('### Authenticator.initialize');
     window.addEventListener('offline', this.onOffline.bind(this), false);
@@ -65,8 +69,10 @@ Authenticator.prototype = {
 
   getFrameUrl_: function() {
     var url = this.GAIA_PAGE_ORIGIN + this.GAIA_PAGE_PATH;
-    if (this.lang_)
-      url += '&hl=' + this.lang_;
+    if (this.inputLang_)
+      url += '&hl=' + encodeURIComponent(this.inputLang_);
+    if (this.inputEmail_)
+      url += '&Email=' + encodeURIComponent(this.inputEmail_);
     return url;
   },
 
