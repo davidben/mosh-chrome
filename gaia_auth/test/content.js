@@ -23,6 +23,6 @@ if (document.URL.match(/https\:\/\/www\.google\.com\/accounts\/ServiceLogin/) ||
   document.getElementById('Email').value = unescape(testEmail);
   document.getElementById('Passwd').value = unescape(testPassword);
   console.log('Form field changed!');
-  document.getElementById('gaia_loginform').submit();
+  document.getElementById('signIn').click();
   console.log('Form submitted!');
 }
