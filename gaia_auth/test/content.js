@@ -17,12 +17,14 @@ function getQueryParam(key, defaultVal) {
 
 if (document.URL.match(/https\:\/\/www\.google\.com\/accounts\/ServiceLogin/) ||
     document.URL.match(/https\:\/\/accounts\.google\.com\/ServiceLogin/)) {
-  var testEmail = getQueryParam('test_email');
-  var testPassword = getQueryParam('test_pwd');
+  var testEmail = unescape(getQueryParam('test_email'));
+  var testPassword = unescape(getQueryParam('test_pwd'));
   console.log('Got test account info: ' + testEmail + '/' + testPassword);
-  document.getElementById('Email').value = unescape(testEmail);
-  document.getElementById('Passwd').value = unescape(testPassword);
+  document.getElementById('Email').value = testEmail;
+  document.getElementById('Passwd').value = testPassword;
   console.log('Form field changed!');
-  document.getElementById('signIn').click();
-  console.log('Form submitted!');
+  if (testEmail != "") {
+    document.getElementById('signIn').click();
+    console.log('Form submitted!');
+  }
 }
