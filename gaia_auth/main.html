@@ -37,7 +37,7 @@ Authenticator.prototype = {
 
   GAIA_PAGE_ORIGIN: 'https://www.google.com',
   GAIA_PAGE_ORIGIN_NEW: 'https://accounts.google.com',
-  GAIA_PAGE_PATH: '/accounts/ServiceLogin?btmpl=chromeos' +
+  GAIA_PAGE_PATH: '/accounts/ServiceLogin?service=chromeoslogin' +
       '&skipvpage=true&sarp=1&rm=hide' +
       '&continue=chrome-extension://mfffpogegjflfpflabcdkioaeobkgjik/' +
       'success.html',
@@ -45,6 +45,7 @@ Authenticator.prototype = {
   PARENT_PAGE: 'chrome://oobe/',
 
   initialize: function() {
+    console.log('### Authenticator.initialize');
     this.frameLoaded_ = false;
 
     var params = getUrlSearchParams(location.search);
@@ -52,10 +53,7 @@ Authenticator.prototype = {
     this.inputEmail_ = params['email'];
     this.testEmail_ = params['test_email'];
     this.testPassword_ = params['test_password'];
-    console.log('### Authenticator.initialize');
-    window.addEventListener('offline', this.onOffline.bind(this), false);
-    window.addEventListener('online', this.onOnline.bind(this), false);
-    window.addEventListener('message', this.onMessage.bind(this), false);
+
     document.addEventListener('DOMContentLoaded', this.onPageLoad.bind(this));
   },
 
@@ -83,18 +81,22 @@ Authenticator.prototype = {
 
   loadFrame_: function() {
     console.log('Loading GAIA frame');
-    var frame = $('gaia-frame');
-    var self = this;
-    frame.addEventListener('load', function(e) {
-      console.log('### Authenticator.loadFrame_: Frame loaded.');
-      self.frameLoaded_ = true;
-    });
-    frame.contentWindow.location.href = this.getFrameUrl_();
+    $('gaia-frame').src = this.getFrameUrl_();
+  },
+
+  onFrameLoad: function(e) {
+    console.log('### Authenticator.loadFrame_: Frame loaded.');
+    self.frameLoaded_ = true;
   },
 
   onPageLoad: function(e) {
+    window.addEventListener('offline', this.onOffline.bind(this), false);
+    window.addEventListener('online', this.onOnline.bind(this), false);
+    window.addEventListener('message', this.onMessage.bind(this), false);
+    $('gaia-frame').addEventListener('load', this.onFrameLoad.bind(this));
+
     console.log('#### Authenticator.onPageLoad: navigator.onLine = ' + navigator.onLine);
-    if (navigator.onLine || true) {
+    if (navigator.onLine) {
       console.log('#### Authenticator.onPageLoad: loading frame...');
       this.loadFrame_();
     }
@@ -103,6 +105,7 @@ Authenticator.prototype = {
   onOffline: function(e) {
     if (this.frameLoaded_) {
       console.log('#### Authenticator.onOffline: went offline, cancel auth...');
+      this.frameLoaded_ = false; // This triggers reload when back online.
       // TODO(zelidrag): Signal parent page that we can't complete auth process.
     }
   },
