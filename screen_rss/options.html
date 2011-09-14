@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="css/options.css"></link>
+    <script src="js/common.js"></script>
+    <script src="js/options.js"></script>
+    <script src="js/urls.js"></script>
+  </head>
+  <body>
+    <div id="browserPage" class="page">
+      <h1 i18n="optionsScreenTitle"></h1>
+      <div class="displaytable">
+        <section id="sourceSection">
+          <h3 i18n="optionSource"></h3>
+          <div>
+            <div>
+              <label>
+                <input type="radio" id="sourceGoogleNews" name="source"
+                    value="0">
+                <span class="option-name" i18n="rssSourceGoogleNews"></span>
+                <select id="googleNewsCategory" disabled>
+                  <option value="googleNewsInfixesTop"
+                      i18n="googleNewsNameTop"></option>
+                  <option value="googleNewsInfixesWorld"
+                      i18n="googleNewsNameWorld"></option>
+                  <option value="googleNewsInfixesSciTech"
+                      i18n="googleNewsNameSciTech"></option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input type="radio" id="sourceExpl1" name="source" value="1">
+                <span class="option-name" i18n="rssSourceExample1"></span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input type="radio" id="sourceExpl2" name="source" value="2">
+                <span class="option-name" i18n="rssSourceExample2"></span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input id="sourceCustom" type="radio" name="source"
+                    value="3">
+                <span class="option-name" i18n="rssSourceCustom"></span>
+                <!-- TODO(sidor): Add Learn more hint here -->
+                <input type="text" id="RssFeedUrl" disabled>
+              </label>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h3 i18n="optionDelay"></h3>
+          <div class="option-control-table">
+            <span class="option-name" i18n="displayScreensaverAfter"></span>
+            <div id="slider-control">
+              <input id="lunch-time-range" type="range" min="0" max="1"
+                  step="any">
+              <div>
+                <span id="lunch-time-text"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="article-refresh">
+          <h3 i18n="optionArticleRefresh"></h3>
+          <div>
+            <div>
+              <label>
+                <input type="radio" name="articleRefresh" value="30">
+                <span class="option-name" i18n="articleRefreshSlow"></span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input type="radio" name="articleRefresh" value="8">
+                <span class="option-name" i18n="articleRefreshFast"></span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input type="radio" name="articleRefresh" value="2">
+                <span class="option-name" i18n="articleRefreshVeryFast"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+        <section id="display-mode">
+          <h3 i18n="optionDisplayMode"></h3>
+          <div>
+            <div>
+              <label>
+                <input type="radio" name="displayMode" value="newest">
+                <span class="option-name" i18n="displayModeNewest"></span>
+              </label>
+            </div>
+            <div>
+              <label>
+                <input type="radio" name="displayMode" value="comprehensive">
+                <span class="option-name" i18n="displayModeComprehensive">
+                </span>
+              </label>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div id="optionsSavedMessage" class="saved-hidden">
+            <span i18n="optionsSavedMessage"></span>
+          </div>
+          <div>
+            <div class="kd-button-red save-button" id="save-button" >
+              <span i18n="saveOptionsButton"></span>
+            </div>
+            &nbsp;
+            <div class="kd-button-gray preview-button" id="preview-button">
+              <span i18n="previewButton"></span>
+            </div>
+            &nbsp;
+            <div class="kd-button-gray cancel-button" id="cancel-button">
+              <span i18n="cancelButton"></span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>

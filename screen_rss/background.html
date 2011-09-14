@@ -1,0 +1,124 @@
+<script src="js/cache_manager.js"></script>
+<script src="js/common.js"></script>
+<script src="js/urls.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+  var defaultOptions = JSON.stringify({
+    'articleRefresh' : 8,
+    'displayMode' : 'newest',
+    'lunchScreensaverAfter' : 0,
+    'rssSource' : urlGoogleTopNews
+  });
+
+  localStorage['temporaryOptions'] =
+    localStorage['temporaryOptions'] || defaultOptions;
+  localStorage['permanentOptions'] =
+    localStorage['permanentOptions'] || defaultOptions;
+
+  var screensaverAddress = 'screensaver.html';
+  var screensaverPreviewAddress = 'screensaver.html?preview';
+  var screensaverWindowId = -1;
+  var toBeOpened = '';
+  var launchAfterM; // Time in seconds after which screensaver will be launched.
+  // This hack is currently needed because of bug in tabs API - chromium:95617
+  var lastActiveWindowId = -1; // Last focused window before screensaver opened.
+  var windowLastClosed = 0; // Time when screen saver window was last closed.
+  var cacheManager = new CacheManager();
+  var previewWindowOpened = false;
+  var launchScreensaverAfterUncalculated;
+ /*
+  * Two functions below are made so that there's only one screensaver window
+  * open at the time and they are as "atomic", as javascript allows.
+  */
+
+  function maybeOpenWindow(whatWindow) {
+    if (screensaverWindowId == -1) {
+      screensaverWindowId = -2; // operation pending.
+      chrome.windows.getLastFocused(function(window) {
+        lastActiveWindowId = window.id;
+      });
+      chrome.windows.create({
+        'url' : whatWindow,
+        'focused' : true,
+      }, function(screensaverWindow) {
+        screensaverWindowId = screensaverWindow.id;
+      });
+    }
+  }
+
+  function maybeCloseWindow() {
+    if (screensaverWindowId >= 0) {
+      var toBeClosed = screensaverWindowId;
+      screensaverWindowId = -1;
+      var now = new Date();
+      windowLastClosed = now.getTime();
+      chrome.windows.remove(toBeClosed, function() {
+        if(toBeOpened != '') {
+          if (lastActiveWindowId != -1) {
+            chrome.tabs.create({
+              'windowId' : lastActiveWindowId,
+              'url' : toBeOpened
+            });
+          } else {
+            console.log('Could not establish last active window.');
+          }
+          toBeOpened = '';
+        }
+      });
+    }
+  }
+
+  chrome.extension.onRequest.addListener(function(request, sender, sendResp) {
+    if (request.method) {
+      if (request.method == 'openTab') {
+        toBeOpened = request.url;
+      } else if (request.method == 'openPreview') {
+        previewWindowOpened = true;
+        maybeOpenWindow(screensaverPreviewAddress);
+      } else if (request.method == 'closeScreensaver') {
+        // usually issued by screensaver itself after detecting activity.
+        if (previewWindowOpened)
+          previewWindowOpened = false;
+        maybeCloseWindow();
+      } else if (request.method == 'updateOptions') {
+        launchScreensaverAfterUncalculated = JSON.parse(
+            localStorage['permanentOptions']).lunchScreensaverAfter;
+        launchAfterM =
+            silderValueToMinutes(launchScreensaverAfterUncalculated);
+        cacheManager.updateOptions();
+      } else if (request.method == 'getFeed') {
+        cacheManager.getFeed(request.options, function(result) {
+          sendResp(result);
+        });
+      }
+    }
+  });
+
+  chrome.windows.onRemoved.addListener(function(windowId) {
+    if (windowId == screensaverWindowId) {
+      screensaverWindowId = -1;
+      if (previewWindowOpened)
+        previewWindowOpened = false;
+    }
+  });
+
+  function checkState() {
+    if (launchAfterM != MAX_LAUNCH_DELAY_M && !previewWindowOpened) {
+      chrome.idle.queryState(launchAfterM * 60, function(state) {
+        if (state == 'idle') {
+          var now = new Date();
+          if(now - windowLastClosed > IDLE_API_INTERVAL_MS)
+            maybeOpenWindow(screensaverAddress);
+        } else { // active or unknown
+          maybeCloseWindow();
+        }
+      });
+    }
+  }
+
+  launchScreensaverAfterUncalculated = JSON.parse(
+      localStorage['permanentOptions']).lunchScreensaverAfter;
+  launchAfterM = silderValueToMinutes(launchScreensaverAfterUncalculated);
+
+  window.setInterval(checkState, 1000);
+</script>

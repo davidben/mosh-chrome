@@ -1,0 +1,168 @@
+/*
+ * Copyright (c) 2011 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+body {
+  -webkit-box-flex: 1;
+  -webkit-box-orient: vertical;
+  background-color: lightskyblue;
+  display: -webkit-box;
+  /* This font is only available by default in ChromeOS. */
+  font-family: 'Droid Sans', sans-serif;
+  height: 100%;
+  margin: 0px;
+  overflow: hidden;
+  padding: 0px;
+  width: 100%;
+}
+
+.screensaver {
+  -webkit-transition: opacity 0.5s ease-in;
+  height: 100%;
+  opacity: 0;
+  position: fixed;
+  width: 100%;
+}
+
+.screensaver.visible {
+  opacity: 1;
+}
+
+.feeds-header {
+  -webkit-box-flex: 1;
+  -webkit-box-orient: horizontal;
+  display: -webkit-box;
+  min-height: 100px;
+  padding: 50px;
+  padding-bottom: 0px;
+  position: relative;
+}
+
+.feeds-body {
+  -webkit-box-flex: 1;
+  -webkit-box-orient: horizontal;
+  display: -webkit-box;
+  height: 75%;
+}
+
+.feeds-column {
+  height: 100%;
+  padding-left: 50px;
+  width: 250px;
+}
+
+.feeds-main {
+  -webkit-box-flex: 1;
+  -webkit-transform: rotate(0deg);
+  -webkit-transform-origin: 100% 0;
+  -webkit-transition: -webkit-transform 0.5s ease-in;
+  color: black;
+  display: -webkit-box;
+  padding: 0px;
+  position: absolute;
+  text-decoration: none;
+}
+
+.feeds-content {
+  padding: 25px;
+}
+
+.blur {
+  background: -webkit-linear-gradient(top, rgba(135,206,250,0) 0%,
+                                           rgba(135,206,250,0.75) 52%,
+                                           rgba(135,206,250,1) 93%,
+                                           rgba(135,206,250,1) 100%);
+  bottom: 0px;
+  height: 15%;
+  position: fixed;
+  width: 100%;
+  z-index: 20;
+}
+
+.feeds-main A {
+  color: black;
+  text-decoration: none;
+}
+
+.feeds-main.rotated {
+  -webkit-transform: rotate(-90deg);
+  -webkit-transform-origin: 100% 0;
+  -webkit-transition: -webkit-transform 0.5s ease-in;
+}
+
+.feed-title {
+  -webkit-transition: opacity 0.5s ease-in;
+  opacity: 1;
+  overflow: hidden;
+  padding-bottom: 15px;
+  width: 250px;
+}
+
+.feed-title .secondary {
+  -webkit-box-flex: 1;
+  -webkit-transition-duration: 1s, 0.5s;
+  -webkit-transition-property: left, opacity;
+  -webkit-transition-timing-function: ease-in;
+  left: 0px;
+  position: absolute;
+  text-align: left;
+}
+
+.feed-title.hidden {
+  -webkit-transition: opacity 0.5s ease-in;
+  opacity: 0;
+}
+
+.feed-title font.title {
+  -webkit-transition: font-size 1s ease-in;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.feed-title font.desc {
+  color: #484848;
+  font-size: small;
+  font-style: italic;
+  opacity: 1;
+}
+
+.feed-title-large {
+  -webkit-box-flex: 1;
+  -webkit-transition-duration: 1s, 0.5s;
+  -webkit-transition-property: left, opacity;
+  -webkit-transition-timing-function: ease-in;
+  left: 28%;
+  opacity: 1;
+  overflow: hidden;
+  padding: 30px;
+  padding-bottom: 15px;
+  padding-top: 20px;
+  position: absolute;
+  text-align: center;
+  width: 65%;
+}
+
+.feed-title-large.fade-out {
+  -webkit-transition-duration: 0.7s, 0.7s;
+  -webkit-transition-property: opacity, top;
+  -webkit-transition-timing-function: linear;
+  opacity: 0;
+  position: relative;
+  top: -50px;
+}
+
+.feed-title-large font.title {
+  -webkit-transition: font-size 1s linear;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+.feed-title-large font.desc {
+  -webkit-transition: opacity 1s linear;
+  color: #484848;
+  font-size: small;
+  font-style: italic;
+  opacity: 0;
+}

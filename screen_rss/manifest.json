@@ -1,0 +1,18 @@
+{
+  "name": "RSS feed screen saver extension",
+  "version": "1.0.0",
+  "description": "This extension is indended to be used as a screen saver in ChromeOS.",
+  "options_page": "options.html",
+  "background_page": "background.html",
+  "default_locale" : "en",
+  "icons" : {
+    "16" : "sample-16.png",
+    "48" : "sample-48.png",
+    "128" : "sample-128.png"
+  },
+  "permissions": [
+      "tabs",
+      "idle",
+      "unlimitedStorage"
+  ]
+}

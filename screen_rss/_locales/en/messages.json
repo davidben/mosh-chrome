@@ -1,0 +1,191 @@
+{
+  "introMessage": {
+    "message": "You are currently reading $RssFeedTitle$ by $RssFeedAuthor$.",
+    "placeholders": {
+      "RssFeedTitle": {
+        "content": "$1",
+        "example": "Official Google Blog"
+      },
+      "RssFeedAuthor": {
+        "content": "$2",
+        "example": "Larry Page"
+      }
+    }
+  },
+  "introMessageNoAuthor": {
+    "message": "You are currently reading $RssFeedTitle$.",
+    "placeholders": {
+      "RssFeedTitle": {
+        "content": "$1",
+        "example": "Official Google Blog"
+      }
+    }
+  },
+  "lastUpdated": {
+    "message": "Last updated $date$ $time$.",
+    "description": "Last update of RSS feed.",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "Tuesday, September 13, 2011"
+      },
+      "time": {
+        "content": "$2",
+        "example": "17:16:30"
+      }
+    }
+  },
+  "connectionEstablished": {
+    "message": "Connection established."
+  },
+  "connectionProblems": {
+    "message": "Problems with connection.",
+    "description": "When we get diconnected."
+  },
+  "errorNoInternetConnection": {
+    "message": "Need internet connection to load articles.",
+    "description": "Displayed when RSS content cannot be displayed because of no internet connection. Take into account that internet connection is not always need to load RSS feeds."
+  },
+  "errorCannotLoadFeeds": {
+    "message": "Could not load RSS feed (Did you enter wrong url?)."
+  },
+  "errorRssFeedEmpty": {
+    "message": "No articles in this RSS feed."
+  },
+  "optionsScreenTitle": {
+    "message": "Chrome RSS feed screen saver options",
+    "description": "Title displayed on top of options page."
+  },
+  "optionSource": {
+    "message": "Source",
+    "description": "One of the options."
+  },
+  "optionDelay": {
+    "message": "Delay",
+    "description": "One of the options."
+  },
+  "optionArticleRefresh": {
+    "message": "Article refresh",
+    "description": "One of the options."
+  },
+  "optionDisplayMode": {
+    "message": "Display Mode",
+    "description": "One of the options."
+  },
+  "rssSourceGoogleNews": {
+    "message": "Google News",
+    "description": "Rss feed source."
+  },
+  "googleNewsNameTop": {
+    "message": "Top news",
+    "description": "This is the option we select to use google news - top news feed."
+  },
+  "googleNewsInfixesTop": {
+    "message": "us,h",
+    "description": "This is what we need to put to google news url (http://news.google.com/news?ned=[here we put us]&topic=[here we put h]&output=rss), top make google news display local top news."
+  },
+  "googleNewsNameWorld": {
+    "message": "World",
+    "description": "This is the option we select to use google news - world news feed."
+  },
+  "googleNewsInfixesWorld": {
+    "message": "us,w",
+    "description": "Look at the example for google top news."
+  },
+  "googleNewsNameSciTech": {
+    "message": "Sci/Tech",
+    "description": "This is the option we select to use google news - sci/teach news feed."
+  },
+  "googleNewsInfixesSciTech": {
+    "message": "us,t",
+    "description": "Look at the example for google top news."
+  },
+  "rssSourceExample1": {
+    "message": "Quote of the day",
+    "description": "Rss feed source. Please find relevant local example or rss feed."
+  },
+  "rssSourceExample1URL": {
+    "message": "http://i.rottentomatoes.com/syndication/rss/upcoming.xml",
+    "description": "Paste URL for the rss feed for above example here."
+  },
+  "rssSourceExample2": {
+    "message": "Upcoming movies",
+    "description": "Rss feed source. Please find relevant local example or rss feed."
+  },
+  "rssSourceExample2URL": {
+    "message": "http://www.quotationspage.com/data/qotd.rss",
+    "description": "Paste URL for the rss feed for above example here."
+  },
+  "rssSourceCustom": {
+    "message": "Custom",
+    "description": "RSS feed source"
+  },
+  "displayScreensaverAfter": {
+    "message": "Display screen saver after"
+  },
+  "sliderOneMinute": {
+    "message": "one minute"
+  },
+  "sliderMinutes": {
+    "message": "$minutes$ minutes",
+    "placeholders": {
+      "minutes": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "sliderHours": {
+    "message": "$hours$ hours",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "sliderHoursAndMinutes": {
+    "message": "$hours$ hours $minutes$ minutes",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "1"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "20"
+      }
+    }
+  },
+  "sliderNever": {
+    "description": "Screensaver will never be displayed.",
+    "message": "Never"
+  },
+  "displayModeNewest": {
+    "message": "Newest"
+  },
+  "displayModeComprehensive": {
+    "message": "Comprehensive"
+  },
+  "optionsSavedMessage": {
+    "message": "Options saved."
+  },
+  "saveOptionsButton": {
+    "message": "Save"
+  },
+  "previewButton": {
+    "message": "Preview"
+  },
+  "cancelButton": {
+    "message": "Cancel"
+  },
+  "articleRefreshSlow": {
+    "message": "Slow"
+  },
+  "articleRefreshFast": {
+    "message": "Fast"
+  },
+  "articleRefreshVeryFast": {
+    "message": "Lightning fast"
+  }
+}
