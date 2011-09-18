@@ -49,6 +49,7 @@ Authenticator.prototype = {
     this.frameLoaded_ = false;
 
     var params = getUrlSearchParams(location.search);
+    this.gaiaOrigin_ = params['gaiaOrigin'] || this.GAIA_PAGE_ORIGIN;
     this.inputLang_ = params['hl'];
     this.inputEmail_ = params['email'];
     this.testEmail_ = params['test_email'];
@@ -58,7 +59,8 @@ Authenticator.prototype = {
   },
 
   isGaiaMessage_: function(msg) {
-    return msg.origin == this.GAIA_PAGE_ORIGIN ||
+    return msg.origin == this.gaiaOrigin_ ||
+           msg.origin == this.GAIA_PAGE_ORIGIN ||
            msg.origin == this.GAIA_PAGE_ORIGIN_NEW;
   },
 
@@ -67,7 +69,7 @@ Authenticator.prototype = {
   },
 
   getFrameUrl_: function() {
-    var url = this.GAIA_PAGE_ORIGIN + this.GAIA_PAGE_PATH;
+    var url = this.gaiaOrigin_ + this.GAIA_PAGE_PATH;
     if (this.inputLang_)
       url += '&hl=' + encodeURIComponent(this.inputLang_);
     if (this.inputEmail_)
