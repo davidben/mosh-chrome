@@ -1,0 +1,5 @@
+Your system is transitioning to Developer Mode.
+Local data will be cleared.
+
+To cancel, turn your computer off now and
+toggle the developer switch back to Normal (Verified) Mode.

@@ -1,0 +1,3 @@
+Teie süsteem taaskäivitati viimati arendaja režiimis.
+Naasmine tavalisele (kinnitatud) režiimile ...
+Pärast lõpule jõudmist süsteem taaskäivitub.

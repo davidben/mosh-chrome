@@ -1,0 +1,4 @@
+Systemet ditt overføres til utviklermodus.
+Lokale data blir slettet.
+
+Du kan avbryte ved å slå av datamaskinen og sette utviklerbryteren tilbake til normal (bekreftet) modus.

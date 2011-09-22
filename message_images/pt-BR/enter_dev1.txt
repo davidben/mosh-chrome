@@ -1,0 +1,4 @@
+O sistema está em transição ao Modo de Desenvolvedor.
+Os dados locais serão apagados.
+
+Para cancelar, apague o computador agora e alterne o desenvolvedor de volta ao Modo Normal (Verificado).

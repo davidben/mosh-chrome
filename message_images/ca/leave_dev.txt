@@ -1,0 +1,3 @@
+El sistema es va iniciar per darrera vegada en mode desenvolupador.
+S'està tornant al mode normal (verificat)...
+Quan es completi, el sistema es reiniciarà.

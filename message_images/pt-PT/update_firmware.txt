@@ -1,2 +1,2 @@
-O seu sistema está atualizar o firmware, NÃO O DESLIGUE.
-Após a conclusão, o computador poderá reiniciar ou continuar para início de sessão.
+O sistema está a aplicar uma atualização crítica.
+Não o desligue.

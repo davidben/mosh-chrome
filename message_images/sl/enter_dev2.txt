@@ -1,0 +1,4 @@
+Priprava sistema za razvijalski način (traja lahko 5–10 minut).
+Računalnika ne izklapljajte, dokler se ne zažene znova.
+
+Ko se računalnik znova zažene, pritisnite Ctrl + Alt + [->] (F2) za informacije o razvijalskem načinu.

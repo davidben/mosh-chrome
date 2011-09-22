@@ -1,0 +1,5 @@
+Se face tranziţia sistemului dvs. la modul pentru dezvoltatori.
+Datele locale vor fi şterse.
+
+Pentru a anula, opriţi computerul acum şi treceţi
+comutatorul modului pentru dezvoltatori înapoi la modul normal (verificat).

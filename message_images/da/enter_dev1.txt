@@ -1,0 +1,4 @@
+Dit system overflyttes til udviklertilstand.
+Lokale data ryddes.
+
+Hvis du vil annullere, skal du slukke din computer nu og skifte kontakten til udviklertilstand tilbage til Normal (Bekræftet).

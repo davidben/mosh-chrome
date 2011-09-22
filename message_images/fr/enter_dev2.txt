@@ -1,0 +1,4 @@
+Préparation du système pour le mode développeur. Cette opération peut prendre entre 5 et 10 minutes.
+N'éteignez pas votre ordinateur avant le redémarrage de celui-ci.
+
+Au redémarrage, appuyez sur Ctrl+Alt+[->] (F2) pour en savoir plus sur le mode développeur.

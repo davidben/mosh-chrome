@@ -1,0 +1,5 @@
+Sistema pereina į kūrėjo režimą.
+Vietiniai duomenys bus išvalyti.
+
+Jei norite atšaukti, dabar išjunkite kompiuterį ir
+kūrėjo jungiklį perjunkite į įprastą (patvirtintą) režimą.

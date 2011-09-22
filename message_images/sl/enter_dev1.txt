@@ -1,0 +1,4 @@
+Vaš sistem prehaja v razvijalski način.
+Lokalni podatki bodo izbrisani.
+
+Če želite preklicati, izklopite računalnik in preklopite stikalo za razvijalski način nazaj v običajni položaj »Normal (Verified)«.

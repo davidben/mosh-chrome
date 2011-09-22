@@ -1,2 +1,2 @@
-Süsteem uuendab püsivara, ÄRGE LÜLITAGE SEADET VÄLJA.
-Pärast protsessi lõpuleviimist võib seade taaskäivituda või jätkata sisselogimisega.
+Teie süsteem rakendab kriitilist värskendust.
+Palun ärge lülitage süsteemi välja.

@@ -1,0 +1,3 @@
+Váš systém bol naposledy spustený v režime vývojára.
+Návrat do normálneho (overeného) režimu...
+Po dokončení sa systém reštartuje.

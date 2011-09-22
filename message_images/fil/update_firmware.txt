@@ -1,2 +1,2 @@
-Nag-a-update ang iyong system ng firmware, mangyaring HUWAG MAG-POWER OFF.
-Sa panahon ng pagkumpleto, maaaring mag-reboot o magpatuloy sa pag-log in ang machine.
+Naglalapat ang iyong system ng kritikal na update.
+Mangyaring huwag itong i-off.

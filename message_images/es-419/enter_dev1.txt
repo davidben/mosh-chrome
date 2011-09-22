@@ -1,0 +1,4 @@
+Tu sistema se encuentra en transición al modo de programador.
+Se borrarán los datos locales.
+
+Para cancelar la transición, apaga tu computadora ahora y vuelve el interruptor de programador al modo (verificado) normal.

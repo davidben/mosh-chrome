@@ -1,0 +1,4 @@
+Hệ thống của bạn đang chuyển sang Chế độ nhà phát triển.
+Dữ liệu cục bộ sẽ bị xóa.
+
+Để hủy, tắt máy tính của bạn ngay bây giờ và chuyển Chế độ nhà phát triển về Chế độ chuẩn (Đã xác minh).

@@ -1,0 +1,4 @@
+Notiek sistēmas sagatavošana izstrādātāja režīmam (var ilgt 5–10 minūtes).
+Neizslēdziet datoru, kamēr tas nav restartējies.
+
+Atsāknēšanas laikā nospiediet Ctrl+Alt+[->] (F2), lai skatītu informāciju par izstrādātāja režīmu.

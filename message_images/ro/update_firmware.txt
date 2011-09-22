@@ -1,2 +1,2 @@
-Sistemul dvs. actualizează firmware-ul. NU OPRIŢI COMPUTERUL.
-După finalizare, computerul poate reporni sau poate continua să se conecteze.
+Sistemul aplică o actualizare esenţială.
+Nu îl opriţi.

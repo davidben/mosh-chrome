@@ -1,0 +1,5 @@
+Teie süsteemi viiakse üle arendaja režiimi.
+Kohalikud andmed kustutatakse.
+
+Tühistamiseks lülitage arvuti nüüd välja ja
+lülitage arendaja lüliti tagasi tavalisele (kinnitatud) režiimile.

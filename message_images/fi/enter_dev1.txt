@@ -1,0 +1,4 @@
+Järjestelmä on siirtymässä kehittäjätilaan.
+Paikalliset tiedot poistetaan.
+
+Voit peruuttaa siirtymisen katkaisemalla tietokoneen virran nyt ja vaihtamalla kehittäjäkytkimen asennon normaalitilaan.

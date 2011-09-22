@@ -1,2 +1,2 @@
-El vostre sistema està actualitzant el microprogramari, NO L'APAGUEU.
-Quan el procés es completi, és possible que l'equip es reiniciï o que continuï a l'inici de sessió.
+El sistema està aplicant una actualització molt important.
+No l'apagueu.

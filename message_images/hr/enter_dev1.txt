@@ -1,0 +1,4 @@
+Sustav prelazi u način rada razvojnog programera.
+Lokalni podaci bit će izbrisani.
+
+Da biste odustali, isključite računalo sada i vratite prekidač razvojnog programera na normalni (potvrđeni) način rada.

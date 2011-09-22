@@ -1,0 +1,4 @@
+Příprava systému na režim pro vývojáře (může trvat 5–10 minut).
+Nevypínejte počítač, dokud se nerestartuje.
+
+Chcete-li zobrazit informace o režimu pro vývojáře, stiskněte při restartu kombinaci kláves Ctrl+Alt+[->] (F2).

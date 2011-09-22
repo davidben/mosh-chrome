@@ -1,2 +1,2 @@
-De firmware op uw computer wordt bijgewerkt. SCHAKEL DE COMPUTER NIET UIT.
-Na voltooiing kan de computer opnieuw worden opgestart of doorgaan met de aanmelding.
+Het systeem voert een essentiële update uit.
+Schakel het systeem niet uit.

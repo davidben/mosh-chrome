@@ -1,0 +1,5 @@
+Ihr System wechselt in den Entwicklermodus.
+Lokal gespeicherte Daten werden gelöscht.
+
+Um diesen Vorgang abzubrechen, schalten Sie den Computer jetzt aus
+und wechseln Sie zurück in den normalen (verifizierten) Modus.

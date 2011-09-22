@@ -1,2 +1,2 @@
-Die Firmware Ihres Systems wird momentan aktualisiert. Bitte nicht ausschalten...
-Anschließend wird der Rechner neu gestartet oder der Anmeldebildschirm wird angezeigt.
+Auf Ihrem System wird ein wichtiges Update installiert.
+Schalten Sie den Computer nicht aus.

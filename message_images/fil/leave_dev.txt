@@ -1,0 +1,3 @@
+Huling na-boot ang iyong system sa Mode ng Developer.
+Bumabalik sa Normal na (Na-verify) Mode...
+Sa pagkumpleto, magre-reboot ang system.

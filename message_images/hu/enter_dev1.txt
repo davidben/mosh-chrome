@@ -1,0 +1,4 @@
+A rendszer átáll fejlesztői módra.
+A helyi adatok törlésre kerülnek.
+
+A törléshez kapcsolja ki a számítógépet most, és állítsa vissza a fejlesztői kapcsolót normál (ellenőrzött) módra.

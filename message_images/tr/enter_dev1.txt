@@ -1,0 +1,4 @@
+Sisteminiz Geliştirici Moduna geçiyor.
+Yerel veriler silinecek.
+
+İptal etmek için bilgisayarınızı şimdi kapatın ve geliştirici düğmesini tekrar Normal (Doğrulanmış) Moda getirin.

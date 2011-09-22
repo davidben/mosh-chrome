@@ -1,0 +1,4 @@
+System przechodzi w tryb programisty.
+Dane lokalne zostaną wyczyszczone.
+
+Aby anulować, wyłącz komputer i przesuń przełącznik trybu programisty z powrotem na tryb normalny (zweryfikowany).

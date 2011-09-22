@@ -1,0 +1,4 @@
+Forbereder systemet på utviklermodus (kan ta opptil 5–10 minutter).
+Ikke slå av datamaskinen før den har startet på nytt.
+
+Når du starter opp på nytt, trykk på Ctrl + Alt + [->] (F2) for å få informasjon om utviklermodus.

@@ -1,0 +1,4 @@
+Preparando el sistema para el modo de desarrollador (este proceso puede tardar entre 5 y 10 minutos).
+No apagues el ordenador hasta que se reinicie.
+
+Cuando se reinicie, pulsa Ctrl+Alt+[->] (F2) para obtener información sobre el modo de desarrollador.

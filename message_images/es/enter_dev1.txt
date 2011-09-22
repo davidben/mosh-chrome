@@ -1,0 +1,5 @@
+Tu sistema está pasando al modo de desarrollador.
+Los datos locales se borrarán.
+
+Para cancelar la operación, apaga el ordenador ahora y 
+vuelve a activar el modo normal (verificado).

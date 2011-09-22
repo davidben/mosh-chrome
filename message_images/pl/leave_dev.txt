@@ -1,0 +1,3 @@
+Ostatnio system uruchomił się w trybie programisty.
+Trwa powracanie do trybu normalnego (zweryfikowanego)...
+Po zakończeniu system uruchomi się ponownie.

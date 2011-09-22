@@ -1,0 +1,5 @@
+El sistema està migrant al mode desenvolupador.
+Les dades locals s'esborraran.
+
+Per cancel·lar, apagueu ara l'equip i torneu a
+commutar l'interruptor de desenvolupador al mode normal (verificat).

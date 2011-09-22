@@ -1,0 +1,4 @@
+Systém přechází do režimu pro vývojáře.
+Místní data budou vymazána.
+
+Chcete-li proces zrušit, vypněte nyní počítač a přepněte přepínač režimu pro vývojáře zpět do polohy normálního (ověřeného) režimu.

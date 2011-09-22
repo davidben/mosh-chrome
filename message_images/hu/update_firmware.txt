@@ -1,2 +1,2 @@
-A rendszer éppen a belső vezérlőprogramot frissíti, NE KAPCSOLJA KI.
-A befejezést követően a gép újraindulhat, vagy továbblép a bejelentkezéshez.
+A rendszer egy fontos frissítést végez.
+Kérjük, ne kapcsolja ki.

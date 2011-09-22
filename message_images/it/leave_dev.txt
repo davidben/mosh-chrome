@@ -1,0 +1,3 @@
+L'ultima volta che il sistema si è avviato era in modalità sviluppatore.
+Ritorno alla modalità normale (verificata) in corso...
+Al termine, il sistema sarà riavviato.

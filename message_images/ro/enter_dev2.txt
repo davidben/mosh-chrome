@@ -1,0 +1,4 @@
+Se pregăteşte sistemul pentru modul pentru dezvoltatori (poate dura 5 – 10 minute).
+Nu opriţi computerul până când nu reporneşte.
+
+La repornire, apăsaţi pe Ctrl+Alt+[->] (F2) pentru informaţiile privind modul pentru dezvoltatori.

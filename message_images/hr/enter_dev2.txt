@@ -1,0 +1,4 @@
+Pripremanje sustava za način rada razvojnog programera (može potrajati od 5 do 10 minuta).
+Ne isključujte računalo dok se ponovo ne pokrene.
+
+Pri ponovnom pokretanju, pritisnite tipke Ctrl+Alt+[->] (F2) za više informacija o načinu rada razvojnog programera.

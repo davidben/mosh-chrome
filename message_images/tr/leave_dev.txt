@@ -1,0 +1,3 @@
+Sisteminiz son olarak Geliştirici Modunda açıldı.
+Normal (Doğrulanmış) Moda dönülüyor...
+Tamamlandığında, sistem yeniden başlatılacak.

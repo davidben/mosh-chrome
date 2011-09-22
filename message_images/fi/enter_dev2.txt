@@ -1,0 +1,4 @@
+Valmistellaan järjestelmää kehittäjätilaan (tässä voi kestää 5–10 minuuttia).
+Älä katkaise tietokoneen virtaa, ennen kuin se on käynnistynyt uudelleen.
+
+Paina Ctrl+Alt+[->] (F2) tietokoneen käynnistyessä, niin näet tietoja kehittäjätilasta.

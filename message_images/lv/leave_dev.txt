@@ -1,0 +1,3 @@
+Jūsu sistēma pēdējo reizi tika sāknēta izstrādātāja režīmā.
+Notiek pārslēgšanās uz normālo (verificēto) režīmu...
+Pēc pabeigšanas sistēma tiks atsāknēta.

@@ -1,0 +1,4 @@
+Jūsu sistēma pāriet uz izstrādātāja režīmu.
+Lokālie dati tiks dzēsti.
+
+Lai atceltu, izslēdziet datoru un pārslēdziet izstrādātāja režīma slēdzi atpakaļ uz normālo (verificēto) režīmu.

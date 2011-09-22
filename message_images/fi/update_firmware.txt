@@ -1,2 +1,2 @@
-Järjestelmäsi päivittää laiteohjelmistoa. ÄLÄ SAMMUTA VIRTAA.
-Järjestelmä voi käynnistyä uudelleen tai jatkaa suoraan kirjautumiseen päivityksen jälkeen.
+Järjestelmä ottaa käyttöön tärkeää päivitystä.
+Älä katkaise tietokoneen virtaa.

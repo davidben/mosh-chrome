@@ -1,0 +1,3 @@
+Tu sistema estaba configurado en el modo de programador la última vez que se inició.
+Volviendo al modo (verificado) normal...
+Cuando se complete la transición, se reiniciará el sistema.

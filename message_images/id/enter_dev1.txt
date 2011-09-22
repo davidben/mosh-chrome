@@ -1,0 +1,5 @@
+Sistem Anda sedang dalam proses peralihan ke Mode Pengembang.
+Data lokal akan dihapus.
+
+Untuk membatalkannya, matikan komputer Anda sekarang dan
+kembalikan pengalih pengembang ke Mode Normal (Terverifikasi).

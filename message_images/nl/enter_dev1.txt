@@ -1,0 +1,4 @@
+Het systeem wordt overgeschakeld naar de ontwikkelaarsmodus.
+De lokale gegevens worden gewist.
+
+Als u dit wilt annuleren, schakelt u de computer nu uit en stelt u de schakelaar voor de ontwikkelaarsmodus weer in op de normale (geverifieerde) modus.

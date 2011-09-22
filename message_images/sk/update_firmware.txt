@@ -1,2 +1,2 @@
-Systém aktualizuje firmvér, NEVYPÍNAJTE HO.
-Po dokončení sa zariadenie môže reštartovať alebo pokračovať v prihlásení.
+Systém inštaluje dôležitú aktualizáciu.
+Nevypínajte ho.

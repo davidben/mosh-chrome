@@ -1,0 +1,4 @@
+Ihinahanda ang system para sa Mode ng Developer (maaaaring magtagal nang 5 - 10 minuto).
+Huwag i-off ang iyong computer hanggang sa nakapag-restart na ito.
+
+Sa reboot, pindutin ang Ctrl+Alt+[->] (F2) para sa impormasyon tungkol sa Mode ng Developer.

@@ -1,0 +1,3 @@
+Sistem se je zadnjič zagnal v razvijalskem načinu.
+Preklapljanje nazaj v običajni način »Normal (Verified)« ...
+Ko se postopek konča, se bo sistem znova zagnal.

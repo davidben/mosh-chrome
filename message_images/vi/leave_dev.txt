@@ -1,0 +1,3 @@
+Hệ thống của bạn trước đó đã khởi động ở Chế độ nhà phát triển.
+Trở về Chế độ chuẩn (Đã xác minh)...
+Khi hoàn tất, hệ thống sẽ khởi động lại.

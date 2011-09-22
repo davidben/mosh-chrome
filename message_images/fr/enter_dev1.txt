@@ -1,0 +1,4 @@
+Votre système est en cours de transition vers le mode développeur.
+Les données locales seront effacées.
+
+Pour annuler, éteignez votre ordinateur maintenant, puis rebasculez l'interrupteur du mode développeur vers le mode normal (démarrage vérifié).

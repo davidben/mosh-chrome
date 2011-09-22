@@ -1,2 +1,2 @@
-Il sistema sta aggiornando il firmware, NON SPEGNERE IL COMPUTER.
-Al termine, il computer potrebbe riavviarsi o continuare la procedura di accesso.
+Il sistema sta eseguendo un importante aggiornamento.
+Non spegnerlo.

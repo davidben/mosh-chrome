@@ -1,0 +1,4 @@
+Rendszer előkészítése fejlesztői módra (5-10 percig is eltarthat).
+Addig ne kapcsolja ki a számítógépet, amíg újra nem indul.
+
+A fejlesztői móddal kapcsolatos információkért újraindításkor nyomja meg a Ctrl+Alt+[->] (F2) billentyűkombinációt.

@@ -1,0 +1,4 @@
+Preparando sistema para Modo de Desenvolvedor (5 a 10 min).
+Não apague o computador até que ele reinicie.
+
+Ao reiniciar, pressione Ctrl+Alt+[->] (F2) para informações sobre o Modo de Desenvolvedor.

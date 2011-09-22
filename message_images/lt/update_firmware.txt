@@ -1,2 +1,2 @@
-Sistema atnaujina programinę aparatinę įrangą, NEIŠJUNKITE MAITINIMO.
-Kai atnaujinimo procesas bus baigtas, įrenginys galbūt iš naujo įkels operacinę sistemą arba veiks toliau, kad būtų galima prisijungti.
+Sistema taiko kritinį naujinį.
+Neišjunkite jos.

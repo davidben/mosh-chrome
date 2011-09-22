@@ -1,0 +1,3 @@
+Votre système a démarré en mode développeur.
+Retour au mode normal (démarrage vérifié)...
+Le système redémarrera une fois l'opération terminée.

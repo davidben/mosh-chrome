@@ -1,0 +1,3 @@
+Het systeem is de laatste keer opgestart in de ontwikkelaarsmodus.
+Terugkeren naar de normale (geverifieerde) modus...
+Na voltooiing wordt het systeem opnieuw opgestart.

@@ -1,0 +1,4 @@
+Preparando el sistema para su transición al modo de programador (puede demorar entre cinco y diez minutos)
+No apagues tu computadora hasta que se haya reiniciado.
+
+Durante el reinicio, presiona Ctrl+Alt+[->] (F2) para obtener información acerca del modo de programador.

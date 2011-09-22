@@ -1,0 +1,3 @@
+Tietokoneesi käynnistyi viimeksi kehittäjätilaan.
+Palataan normaalitilaan...
+Tietokone käynnistyy lopuksi uudelleen.

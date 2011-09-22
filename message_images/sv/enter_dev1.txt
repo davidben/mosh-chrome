@@ -1,0 +1,5 @@
+Systemet övergår till utvecklarläge.
+Lokala data tas bort.
+
+Om du vill avbryta stänger du av datorn nu och
+byter från utvecklarläge till normalläge (verifierat läge).

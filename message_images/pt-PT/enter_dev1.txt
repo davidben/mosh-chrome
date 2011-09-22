@@ -1,0 +1,4 @@
+O seu sistema está a transitar para o Modo de Programador.
+Os dados locais serão apagados.
+
+Para cancelar, desligue agora o computador e altere o interruptor de programador novamente para o Modo Normal (Confirmado).

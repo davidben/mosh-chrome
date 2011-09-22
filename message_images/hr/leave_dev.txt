@@ -1,0 +1,3 @@
+Sustav je posljednji put bio pokrenut u načinu rada razvojnog programera.
+Vraćanje na normalni (potvrđeni) način rada...
+Sustav će se po dovršetku ponovo pokrenuti.

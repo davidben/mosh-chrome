@@ -1,0 +1,4 @@
+Forbereder systemet til udviklertilstand (kan tage 5-10 minutter).
+Undlad at slukke computeren, før den er genstartet.
+
+Når den er genstartet, kan du trykke på Ctrl+Alt+[->] (F2) for at få oplysninger om udviklertilstand.

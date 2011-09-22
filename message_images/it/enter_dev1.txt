@@ -1,0 +1,4 @@
+Il tuo sistema sta effettuando la transizione alla modalità sviluppatore.
+I dati locali verranno cancellati.
+
+Per annullare l'operazione, spegni il computer e riporta lo switch sulla modalità normale (verificata).

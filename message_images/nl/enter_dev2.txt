@@ -1,0 +1,4 @@
+Het systeem wordt voorbereid voor de ontwikkelaarsmodus (dit kan vijf tot tien minuten duren).
+Schakel de computer niet uit totdat deze opnieuw is opgestart.
+
+Druk tijdens het opnieuw opstarten op Ctrl+Alt+[->] (F2) voor informatie over de ontwikkelaarsmodus.
