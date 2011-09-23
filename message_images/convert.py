@@ -12,20 +12,27 @@ import Image
 import ImageDraw
 import ImageFont
 
+# Most LCD panels are 1366x800. However desktops may use a smaller width like
+# 1280x1024 or other resolution. It's safer to use SVGA width (1024).
+# Also check ../../chromiumos-assets/images/boot_message.png which is exactly
+# 1024 in width.
+IMAGE_MAX_WIDTH = 1024
 
 # Constant values for rendering properties
 IMAGE_FONT_BASE = '/usr/share/fonts'
-IMAGE_FONT_SIZE = 18
-IMAGE_BORDER_WIDTH = 2
-IMAGE_BORDER_COLOR = 'White'
-IMAGE_BACKGROUND_COLOR = 'Black'
-IMAGE_TEXT_COLOR = 'White'
+IMAGE_FONT_SIZE = 24
+IMAGE_LINE_SPACING = 0.3
+IMAGE_MARGIN_SIZE = 10
+IMAGE_BACKGROUND_COLOR = 'White'
+IMAGE_TEXT_COLOR = 'Black'
+PANGO_FONT_NAME = 'pango:'
 IMAGE_FONT_MAP = {
-    '*': 'droid-cros/DroidSans.ttf',
-    'ar': 'droid-cros/DroidNaskh-Regular.ttf',
+    '*': PANGO_FONT_NAME,  # or 'droid-cros/DroidSans.ttf',
+    'ar': PANGO_FONT_NAME,  # or 'droid-cros/DroidNaskh-Regular.ttf',
     'iw': 'croscore/Arimo-Regular.ttf',
     'ko': 'droid-cros/DroidSansFallback.ttf',
-    'ja': 'droid-cros/DroidSansJapanese.ttf',
+    'fa': PANGO_FONT_NAME,  # or 'droid-cros/DroidNaskh-Regular.ttf',
+    'ja': 'droid-cros/DroidSansFallback.ttf',
     'th': 'droid-cros/DroidSerifThai-Regular.ttf',
     'zh-CN': 'droid-cros/DroidSansFallback.ttf',
     'zh-TW': 'droid-cros/DroidSansFallback.ttf',
@@ -41,9 +48,34 @@ def die(message):
 def find_font_file(locale):
   """ Finds appropriate font file for given locale """
   font_file = IMAGE_FONT_MAP.get(locale, IMAGE_FONT_MAP['*'])
-  if not font_file.startswith(os.path.sep):
+  if (font_file.startswith(PANGO_FONT_NAME) or
+      font_file.startswith(os.path.sep)):
+    return font_file
+  else:
     return os.path.join(IMAGE_FONT_BASE, font_file)
-  return font_file
+
+
+def convert_by_pango(input_file, output_file, font):
+  if not font:
+    font = 'sans-serif'
+  commands = [
+      'pango-view', '--dpi=72', '--align=left', '--hinting=full', '-q',
+      '--margin=%s' % IMAGE_MARGIN_SIZE,
+      '--font="%s %s"' % (font, IMAGE_FONT_SIZE),
+      '--foreground=%s' % IMAGE_TEXT_COLOR,
+      '--background=%s' % IMAGE_BACKGROUND_COLOR,
+      '--output=%s' % output_file, input_file,
+      ]
+  result = os.system(' '.join(commands))
+  if result == 0:
+    # Adjust image if it exceeds max width.
+    im = Image.open(output_file)
+    if im.size[0] > IMAGE_MAX_WIDTH:
+      print "Adjusting width for %s..." % input_file
+      commands += ['--width=%d' % IMAGE_MAX_WIDTH]
+      result = os.system(' '.join(commands))
+  if result != 0:
+    die("Failed to render image by pango: %s" % input_file)
 
 
 def convert_to_image(input_file, output_file):
@@ -57,19 +89,11 @@ def convert_to_image(input_file, output_file):
 
   # Load fonts
   font_file = find_font_file(os.path.basename(os.path.dirname(input_file)))
-  if not os.path.exists(font_file):
+  if font_file.startswith(PANGO_FONT_NAME):
+    convert_by_pango(input_file, output_file, font_file.strip(PANGO_FONT_NAME))
+    return
+  elif not os.path.exists(font_file):
     die("Missing font file: %s.\n" % font_file)
-
-  # The output image is...
-  # +----------------
-  # | +--------------
-  # | |               <- padding_height
-  # | |   TXT HERE    <---------------\
-  # | |               <- line_spacing | height
-  # | |   SECOND TEXT <---------------/
-  # | |   ^---------^ width, IMAGE_TEXT_COLOR
-  # | |^-^ padding_width, IMAGE_BACKGROUND_COLOR
-  #  ^ IMAGE_BORDER_WIDTH, IMAGE_BORDER_COLOR
 
   # Calculate bounding box
   font = ImageFont.truetype(font_file, IMAGE_FONT_SIZE)
@@ -77,30 +101,20 @@ def convert_to_image(input_file, output_file):
   width = max((dim[0] for dim in dimension))
   height = sum((dim[1] for dim in dimension))
 
-  # Calculate padding: top/bottom: 1em; double for left/right.
+  # For each line, append IMAGE_LINE_SPACING * line_height for spacing
   line_height = int(height / len(input_messages))
-  padding_height = line_height
-  padding_width = padding_height * 2
-
-  # For each line, append 0.2em spacing
-  line_spacing = int(line_height * 0.2)
+  line_spacing = int(line_height * IMAGE_LINE_SPACING)
   height += line_spacing * (len(input_messages) - 1)
 
   # Create image
-  im = Image.new('L', (width + (padding_width + IMAGE_BORDER_WIDTH) * 2,
-                       height + (padding_height + IMAGE_BORDER_WIDTH) * 2),
-                 IMAGE_BORDER_COLOR)
+  im = Image.new('RGBA', (width + IMAGE_MARGIN_SIZE * 2,
+                          height + IMAGE_MARGIN_SIZE * 2),
+                 IMAGE_BACKGROUND_COLOR)
   draw = ImageDraw.Draw(im)
 
-  # Fill interior
-  draw.rectangle(((IMAGE_BORDER_WIDTH, IMAGE_BORDER_WIDTH),
-                  (im.size[0] - IMAGE_BORDER_WIDTH - 1,
-                   im.size[1] - IMAGE_BORDER_WIDTH - 1)),
-                  outline=IMAGE_BACKGROUND_COLOR,
-                  fill=IMAGE_BACKGROUND_COLOR)
   # Render text
-  text_x = IMAGE_BORDER_WIDTH + padding_width
-  text_y = IMAGE_BORDER_WIDTH + padding_height
+  text_x = IMAGE_MARGIN_SIZE
+  text_y = IMAGE_MARGIN_SIZE
   for message in input_messages:
     draw.text((text_x, text_y), message, font=font, fill=IMAGE_TEXT_COLOR)
     text_y += font.getsize(message)[1] + line_spacing
