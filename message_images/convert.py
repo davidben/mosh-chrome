@@ -74,8 +74,13 @@ def convert_by_pango(input_file, output_file, font):
       print "Adjusting width for %s..." % input_file
       commands += ['--width=%d' % IMAGE_MAX_WIDTH]
       result = os.system(' '.join(commands))
+      im = Image.open(output_file)
+
   if result != 0:
     die("Failed to render image by pango: %s" % input_file)
+  else:
+    # Save file in luminance mode (smaller file size)
+    im.convert('L').save(output_file)
 
 
 def convert_to_image(input_file, output_file):
@@ -107,8 +112,8 @@ def convert_to_image(input_file, output_file):
   height += line_spacing * (len(input_messages) - 1)
 
   # Create image
-  im = Image.new('RGBA', (width + IMAGE_MARGIN_SIZE * 2,
-                          height + IMAGE_MARGIN_SIZE * 2),
+  im = Image.new('L', (width + IMAGE_MARGIN_SIZE * 2,
+                       height + IMAGE_MARGIN_SIZE * 2),
                  IMAGE_BACKGROUND_COLOR)
   draw = ImageDraw.Draw(im)
 
