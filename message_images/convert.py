@@ -106,6 +106,9 @@ def convert_to_image(input_file, output_file):
   width = max((dim[0] for dim in dimension))
   height = sum((dim[1] for dim in dimension))
 
+  if width > IMAGE_MAX_WIDTH:
+    die("PIL image width (%s) exceed limitation: %s" % (width, input_file))
+
   # For each line, append IMAGE_LINE_SPACING * line_height for spacing
   line_height = int(height / len(input_messages))
   line_spacing = int(line_height * IMAGE_LINE_SPACING)
