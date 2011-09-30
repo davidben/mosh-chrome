@@ -27,11 +27,11 @@ IMAGE_BACKGROUND_COLOR = 'White'
 IMAGE_TEXT_COLOR = 'Black'
 PANGO_FONT_NAME = 'pango:'
 IMAGE_FONT_MAP = {
-    '*': PANGO_FONT_NAME,  # or 'droid-cros/DroidSans.ttf',
-    'ar': PANGO_FONT_NAME,  # or 'droid-cros/DroidNaskh-Regular.ttf',
+    '*': 'droid-cros/DroidSans.ttf',
+    'ar': 'droid-cros/DroidNaskh-Regular.ttf',
     'iw': 'croscore/Arimo-Regular.ttf',
     'ko': 'droid-cros/DroidSansFallback.ttf',
-    'fa': PANGO_FONT_NAME,  # or 'droid-cros/DroidNaskh-Regular.ttf',
+    'fa': 'droid-cros/DroidNaskh-Regular.ttf',
     'ja': 'droid-cros/DroidSansFallback.ttf',
     'th': 'droid-cros/DroidSerifThai-Regular.ttf',
     'zh-CN': 'droid-cros/DroidSansFallback.ttf',
