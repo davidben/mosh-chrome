@@ -1,0 +1,107 @@
+#!/bin/sh
+# Copyright (c) 2011 The Chromium OS Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# Converts and displays UTF-8 based text message file from
+# /usr/share/chromeos-assets/text/boot_messages/$locale/$message.txt .
+# Uses pango-view to convert from txt to png, then ply-image to render png on
+# frame buffer.
+
+# Default conversion parameters (can be overridden by environment variables)
+: ${IMAGE_BACKGROUND_COLOR:=White}
+: ${IMAGE_FONT_NAME:=sans-serif}
+: ${IMAGE_FONT_SIZE:=22}
+: ${IMAGE_MARGIN_SIZE:=5}
+: ${IMAGE_TEXT_COLOR:=Black}
+: ${MESSAGE_BASE_PATH:=/usr/share/chromeos-assets/text/boot_messages}
+: ${ASSETS_IMAGE_PATH:=/usr/share/chromeos-assets/images}
+
+TEMP_FILE=""
+
+# Clean temporary file.
+clean_temp() {
+  if [ -n "$TEMP_FILE" ]; then
+    rm -f "$TEMP_FILE"
+    TEMP_FILE=""
+  fi
+}
+
+# Prints width of given PNG file.
+get_png_width() {
+  local input="$1"
+  local width
+  # Get image width (the 17~20 bytes of PNG file in big-endian).
+  width="$(dd if="$input" bs=1 count=4 skip=16 2>/dev/null | od -A n -t x1)"
+  echo "$(( 0x$(echo "$width" | sed 's/ //g') ))"
+}
+
+# Converts a text file to PNG file by pango-view without further postprocessing.
+txt_to_png() {
+  local input="$1"
+  local output="$2"
+  local option="$3"
+  pango-view -q --output="$output" \
+    --dpi=72 --align=left --hinting=full \
+    --margin="$IMAGE_MARGIN_SIZE"\
+    --font="$IMAGE_FONT_NAME $IMAGE_FONT_SIZE" \
+    --foreground="$IMAGE_TEXT_COLOR" \
+    --background="$IMAGE_BACKGROUND_COLOR" \
+    $option "$input"
+}
+
+# Converts a message file to PNG format to fit into given size.
+message_to_png() {
+  local input="$1"
+  local output="$2"
+  local max_size_file="$3"
+
+  txt_to_png "$input" "$output"
+
+  # We prefer a "left-aligned text image on center of screen, with text
+  # wrapped by margin of its background image (max_size_file)". However if a
+  # --width is assigned to pango-view, it will always pad (by text align
+  # direction) to specified width, even if the image is smaller. That creates an
+  # image which is always aligned to left of background, not on center. To fix
+  # that, we first create the file, compare the width, and assign --width only
+  # if we need wrapping.
+  if [ -f "$max_size_file" ]; then
+    local max_width="$(get_png_width "$max_size_file")"
+    local width="$(get_png_width "$output")"
+    if [ "$max_width" -gt 0 -a "$width" -gt "$max_width" ]; then
+      txt_to_png "$input" "$output" "--width=$max_width"
+    fi
+  fi
+}
+
+main() {
+  local message="$1"
+  local locale_list="$2"
+  local locale text_file
+
+  if [ "$#" != "2" ]; then
+    echo "Usage: $0 message locales" >&2
+    exit 1
+  fi
+
+  for locale in $locale_list; do
+    text_file="$MESSAGE_BASE_PATH/$locale/$message.txt"
+    [ -f "$text_file" ] || continue
+    local rc="0"
+
+    # File extension (.png) is required for render engine (pango-view) to decide
+    # output format.
+    TEMP_FILE="$(mktemp --tmpdir -u).png"
+    message_to_png "$text_file" "$TEMP_FILE" \
+                   "$ASSETS_IMAGE_PATH/boot_message.png"
+    ply-image "$ASSETS_IMAGE_PATH/boot_splash.png"
+    ply-image "$ASSETS_IMAGE_PATH/boot_message.png"
+    ply-image "$TEMP_FILE" || rc="$?"
+    return "$rc"
+  done
+  return 1
+}
+
+set -e
+trap clean_temp EXIT
+main "$@"
