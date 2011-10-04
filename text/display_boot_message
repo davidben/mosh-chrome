@@ -9,7 +9,10 @@
 # frame buffer.
 
 # Default conversion parameters (can be overridden by environment variables)
-: ${IMAGE_BACKGROUND_COLOR:=White}
+# Note pango-view and ply-image uses different color code format (#rrggbb vs
+# 0xrrggbb), so we use format 'rrggbb' in IMAGE_BACKGROUND_RGB and not
+# allowing common names.
+: ${IMAGE_BACKGROUND_RGB:=fefefe}
 : ${IMAGE_FONT_NAME:=sans-serif}
 : ${IMAGE_FONT_SIZE:=22}
 : ${IMAGE_MARGIN_SIZE:=5}
@@ -46,7 +49,7 @@ txt_to_png() {
     --margin="$IMAGE_MARGIN_SIZE"\
     --font="$IMAGE_FONT_NAME $IMAGE_FONT_SIZE" \
     --foreground="$IMAGE_TEXT_COLOR" \
-    --background="$IMAGE_BACKGROUND_COLOR" \
+    --background="#$IMAGE_BACKGROUND_RGB" \
     $option "$input"
 }
 
@@ -94,8 +97,8 @@ main() {
     TEMP_FILE="$(mktemp --tmpdir -u).png"
     message_to_png "$text_file" "$TEMP_FILE" \
                    "$ASSETS_IMAGE_PATH/boot_message.png"
-    ply-image "$ASSETS_IMAGE_PATH/boot_splash.png"
-    ply-image "$ASSETS_IMAGE_PATH/boot_message.png"
+    ply-image --clear 0x"$IMAGE_BACKGROUND_RGB" \
+              "$ASSETS_IMAGE_PATH/boot_message.png"
     ply-image "$TEMP_FILE" || rc="$?"
     return "$rc"
   done
