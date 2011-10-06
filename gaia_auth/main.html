@@ -88,7 +88,6 @@ Authenticator.prototype = {
 
   onFrameLoad: function(e) {
     console.log('### Authenticator.loadFrame_: Frame loaded.');
-    self.frameLoaded_ = true;
   },
 
   onPageLoad: function(e) {
@@ -124,6 +123,7 @@ Authenticator.prototype = {
       'method': 'loginUILoaded'
     };
     window.parent.postMessage(msg, this.PARENT_PAGE);
+    this.frameLoaded_ = true;
   },
 
   onMessage: function(e) {
