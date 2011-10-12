@@ -19,6 +19,8 @@
 : ${IMAGE_TEXT_COLOR:=Black}
 : ${MESSAGE_BASE_PATH:=/usr/share/chromeos-assets/text/boot_messages}
 : ${ASSETS_IMAGE_PATH:=/usr/share/chromeos-assets/images}
+: ${SPINNER_IMAGE_BASE:=/usr/share/chromeos-assets/images/spinner/48x48}
+: ${SPINNER_INTERVAL:=100}
 
 TEMP_FILE=""
 
@@ -77,6 +79,40 @@ message_to_png() {
   fi
 }
 
+# Returns if given message needs spinner animation.
+need_spinner() {
+  local message="$1"
+
+  case "$message" in
+    enter_dev2 | leave_dev | self_repair | update_firmware )
+      return 0
+      ;;
+    * )
+      # Default: don't show spinner for unknown messages
+      return 1
+  esac
+}
+
+# Shows spinner in left of given message image file, until end of startup stage.
+show_spinner() {
+  local message_file="$1"
+  local control_file="$2"
+  local spinner_file="$SPINNER_IMAGE_BASE"*01.png
+
+  # Put spinner in left of centered message file, with a padding of 1/2 spinner
+  # image width (offset is calculated from the default location, which puts
+  # spinner in center).
+  local spinner_offset_x=-"$(( $(get_png_width "$message_file") / 2 +
+                               $(get_png_width $spinner_file) ))"
+
+  while initctl status startup 2>&1 | grep -q "/running"; do
+    ply-image \
+      --offset "$spinner_offset_x,0" \
+      --frame-interval "$SPINNER_INTERVAL" \
+      "$SPINNER_IMAGE_BASE"*.png
+  done &
+}
+
 main() {
   local message="$1"
   local locale_list="$2"
@@ -100,6 +136,7 @@ main() {
     ply-image --clear 0x"$IMAGE_BACKGROUND_RGB" \
               "$ASSETS_IMAGE_PATH/boot_message.png"
     ply-image "$TEMP_FILE" || rc="$?"
+    need_spinner "$message" && show_spinner "$TEMP_FILE" || true
     return "$rc"
   done
   return 1
