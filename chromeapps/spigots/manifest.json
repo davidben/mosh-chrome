@@ -1,0 +1,12 @@
+{
+  "app": {
+    "launch": {
+      "local_path": "main.html"
+    }
+  },
+  "default_locale": "en",
+  "description": "__MSG_extDesc__",
+  "name": "__MSG_extName__",
+  "version": "1.1.6"
+  // TODO: Find shippable icons
+}

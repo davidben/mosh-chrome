@@ -1,0 +1,35 @@
+Name: crypto-js
+URL: http://code.google.com/p/crypto-js/
+License: BSD 2-Clause (http://www.opensource.org/licenses/bsd-license.php)
+Version: 2.5.1
+Security Critical: yes
+Downloaded: December 20, 2011
+
+Description:
+JavaScript implementation of cryptographic algorithms.
+
+Local Modifications:
+- Renamed all src/ files to lowercase names so that build succeeds on Linux.
+- Changed randomBytes function to use crypto.getRandomValue for more
+  secure random number generation (see patch below).
+- Moved Closure-generated built file (the only one we use) into this
+  directory after building (crypto-sha1-hmac-pbkdf2-blockmodes-aes.js)
+
+--------------------------------------------------------------------------
+
+--- crypto-js-read-only/src/Crypto.js 
++++ crypto-js/src/crypto.js 
+@@ -38,9 +38,10 @@
+ 
+ 	// Generate an array of any length of random bytes
+ 	randomBytes: function (n) {
+-		for (var bytes = []; n > 0; n--)
+-			bytes.push(Math.floor(Math.random() * 256));
+-		return bytes;
++    var array = new Uint8Array(n);
++    crypto.getRandomValues(array);
++    // Now convert them from a Uint8Array to a regular array of ints.
++    return [].map.call(array, function(_){ return _; });
+ 	},
+ 
+ 	// Convert a byte array to big-endian 32-bit words

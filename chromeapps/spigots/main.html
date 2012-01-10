@@ -1,0 +1,743 @@
+<!-- Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
+  -- Use of this source code is governed by a BSD-style license that can be
+  -- found in the LICENSE file. -->
+
+<html>
+<head>
+  <script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+  <script type="text/javascript"
+          src="crypto-js/crypto-sha1-hmac-pbkdf2-blockmodes-aes.js"></script>
+
+  <script type="text/javascript" src="asn1.js"></script>
+  <script type="text/javascript" src="base64.js"></script>
+  <script type="text/javascript" src="base64_encode.js"></script>
+  <script type="text/javascript" src="cert-dialog.js"></script>
+  <script type="text/javascript" src="download-dialog.js"></script>
+  <script type="text/javascript" src="load-dialog.js"></script>
+  <script type="text/javascript" src="network-dialog.js"></script>
+  <script type="text/javascript" src="onc.js"></script>
+  <script type="text/javascript" src="remove-dialog.js"></script>
+  <script type="text/javascript" src="save-request-dialog.js"></script>
+  <script type="text/javascript" src="ui.js"></script>
+  <script type="text/javascript" src="vpn-dialog.js"></script>
+  <script type="text/javascript" src="wifi-dialog.js"></script>
+
+  <style>
+    body {
+      -webkit-user-select: none;
+      font-family: 'Chrome Droid Sans', sans-serif;
+      font-size: 10pt;
+    }
+    input[type='password'],
+    input[type='text'],
+    input[type='url'],
+    input:not([type]) {
+      -webkit-border-radius: 2px;
+      border: 1px solid #aaa;
+      font-size: inherit;
+      padding: 3px;
+    }
+    /* SELECT */
+    select {
+      -webkit-appearance: button;
+      -webkit-border-radius: 2px;
+      -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+      -webkit-padding-end: 20px;
+      -webkit-padding-start: 2px;
+      -webkit-user-select: none;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAICAYAAAAbQcSUAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sCDwEnBT3jKacAAABaSURBVCjPY2CgA4gC4jQ8OIpokxKBgJmZ+RuQ+R8dg8RB8kQb9v//f4UFCxYsZGNj+4lsEIgPEgfJk+RPdAPJNgjdQD4+vi8UGYRs4Nu3b5soNgjJQFZi1AEAhHNE/wdnPVcAAAAASUVORK5CYII="), -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+      background-position: center right;
+      background-repeat: no-repeat;
+      border: 1px solid #aaa;
+      color: #555;
+      font-size: inherit;
+      margin: 0;
+      overflow: hidden;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    select:hover {
+      -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAICAYAAAAbQcSUAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sCDwEnBT3jKacAAABaSURBVCjPY2CgA4gC4jQ8OIpokxKBgJmZ+RuQ+R8dg8RB8kQb9v//f4UFCxYsZGNj+4lsEIgPEgfJk+RPdAPJNgjdQD4+vi8UGYRs4Nu3b5soNgjJQFZi1AEAhHNE/wdnPVcAAAAASUVORK5CYII="), -webkit-linear-gradient(#fefefe, #f8f8f8 40%, #e9e9e9);
+      color: #333;
+    }
+    select:active {
+      -webkit-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAICAYAAAAbQcSUAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sCDwEnBT3jKacAAABaSURBVCjPY2CgA4gC4jQ8OIpokxKBgJmZ+RuQ+R8dg8RB8kQb9v//f4UFCxYsZGNj+4lsEIgPEgfJk+RPdAPJNgjdQD4+vi8UGYRs4Nu3b5soNgjJQFZi1AEAhHNE/wdnPVcAAAAASUVORK5CYII="), -webkit-linear-gradient(#f4f4f4, #efefef 40%, #dcdcdc);
+      color: #444;
+    }
+    /* CHECKBOX, RADIO */
+    input[type=checkbox],
+    input[type=radio] {
+      margin-left: 0;
+      margin-right: 0;
+      position: relative;
+      top: 1px;
+    }
+    button,
+    input[type='button'],
+    input[type='submit'] {
+      -webkit-border-radius: 2px;
+      -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+      -webkit-user-select: none;
+      background: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+      border: 1px solid #aaa;
+      color: #444;
+      font-size: inherit;
+      margin-bottom: 0px;
+      min-width: 4em;
+      padding: 3px 12px 3px 12px;
+    }
+    #left-pane {
+      background: -webkit-linear-gradient(rgba(234, 238, 243, 0.2), #eaeef3),
+                  -webkit-linear-gradient(left, #eaeef3, #eaeef3 97%, #d3d7db);
+      bottom:0;
+      left:0;
+      overflow:auto;
+      position:absolute;
+      top:0;
+      width:216px;
+      -webkit-border-end: 1px solid #c6c9ce;
+    }
+    .left-item {
+      border-bottom: 1px solid transparent;
+      border-top: 1px solid transparent;
+      color: #426dc9;
+      cursor: pointer;
+      display: block;
+      font-size: 105%;
+      outline: none;
+      padding: 7px 0;
+      text-align: end;
+      text-shadow: white 0 1px 1px;
+      -webkit-padding-end: 24px;
+    }
+    .selected {
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+      text-shadow: white 0 1px 1px;
+    }
+    #right-pane {
+      bottom:5px;
+      left:230px;
+      overflow:auto;
+      position:absolute;
+      padding: 0 24px;
+      right:5px;
+      top:5px;
+    }
+    #overlay {
+      -webkit-box-align: center;
+      -webkit-box-orient: vertical;
+      -webkit-box-pack: center;
+      -webkit-transition: 0.25s opacity;
+      background: -webkit-radial-gradient(rgba(127, 127, 127, 0.5),
+                                          rgba(127, 127, 127, 0.5) 35%,
+                                          rgba(0, 0, 0, 0.7));
+      bottom: 0;
+      display:none;
+      left: 0;
+      overflow: auto;
+      padding: 20px;
+      padding-bottom: 130px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 10;
+    }
+    .modal-dialog {
+      -webkit-box-shadow: 0px 5px 80px #505050;
+      background: white;
+      border: 1px solid rgb(188, 193, 208);
+      border-radius: 2px;
+      display: none;
+      min-width: 600px;
+      padding: 0;
+      position: relative;
+      z-index: 11;
+    }
+    .modal-dialog .content {
+      padding: 10px 15px 5px 15px;
+    }
+    .action-area {
+      -webkit-box-align: center;
+      -webkit-box-orient: horizontal;
+      -webkit-box-pack: end;
+      border-top: 1px solid rgba(188, 193, 208, .5);
+      display: -webkit-box;
+      padding: 12px;
+    }
+    .entity-list {
+      -webkit-box-flex: 1;
+      display: table-cell;
+      width: 100%;
+    }
+    .entity {
+      -webkit-box-align: center;
+      -webkit-padding-start: 30px;
+      border: 1px solid rgba(255,255,255,0);
+      border-radius: 2px;
+      display: none;
+      min-height: 35px;
+    }
+    .entity:hover {
+      border-color: hsl(214, 91%, 85%);
+      background-color: hsl(214,91%, 97%);
+    }
+    .entity .action {
+      display: none;
+    }
+    .entity .left {
+      display: table-cell;
+    }
+    .entity .name {
+      font-weight: bold
+    }
+    .entity #warning-mark {
+      -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.8);
+      display: none;
+      background-color: yellow;
+      border-color: black;
+      border-radius: 2px;
+      color: black;
+      font-weight: bold;
+      margin-left: 10px;
+      padding: 5px;
+    }
+    .entity #error-mark {
+      -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.8);
+      display: none;
+      background-color: red;
+      border-color: black;
+      border-radius: 2px;
+      color: black;
+      font-weight: bold;
+      margin-left: 10px;
+      padding: 5px;
+    }
+    .entity #mark-removal-mark {
+      color: #ff0000;
+      display: none;
+    }
+    .spacer {
+      -webkit-box-flex: 1;
+    }
+    #cert-box {
+      -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,.1);
+      -webkit-border-radius: 2;
+      border: 1px solid #D0D0D0;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      min-height: 200px;
+      padding: 20px;
+    }
+    #cert-instructions {
+      max-width:400px;
+    }
+    .cert-header {
+      font-weight: bold;
+    }
+    #cert-summary td {
+      font-size: 75%;
+      padding-left: 20px;
+    }
+    #cert-summary table {
+      padding-bottom: 20px;
+    }
+    #apply-errors {
+      color: #ff0000;
+      max-width:100%;
+    }
+    #apply-warnings {
+      color: #807000;
+      max-width:100%;
+    }
+    #apply-header {
+      color: #008000;
+      max-width:100%;
+    }
+    .modal-dialog h1 {
+      background: -webkit-linear-gradient(white, #F8F8F8);
+      border-bottom: 1px solid rgba(188, 193, 208, .5);
+      font-size: 105%;
+      font-weight: bold;
+      padding: 10px 15px 8px 15px;
+    }
+    .template-section {
+      display: none;
+    }
+    h2 {
+      margin:0;
+      padding-top:10px;
+      font-size:12pt;
+    }
+    #right-pane h1 {
+      -webkit-padding-end: 24px;
+      -webkit-user-select: none;
+      border-bottom: 1px solid #EEE;
+      color: #536370;
+      font-weight: normal;
+      font-size: 200%;
+      margin: 0;
+      padding-bottom: 4px;
+      padding-top: 13px;
+      text-shadow: white 0 1px 2px;
+    }
+    #right-pane h3 {
+      -webkit-padding-end: 10px;
+      display: table-cell;
+      margin: 0;
+      width: 130px;
+    }
+    .summary {
+      -webkit-box-orient: horizontal;
+      border-bottom: 1px solid #EEE;
+      margin-top: 17px;
+      padding-bottom: 20px;
+    }
+    input[type=text] {
+      width: 100%;
+      font-size:10pt;
+    }
+    input[type=password] {
+      width: 100%;
+      font-size:10pt;
+    }
+    select option {
+      width: 100%;
+      line-height:10pt;
+      font-weight: bold;
+    }
+    .help {
+      margin:0px;
+      font-size:10pt;
+      font-weight:normal;
+      max-width:100%;
+      margin-bottom:10px;
+    }
+  </style>
+  <title i18n="extName"></title>
+</head>
+
+<div id="left-pane">
+  <div style="height:50px"></div>
+  <div class="left-item selectable" id="wifi-item" i18n="wifiSettingsTab">
+  </div>
+  <div class="left-item selectable" id="vpn-item" i18n="vpnTab"></div>
+  <div class="left-item selectable" id="cert-item"
+       i18n="certificatesAndTrustTab"></div>
+  <div class="left-item selectable" id="load-item" i18n="loadConfigurationTab">
+  </div>
+  <div class="left-item selectable" id="save-request-item"
+       i18n="downloadConfigurationTab"></div>
+</div>
+
+<div id="right-pane">
+  <h1 i18n="settings">Settings</h1>
+  <div id="network-configurations-area" class="summary">
+    <h3 i18n="networkConfigurations"></h3>
+    <div id="network-configurations" class="entity-list">
+      <div id="template" class="entity">
+        <div id="left" class="left"></div>
+        <div id="error-mark">X</div>
+        <div id="warning-mark">!</div>
+        <div id="mark-removal-mark" i18n="markedForRemovalStatus"></div>
+        <div class="spacer"></div>
+        <div class="action">
+          <button id="edit" i18n="edit"></button>
+          <button id="remove" i18n="remove"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="certificates-area" class="summary">
+    <h3 i18n="certificates"></h3>
+    <div id="certificates" class="entity-list">
+      <div id="template" class="entity">
+        <div id="left" class="left"></div>
+        <div id="error-mark">X</div>
+        <div id="warning-mark">!</div>
+        <div id="mark-removal-mark" i18n="markedForRemovalStatus"></div>
+        <div class="spacer"></div>
+        <div class="action">
+          <button id="edit" i18n="edit"></button>
+          <button id="remove" i18n="remove"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+<div class="modal-dialog" id="wifi-dialog">
+  <h1 i18n="wifiSettings"></h1>
+
+  <div class="content">
+  <h2 i18n="acronymSsid"></h2>
+  <p class="help" i18n="identificationOfTheWirelessNetwork"></p>
+  <input type="text" id="ssid">
+  <div class="checkable">
+    <input type="checkbox" id="hidden-ssid"></input>
+    <span i18n="thisSsidIsNotBroadcast"></span>
+  </div>
+  <div class="checkable">
+    <input type="checkbox" id="auto-connect"></input>
+    <span i18n="automaticallyConnect"></span>
+  </div>
+  <h2 i18n="securityType"></h2>
+  <p class="help" i18n="helpSecurityType"></p>
+  <select id="security">
+    <option i18n="securityNone" value="None"></option>
+    <option i18n="securityWep" value="WEP-PSK"></option>
+    <option i18n="securityWpa" value="WPA-PSK"></option>
+    <option i18n="securityWpaEnterprise" value="WPA-EAP"></option>
+  </select>
+  <div id="passphrase-div" style="display:none">
+    <h2 i18n="wirelessPassphrase"></h2>
+    <p class="help" i18n="helpWirelessPassphrase"></p>
+    <input type="password" id="passphrase">
+  </div>
+  <div id="8021x-div" style="display:none">
+    <h2 i18n="extensibleAuthenticationProtocol"></h2>
+    <p class="help" i18n="selectTheEapToPermit"></p>
+    <select id="eap">
+      <option i18n="acronymPeap" value="PEAP"></option>
+      <option i18n="acronymEapTtls" value="EAP-TTLS"></option>
+      <option i18n="acronymEapTls" value="EAP-TLS"></option>
+      <option i18n="acronymLeap" value="LEAP"></option>
+    </select>
+    <div id="phase2-div">
+      <h2 i18n="innerProtocol"></h2>
+      <p class="help" i18n="helpInnerProtocol"></p>
+      <select id="phase2">
+        <option i18n="automatic" value="Automatic"></option>
+        <option i18n="acronymEapMschapV2" value="EAP-MSCHAP-V2"></option>
+        <option i18n="acronymEapMd5" value="EAP-MD5"></option>
+        <option i18n="acronymEapPap" value="EAP-PAP"></option>
+      </select>
+    </div>
+    <div id="phase2-auth">
+      <div class="checkable">
+        <input type="checkbox" id="save-credentials"></input>
+        <span i18n="specifyUsernameAndPassword"></span>
+      </div>
+      <div id="phase2-auth-cred">
+        <h2 i18n="username"></h2>
+        <p class="help" i18n="helpUsername"></p>
+        <input type="text" id="wifi-identity">
+        <div id="div-password">
+          <h2 i18n="password"></h2>
+          <p class="help" i18n="helpPassword"></p>
+          <input type="password" id="wifi-password">
+        </div>
+      </div>
+    </div>
+    <div id="eap-server-ca">
+      <h2 i18n="serverCertificateAuthority"></h2>
+      <p class="help"
+         i18n="helpServerCertificateAuthority">
+      </p>
+      <select id="wifi-server-ca">
+      </select>
+    </div>
+    <div id="eap-client-cert">
+      <h2 i18n="clientCertificateAuthority"></h2>
+      <p class="help" i18n="helpClientCertificateAuthority"></p>
+      <select id="wifi-client-ca">
+      </select>
+      <h2 i18n="enrollmentUri"></h2>
+      <p class="help" i18n="helpEnrollmentUri"></p>
+      <input id="wifi-enrollment-uri" type="text"></input>
+    </div>
+  </div>
+  <div id="proxy-insertion-point"></div>
+  <input type="text" id="wifi-guid" hidden></input>
+  <div id="apply-header"></div>
+  <div id="apply-errors"></div>
+  <div id="apply-warnings"></div>
+  </div>
+  <div class="action-area">
+    <button id="apply-button" i18n="applySettings"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+</div>
+<div class="modal-dialog" id="vpn-dialog">
+  <h1 i18n="vpnSettings"></h1>
+  <div class="content">
+  <h2 i18n="connectionName"></h2>
+  <p class="help" i18n="helpConnectionName"></p>
+  <input type="text" id="vpn-name">
+  <h2 i18n="remoteHost"></h2>
+  <p class="help" i18n="helpRemoteHost"></p>
+  <input type="text" id="vpn-host">
+  <h2 i18n="vpnType"></h2>
+  <p class="help" i18n="helpVpnType"></p>
+  <select id="vpn-type">
+    <option i18n="l2tpIpsecPsk" value="L2TP-IPsec-PSK"></option>
+    <option i18n="l2tpIpsecCert" value="L2TP-IPsec-Cert"></option>
+    <option i18n="openvpnType" value="OpenVPN"></option>
+  </select>
+  <div id="vpn-psk-div">
+    <h2 i18n="presharedKey"></h2>
+    <p class="help" i18n="helpPresharedKey"></p>
+    <input type="password" id="vpn-psk"></input>
+  </div>
+  <div id="vpn-cert-div">
+    <h2 i18n="serverCertificateAuthority"></h2>
+    <p class="help" i18n="helpServerCertificateAuthority"></p>
+    <select id="vpn-server-ca">
+    </select>
+    <h2 i18n="clientCertificateAuthority"></h2>
+    <p class="help" i18n="helpClientCertificateAuthority"></p>
+    <select id="vpn-client-ca">
+    </select>
+    <h2 i18n="enrollmentUri"></h2>
+    <p class="help" i18n="helpEnrollmentUri"></p>
+    <input id="vpn-enrollment-uri" type="text"></input>
+  </div>
+  <div class="checkable">
+    <input type="checkbox" id="vpn-save-credentials"></input>
+    <span i18n="specifyUsernameAndPassword"></span>
+  </div>
+  <div id="vpn-user-cred">
+    <h2 i18n="username"></h2>
+    <p class="help" i18n="helpUsername"></p>
+    <input id="vpn-username" type="text"></input>
+    <h2 i18n="password"></h2>
+    <p class="help" i18n="helpPassword"></p>
+    <input id="vpn-password" type="password"></input>
+  </div>
+  <div id="proxy-insertion-point"></div>
+  <input type="text" id="vpn-guid" hidden></input>
+  <div id="apply-header"></div>
+  <div id="apply-errors"></div>
+  <div id="apply-warnings"></div>
+  <div class="action-area">
+    <button id="apply-button" i18n="applySettings"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+  </div>
+</div>
+<div class="modal-dialog" id="cert-dialog">
+  <h1 i18n="certificatesAndTrustTab"></h1>
+  <div class="content">
+    <h2 i18n="certificateTab"></h2>
+    <select id="cert-type">
+      <option i18n="certificateTypeClient" value="Client"></option>
+      <option i18n="certificateTypeServer" value="Server"></option>
+      <option i18n="certificateTypeAuthority" value="Authority"></option>
+    </select>
+    <div id="cert-box">
+      <div id="cert-instructions" i18n="dragCertificateHere">
+      </div>
+      <div id="cert-summary">
+        <div id="subject">
+          <div class="cert-header" i18n="X509IssuedTo"></div>
+          <table>
+            <tr>
+              <td i18n="X509CommonName"></td>
+              <td id="commonName" class="cert-fill"></td>
+            </tr>
+            <tr>
+              <td i18n="X509Organization"></td>
+              <td id="organizationName" class="cert-fill"></td>
+            </tr>
+            <tr>
+              <td i18n="X509OrganizationalUnit"></td>
+              <td id="organizationalUnit" class="cert-fill"></td>
+            </tr>
+            <tr>
+              <td i18n="X509SerialNumber"></td>
+              <td id="serialNumber" class="cert-fill"></td>
+            </tr>
+          </table>
+        </div>
+        <div id="issuer">
+          <div class="cert-header" i18n="X509IssuedBy"></div>
+          <table>
+            <tr>
+              <td i18n="X509CommonName"></td>
+              <td id="commonName" class="cert-fill"></td>
+            </tr>
+            <tr>
+              <td i18n="X509Organization"></td>
+              <td id="organizationName" class="cert-fill"></td>
+            </tr>
+            <tr>
+              <td i18n="X509OrganizationalUnit"></td>
+              <td id="organizationalUnit" class="cert-fill"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <input type="file" id="cert-files" />
+    </div>
+    <br/>
+    <div class="checkable">
+      <input type="checkbox" id="web-trust"></input>
+      <span i18n="trustThisCertificateForWeb"></span>
+    </div>
+    <input type="text" id="cert-guid" hidden></input>
+    <div id="apply-header"></div>
+    <div id="apply-errors"></div>
+    <div id="apply-warnings"></div>
+  </div>
+  <div class="action-area">
+    <button id="apply-button" i18n="applySettings"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+</div>
+<div class="modal-dialog" id="load-dialog">
+  <h1 i18n="loadConfigurationTab"></h1>
+  <div class="content">
+    <h2 i18n="loadConfigurationFromFile"></h2>
+    <p class="help" i18n="helpLoadConfigurationFromFile"></p>
+    <br>
+    <form id="load-file-form">
+      <!-- TODO(gspencer): We should fix this UI so that we detect
+           encrypted ONC files and only then show the passphrase
+           field. -->
+      <p class="help" i18n="helpLoadPassphrase"></p>
+      <input type="password" id="load-passphrase"
+             style="max-width:200px;"></input><br/>
+      <input type="file" id="load-file" name="loadFiles" multiple></input>
+    </form>
+    <div id="apply-header"></div>
+    <div id="apply-errors"></div>
+    <br>
+    <div id="apply-warnings"></div>
+  </div>
+  <div class="action-area">
+    <button id="apply-button" i18n="loadFile"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+</div>
+<div class="modal-dialog" id="save-request-dialog">
+  <h1 i18n="saveRequestTab"></h1>
+  <div class="content">
+    <input type="checkbox" id="use-encryption" checked></input>
+    <span i18n="useEncryption"></span><br/>
+    <div id="save-passphrase-div">
+      <h2 i18n="encryptConfigurationFile"></h2>
+      <p class="help" i18n="helpConfigurationPassphrase"></p>
+      <input id="save-passphrase" type="password"
+             style="max-width:200px;"></input>
+      <div id="apply-errors">&nbsp;</div>
+    </div>
+  </div>
+  <div class="action-area">
+    <button id="encrypt-button" i18n="encryptConfiguration"></button>
+    <button id="apply-button" i18n="downloadConfiguration"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+</div>
+<div class="modal-dialog" id="download-dialog">
+  <h1 i18n="downloadConfigurationTab"></h1>
+  <div class="content">
+    <h2 i18n="downloadConfigurationToFile"></h2>
+    <div id="download-link-div">
+      <p class="help" i18n="helpDownloadConfigurationToFile"></p>
+      <a id="download-link" href="about:blank" i18n="downloadLinkText"></a>
+    </div>
+  </div>
+  <div class="action-area">
+    <button id="cancel-button" i18n="doneSettings"></button>
+  </div>
+</div>
+<div class="modal-dialog" id="remove-dialog">
+  <h1 i18n="confirmRemoveMessage"></h1>
+  <div id="remove-content" class="content">
+    <p class="help" id="help-remove-content"></p>
+  </div>
+  <div id="mark-remove-content" class="content">
+    <p class="help" id="help-mark-remove-content"></p>
+  </div>
+  <div>
+  <div class="action-area">
+    <button id="mark-remove-button" i18n="markRemoveButton"></button>
+    <button id="remove-button" i18n="removeButton"></button>
+    <button id="cancel-button" i18n="cancelSettings"></button>
+  </div>
+</div>
+</div>
+
+<!-- template sections copied elsewhere -->
+<div id="proxy-settings-section" class="template-section">
+  <h2 i18n="proxySettings"></h2>
+  <p class="help" i18n="helpProxySettings"></p>
+  <select id="proxy-type">
+    <option i18n="proxyDirect" value="Direct">
+    <option i18n="proxyManual" value="Manual">
+    <option i18n="proxyAutoConfiguration" value="PAC">
+  </select>
+  <div id="proxy-manual-div">
+    <table>
+      <tr>
+        <td>
+          <p class="help" i18n="proxyManualHttp"></p>
+        </td>
+        <td>
+          <input type="text" id="http-proxy-host"></input>
+        </td>
+        <td>
+          <p class="help" i18n="proxyPort"></p>
+        </td>
+        <td>
+          <input type="text" id="http-proxy-port"></input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class="help" i18n="proxyManualSecureHttp"></p>
+        </td>
+        <td>
+          <input type="text" id="secure-http-proxy-host"></input>
+        </td>
+        <td>
+          <p class="help" i18n="proxyPort"></p>
+        </td>
+        <td>
+          <input type="text" id="secure-http-proxy-port"></input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class="help" i18n="proxyManualFtp"></p>
+        </td>
+        <td>
+          <input type="text" id="ftp-proxy-host"></input>
+        </td>
+        <td>
+          <p class="help" i18n="proxyPort"></p>
+        </td>
+        <td>
+          <input type="text" id="ftp-proxy-port"></input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p class="help" i18n="proxyManualSocks"></p>
+        </td>
+        <td>
+          <input type="text" id="socks-proxy-host"></input>
+        </td>
+        <td>
+          <p class="help" i18n="proxyPort"></p>
+        </td>
+        <td>
+          <input type="text" id="socks-proxy-port"></input>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="proxy-automatic-div">
+    <p class="help" i18n="helpAutoConfigurationUrl"></p>
+    <input type="text" id="auto-configuration-url"></input>
+  </div>
+</div>
+
+<script type="text/javascript" src="main.js"></script>

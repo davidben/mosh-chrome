@@ -1,0 +1,517 @@
+{
+  "acronymEapMd5": {
+    "message": "EAP-MD5"
+  },
+  "acronymEapMschapV2": {
+    "message": "EAP-MSCHAPv2"
+  },
+  "acronymEapPap": {
+    "message": "EAP-PAP"
+  },
+  "acronymEapTls": {
+    "message": "EAP-TLS"
+  },
+  "acronymEapTtls": {
+    "message": "EAP-TTLS"
+  },
+  "acronymLeap": {
+    "message": "LEAP"
+  },
+  "acronymPeap": {
+    "message": "PEAP"
+  },
+  "acronymSsid": {
+    "message": "Service set identifier (SSID):"
+  },
+  "applySettings": {
+    "message": "Apply Changes"
+  },
+  "automatic": {
+    "description": "Indicating that a choice is made automatically without further specification",
+    "message": "Automatic"
+  },
+  "automaticallyConnect": {
+    "message": "Automatically connect"
+  },
+  "cancelSettings": {
+    "message": "Cancel"
+  },
+  "certificate": {
+    "description": "Used as replacement text in helpMarkRemoveContent - mid-sentence.",
+    "message": "certificate"
+  },
+  "certificateEmpty": {
+    "message": "Empty"
+  },
+  "certificates": {
+    "message": "Certificates"
+  },
+  "certificateTab": {
+    "message": "Certificate Settings"
+  },
+  "certificateType": {
+    "message": "Certificate Type"
+  },
+  "certificateTypeClient": {
+    "message": "Client Certificate"
+  },
+  "certificateTypeServer": {
+    "message": "Server Certificate"
+  },
+  "certificateTypeAuthority": {
+    "message": "Certificate Authority"
+  },
+  "certificateTrust": {
+    "message": "Certificate trust settings"
+  },
+  "certificatesAndTrustTab": {
+    "message": "Add a certificate"
+  },
+  "clientCertificateAuthority": {
+    "message": "Client Certificate Authority"
+  },
+  "confirmRemoveMessage": {
+    "message": "Confirm removal"
+  },
+  "connectionName": {
+    "message": "Connection Name"
+  },
+  "doneSettings": {
+    "message": "Done"
+  },
+  "doNotCheckCA": {
+    "message": "Do not check (insecure)"
+  },
+  "dragCertificateHere": {
+    "message": "Drag and drop certificate authorities and other certificates to install on Chrome OS. You may drag and drop .pem and .der files."
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "encryptConfiguration": {
+    "message": "Encrypt"
+  },
+  "encryptConfigurationFile": {
+    "message": "Enter encryption passphrase"
+  },
+  "saveRequestTab": {
+    "message": "Encrypt configuration"
+  },
+  "enrollmentUri": {
+    "message": "Client Enrollment URI"
+  },
+  "errorBadCertReference": {
+    "description": "This is displayed when a reference to a cert does not match any certificate.",
+    "message": "Network $1 has certificate reference $2 to $3, but no such certificate exist."
+  },
+  "errorCertificateMissingGUID": {
+    "message": "Certificate missing GUID."
+  },
+  "errorCertificateMissingPayloadField": {
+    "message": "Certificate (GUID $1) missing X509 or PKCS12 field."
+  },
+  "errorDuringLoad": {
+    "message": "Error while loading: $1"
+  },
+  "errorEmptyOnc": {
+    "message": "The ONC file is empty (or has no recognized fields)."
+  },
+  "errorEmptyProxyHost": {
+    "message": "Proxy Host is empty"
+  },
+  "errorEmptyProxyURL": {
+    "message": "Proxy URL is empty"
+  },
+  "errorExpectedInt": {
+    "message": "The ONC field $1 expected to be an integer"
+  },
+  "errorInvalidConfigurationType": {
+    "message": "The ONC file type '$1' is not supported."
+  },
+  "errorJSONStringify": {
+    "description": "This is displayed when an internal error during conversion to JSON makes it impossible to generate an output file.  The positional arg is the system error message from json.Stringify.",
+    "message": "Internal error converting to JSON: $1."
+  },
+  "errorLoadParsingJSON": {
+    "message": "JSON parsing error during load: $1."
+  },
+  "errorLoadRequiredObjectMissing": {
+    "message": "Object is missing required '$1' field."
+  },
+  "errorLoadUnhandledEapType": {
+    "message": "Unhandled EAP Type '$1' in WiFi network '$2'."
+  },
+  "errorLoadUnhandledSecurityType": {
+    "message": "Unhandled Security Type '$1' in WiFi network '$2'."
+  },
+  "errorLoadUnknown": {
+    "message": "Unknown error during load."
+  },
+  "errorLoadUnknownNetworkConfigType": {
+    "message": "Unknown NetworkConfiguration type '$1'."
+  },
+  "errorLoadUnknownProxyType": {
+    "message": "Unknown ProxySettings type '$1'."
+  },
+  "errorMissingClientCA": {
+    "message": "Missing client certificate authority for network $1."
+  },
+  "errorMissingEncryptionField": {
+    "message": "Missing required encryption parameter '$1'."
+  },
+  "errorMissingNetworkName": {
+    "description": "This is displayed when a network has no network name.  The positional arg is the type of the network.",
+    "message": "Missing network name for $1 network."
+  },
+  "errorMissingVPNServerCA": {
+    "message": "VPN $1 specifies authentication using certificates, but is missing Server CA."
+  },
+  "errorMissingPassphrase": {
+    "description": "This is displayed when an ONC file is being loaded, and it's encrypted, but the user didn't specify a passphrase.",
+    "message": "Missing passphrase for encrypted ONC file."
+  },
+  "errorMissingVPNPreSharedKey": {
+    "message": "You selected '$1' for the VPN security for the network '$2', but didn't supply a pre-shared key."
+  },
+  "errorPassphraseMissing": {
+    "message": "You have not provided a passphrase for Wi-Fi network '$1'.  The user will need to know it when they connect."
+  },
+  "errorPassphraseTooShort": {
+    "message": "The passphrase you provided is too short, it must be at least eight characters long."
+  },
+  "errorPassphraseTooSimple": {
+    "message": "The passphrase you provided is too simple.  It must have at least one number or symbol or capital letter."
+  },
+  "errorPKCS12CertificatesNotYetSupported": {
+    "message": "PKCS12 certificates (GUID $1) not yet supported."
+  },
+  "errors": {
+    "message": "errors"
+  },
+  "errorUnableToDecrypt": {
+    "message": "Unable to decrypt file."
+  },
+  "errorUnsupportedVPNType": {
+    "message": "VPN named $1 has unsupported type $2."
+  },
+  "errorUnsupportedValue": {
+    "message": "Field $1 has unsupported value $2."
+  },
+  "errorUnsupportedEncryptionMode": {
+    "description": "parameter 1 is the unsupported mode.  parameter 2 is the name of the parameter that value was assigned to.",
+    "message": "Unsupported encryption mode '$1' for '$2'."
+  },
+  "errorUploadCertificate": {
+    "message": "You need to upload a certificate."
+  },
+  "errorWEPKeyInvalidLength": {
+    "message": "Your WEP ASCII passphrase for the network '$1' is not a valid length.  A WEP passphrase must be either 5, 13, 16, or 29 characters for an ASCII passphrase, or 10, 26, 32 or 58 characters for a hexadecimal passphrase, depending on the bit length of the key desired."
+  },
+  "errorWEPKeyNonHexCharacters": {
+    "message": "The hexadecimal WEP password for the network '$1' contains invalid hex characters.  Hexadecimal passwords can only contain the letters 'a' through 'f' and the numbers 0 through 9.  If you didn't intend to enter a hex password, then you must use an ASCII password of the correct length (5, 13, 16 or 29 characters, depending on the length of the key desired)."
+  },
+  "errorWiFiNetworkMissingSSID": {
+    "message": "Wi-Fi network must have SSID."
+  },
+  "errorX509CertificateIsInvalid": {
+    "message": "X509 certificate (GUID $1) is invalid."
+  },
+  "extDesc": {
+    "message": "Network configuration tool for Chrome OS"
+  },
+  "extName": {
+    "description": "Name of extension",
+    "message": "Spigots"
+  },
+  "extensibleAuthenticationProtocol": {
+    "message": "Extensible Authentication Protocol"
+  },
+  "fileNotSupported": {
+    "message": "File $1 is not supported"
+  },
+  "helpAutoConfigurationUrl": {
+    "message": "Autoconfiguration URL (leave blank for WPAD protocol)"
+  },
+  "helpClientCertificateAuthority": {
+    "message": "Select the certificate authority that will issue the client certificate.  This information is used to determine which of the user's certificates is appropriate to use to identify them to the network.  Add new certificate authorities under the Certificates tab."
+  },
+  "helpConnectionName": {
+    "message": "Name for this connection that user sees in menus"
+  },
+  "helpConfigurationPassphrase": {
+    "message": "You must enter a passphrase for encrypting the output file.  This passphrase will be protecting any information you entered into this tool, so choose your passphrase wisely."
+  },
+  "helpEnrollmentUri": {
+    "message": "If the user does not have a suitable client certificate, upon attempting to connect to this network, direct the user to this URI to guide them through certificate enrollment.  Note that this URI should not be an internal network resource as the user may not have internal network access.  This may be an extension or data URI."
+  },
+  "helpInnerProtocol": {
+    "message": "Select the inner protocol to use for authentication (or Automatic to use any)"
+  },
+  "helpLoadConfigurationFromFile": {
+    "message": "Choose a file to load."
+  },
+  "helpLoadPassphrase": {
+    "message": "Enter the passphrase for decrypting the ONC file (if encrypted)."
+  },
+  "helpMarkRemoveContent": {
+    "message": "The $1 \"$2\" was loaded from an existing configuration file.  To remove it from any devices which have already imported this file, it can be marked for removal.  If you know the $1 has not been imported you can remove it directly.  If you choose to remove it directly, the operation cannot be undone.  Neither of these operations can be undone."
+  },
+  "helpPassword": {
+    "message": "Enter password for logging into network"
+  },
+  "helpPresharedKey": {
+    "message": "Enter the pre-shared key used by the IPsec layer"
+  },
+  "helpProxySettings": {
+    "message": "Choose the proxy configuration used while connected to this network."
+  },
+  "helpRemoteHost": {
+    "message": "Enter the hostname or IP of the virtual private network server."
+  },
+  "helpRemoveContent": {
+    "message": "Are you sure you want to remove $1 \"$2\"?  This operation cannot be undone."
+  },
+  "helpDownloadConfigurationToFile": {
+    "message": "Right-click on the link below and save the link with an '.onc' suffix."
+  },
+  "helpSecurityType": {
+    "message": "Security and authentication settings for network"
+  },
+  "helpServerCertificateAuthority": {
+    "message": "Select the certificate authority to trust when authenticating to this network.  Add new certificate authorities under the Certificates tab."
+  },
+  "helpUniqueIdentifier": {
+    "message": "This random unique identifier (GUID) identifies this network connection in case you want to update or delete it in the future."
+  },
+  "helpUsername": {
+    "message": "Enter username/identity for logging into network"
+  },
+  "helpVpnType": {
+    "message": "Choose the type of Virtual Private Network connection"
+  },
+  "helpWirelessPassphrase": {
+    "description": "Prompt to ask the user for their network passphrase",
+    "message": "Passphrase required to connect to network"
+  },
+  "identificationOfTheWirelessNetwork": {
+    "message": "Identification of the wireless network"
+  },
+  "innerProtocol": {
+    "message": "Inner protocol"
+  },
+  "l2tpIpsecCert": {
+    "message": "L2TP over IPsec with Certificates"
+  },
+  "l2tpIpsecPsk": {
+    "description": "L2TP over IPsec is a kind of VPN.  Pre-Shared Key is a particular configuration of that VPN.",
+    "message": "L2TP over IPsec with Pre-Shared Key"
+  },
+  "loadConfigurationFromFile": {
+    "message": "Load configuration from file"
+  },
+  "loadConfigurationTab": {
+    "message": "Load configuration"
+  },
+  "loadFile": {
+    "message": "Load File"
+  },
+  "loadSucceeded": {
+    "message": "Configuration loaded successfully."
+  },
+  "markedForRemovalStatus": {
+    "description": "Status in a list when an entity has been marked/tagged that it should be removed on client devices.",
+    "message": "(Marked for removal)"
+  },
+  "markRemoveButton": {
+    "description": "This button text indicates that a certificate or network will be marked/tagged to be deleted at a later time on a remove device.",
+    "message": "Mark for removal"
+  },
+  "network": {
+    "description": "Used as replacement text in helpMarkRemoveContent - mid-sentence.",
+    "message": "network"
+  },
+  "networkconfigurations": {
+    "message": "Network Configurations"
+  },
+  "openvpnType": {
+    "message": "OpenVPN"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "presharedKey": {
+    "message": "Pre-Shared Key"
+  },
+  "proxyAutoConfiguration": {
+    "message": "Automatic proxy configuration"
+  },
+  "proxyDirect": {
+    "message": "Direct Internet connection"
+  },
+  "proxyManual": {
+    "message": "Manual proxy configuration"
+  },
+  "proxyManualFtp": {
+    "message": "FTP proxy"
+  },
+  "proxyManualHttp": {
+    "message": "HTTP proxy"
+  },
+  "proxyManualSecureHttp": {
+    "message": "Secure HTTP proxy"
+  },
+  "proxyManualSocks": {
+    "message": "SOCKS host"
+  },
+  "proxyPort": {
+    "description": "TCP port number required for settings up a proxy",
+    "message": "Port"
+  },
+  "proxySettings": {
+    "message": "Proxy Settings"
+  },
+  "remoteHost": {
+    "message": "Remote host"
+  },
+  "remove": {
+    "message": "Remove"
+  },
+  "removeButton": {
+    "message": "Remove"
+  },
+  "downloadConfiguration": {
+    "message": "Download Configuration"
+  },
+  "downloadConfigurationTab": {
+    "message": "Download configuration"
+  },
+  "downloadConfigurationToFile": {
+    "message": "Download configuration to file"
+  },
+  "downloadConfigurationTab": {
+    "message": "Download configuration"
+  },
+  "downloadLinkText": {
+    "description": "This is the text of the link that starts the download of the newly creation configuration.",
+    "message": "Download Configuration"
+  },
+  "saveSucceeded": {
+    "message": "Save succeeded!"
+  },
+  "securityNone": {
+    "message": "None"
+  },
+  "securityType": {
+    "message": "Security type:"
+  },
+  "securityWep": {
+    "message": "WEP (insecure)"
+  },
+  "securityWpa": {
+    "message": "WPA"
+  },
+  "securityWpaEnterprise": {
+    "message": "WPA Enterprise (802.1X)"
+  },
+  "selectTheEapToPermit": {
+    "message": "Select the Extensible Authentication Protocol (EAP) to permit"
+  },
+  "serverCertificateAuthority": {
+    "message": "Server Certificate Authority"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "specifyUsernameAndPassword": {
+    "message": "Save credentials (username, password, passphrases) so they do not need to be entered each time a connection is initiated"
+  },
+  "thisSsidIsNotBroadcast": {
+    "message": "This SSID is not broadcast"
+  },
+  "trustThisCertificateForWeb": {
+    "message": "Trust this certificate for identifying web sites"
+  },
+  "uniqueIdentifier": {
+    "message": "Unique identifier"
+  },
+  "unknownName": {
+    "description": "Shown when a network name is unknown",
+    "message": "Unknown name"
+  },
+  "unknownType": {
+    "description": "Shown when a network type is unknown",
+    "message": "Unknown type"
+  },
+  "useAnyDefaultCA": {
+    "message": "Use any default Certificate Authority"
+  },
+  "useEncryption": {
+    "message": "Use encryption"
+  },
+  "username": {
+    "message": "Username/Identity"
+  },
+  "vpnSettings": {
+    "message": "Virtual Private Network (VPN) settings"
+  },
+  "vpnTab": {
+    "message": "Add a Virtual Private Network"
+  },
+  "vpnType": {
+    "message": "VPN Type"
+  },
+  "warningConfigurationTypeMissing": {
+    "message": "Configuration 'Type' field is missing."
+  },
+  "warningEAPPasswordEmpty": {
+    "message": "You have not provided a password for Wi-Fi network '$1'.  The user will need to know it when they connect."
+  },
+  "warningIdentityMissing": {
+    "message": "You have not provided a username/identity for network '$1'.  The user will need to know it when they connect."
+  },
+  "warnings": {
+    "message": "warnings"
+  },
+  "warningPasswordMissing": {
+    "message": "You have not provided a password for network '$1'.  The user will need to know it when they connect."
+  },
+  "warningPreSharedKeyMissing": {
+    "message": "You have not provided a pre-shared key for network '$1'.  The user will need to know it when they connect."
+  },
+  "warningShortWPAPassphraseUnsafe": {
+    "message": "Your $1 password for the network named '$2' is only $3 characters long.  This is too short to be a secure password, and is easily compromised."
+  },
+  "warningUnrecognizedTopLevelField": {
+    "message": "Unrecognized top-level field in ONC file: $1."
+  },
+  "warningWEPInherentlyUnsafe": {
+    "message": "You are using WEP to secure the Wi-Fi network named '$1'.  WEP networks are inherently insecure.  Consider using WPA or WPA2 if possible."
+  },
+  "wifiSettings": {
+    "message": "Wi-Fi Network Settings"
+  },
+  "wifiSettingsTab": {
+    "message": "Add a Wi-Fi Network"
+  },
+  "wirelessPassphrase": {
+    "message": "Passphrase"
+  },
+  "X509CommonName": {
+    "message": "Common Name (CN)"
+  },
+  "X509IssuedBy": {
+    "message": "Issued By"
+  },
+  "X509IssuedTo": {
+    "message": "Issued To"
+  },
+  "X509Organization": {
+    "message": "Organization (O)"
+  },
+  "X509OrganizationalUnit": {
+    "message": "Organizational Unit (OU)"
+  },
+  "X509SerialNumber": {
+    "message": "Serial Number"
+  }
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<head>
+
+<!-- YUI CSS -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/logger/assets/logger.css">
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/yuitest/assets/testlogger.css">
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/skin.css">
+
+<!-- CSS customizations -->
+<style type="text/css">
+.yui-log { font-size: 13px }
+.yui-log-container { right: auto; left: 1em }
+.yui-log .yui-log-bd { height: 40em }
+</style>
+
+<!-- YUI JS -->
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/container/container-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/logger/logger-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/yuitest/yuitest-min.js"></script>
+
+<!-- Test subjects -->
+<script type="text/javascript" src="../src/Crypto.js"></script>
+<script type="text/javascript" src="../src/CryptoMath.js"></script>
+<script type="text/javascript" src="../src/MD5.js"></script>
+<script type="text/javascript" src="../src/SHA1.js"></script>
+<script type="text/javascript" src="../src/SHA256.js"></script>
+<script type="text/javascript" src="../src/HMAC.js"></script>
+<script type="text/javascript" src="../src/PBKDF2.js"></script>
+<script type="text/javascript" src="../src/PBKDF2Async.js"></script>
+<script type="text/javascript" src="../src/MARC4.js"></script>
+<script type="text/javascript" src="../src/Rabbit.js"></script>
+<script type="text/javascript" src="../src/AES.js"></script>
+<script type="text/javascript" src="../src/DES.js"></script>
+<script type="text/javascript" src="../src/BlockModes.js"></script>
+
+<!-- Load Crypto again to test overwriting Crypto object -->
+<script type="text/javascript" src="../src/Crypto.js"></script>
+
+<!-- Test suite -->
+<script type="text/javascript">
+
+// 1KB of random, dummy data
+var data = Crypto.util.randomBytes(1000);
+
+// Create test suite
+var TestSuite = new YAHOO.tool.TestSuite();
+YAHOO.tool.TestRunner.add(TestSuite);
+
+// Shortcut
+var Assert = YAHOO.util.Assert;
+
+</script>
+
+<!-- Test cases -->
+<script type="text/javascript" src="Crypto-test.js"></script>
+<script type="text/javascript" src="MD5-test.js"></script>
+<script type="text/javascript" src="SHA1-test.js"></script>
+<script type="text/javascript" src="SHA256-test.js"></script>
+<script type="text/javascript" src="HMAC-test.js"></script>
+<script type="text/javascript" src="MARC4-test.js"></script>
+<script type="text/javascript" src="Rabbit-test.js"></script>
+<script type="text/javascript" src="AES-test.js"></script>
+<script type="text/javascript" src="DES-test.js"></script>
+<script type="text/javascript" src="Padding-test.js"></script>
+<script type="text/javascript" src="Mode-test.js"></script>
+<script type="text/javascript" src="PBKDF2-test.js"></script>
+
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function(){
+
+	// Display results from the TestRunner
+	var logger = new YAHOO.tool.TestLogger();
+
+	// Hide info category
+	logger.hideCategory("info");
+
+	// Initialize the "Loading" panel
+	var loadingPanel = new YAHOO.widget.Panel("loading", {
+		width: "240px",
+		fixedcenter: true,
+		close: false,
+		draggable: false,
+		zindex: 9000,
+		modal: true,
+		visible: false
+	});
+	loadingPanel.setHeader("Testing. Please wait.");
+	loadingPanel.setBody('<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
+	loadingPanel.render("loading-panel");
+
+	// Show "Loading" panel while tests are running
+	YAHOO.tool.TestRunner.subscribe('begin', function () {
+		loadingPanel.show();
+	});
+	YAHOO.tool.TestRunner.subscribe('complete', function () {
+		loadingPanel.hide();
+	});
+
+	// Run all tests
+	YAHOO.tool.TestRunner.run();
+
+});
+
+</script>
+
+</head>
+<body>
+	<div id="loading-panel" class="yui-skin-sam"></div>
+</body>
