@@ -36,6 +36,9 @@ loadDialog.setUiVisibility = function() {
  * @param {String} config  ONC formatted string.
  */
 loadDialog.loadConfig = function(configString) {
+  if (!configString || configString.constructor != String) {
+    return;
+  }
   var passphrase = $('#load-passphrase', '#load-dialog');
   var result = { 'errors': [], 'warnings': [], 'hasOpaqueEntity': false };
   // Check and see if the config is encrypted or not, and decrypt it
@@ -59,6 +62,7 @@ loadDialog.loadConfig = function(configString) {
   if (!result.errors.length && typeof(config) != 'object') {
     result.errors.push(['errorLoadUnknown']);
   }
+
   if (!result.errors.length) {
     result = onc.validateUnencryptedConfiguration(config, result);
   }
@@ -70,6 +74,7 @@ loadDialog.loadConfig = function(configString) {
   } else {
     // Clear everything out if we had errors.
     $('#load-file-form')[0].reset();
+    config = undefined;
   }
   ui.showMessages(result, '#load-dialog');
 
@@ -120,6 +125,8 @@ loadDialog.onApplyPress = function() {
     $('#load-file-form')[0].reset();
     main.disableInput($('#apply-button', '#load-dialog'));
     ui.showMessages(loadDialog.oncToLoadResult, '#load-dialog');
+    loadDialog.oncToLoad = undefined;
+    loadDialog.oncToLoadResult = undefined;
     return;
   }
   main.oncCurrent = loadDialog.oncToLoad;

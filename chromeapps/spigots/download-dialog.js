@@ -15,6 +15,9 @@ var downloadDialog = {};
  * Update the download link to contain the current configuration.
  */
 downloadDialog.updateDownloadLink = function() {
+  if (!('Type' in main.oncCurrent)) {
+    main.oncCurrent.Type = 'UnencryptedConfiguration';
+  }
   var config = main.oncCurrent;
   if ($('#use-encryption', '#save-request-dialog').is(':checked')) {
     var passphrase = $('#save-passphrase', '#save-request-dialog').val();

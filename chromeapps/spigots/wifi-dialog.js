@@ -134,39 +134,48 @@ wiFiDialog.getFromUi = function() {
   network.WiFi.Security = $('#security').val();
   network.WiFi.SSID = $('#ssid').val();
   switch (network.WiFi.Security) {
-  case 'WEP-PSK':
-  case 'WPA-PSK':
-    network.WiFi.Passphrase = $('#passphrase').val();
-    delete network.WiFi.EAP;
-    break;
-  case 'WPA-EAP':
-    onc.setUpAssocArray(network.WiFi, 'EAP');
-    network.WiFi.EAP.Outer = $('#eap').val();
-    network.WiFi.EAP.UseSystemCAs = $('#wifi-server-ca').val() != 'ignore';
-    if ($('#save-credentials').is(':checked')) {
-      network.WiFi.EAP.SaveCredentials = true;
-      // Don't bother getting the username/password if save
-      // credentials is off.  That would be an inconsistent state.
-      network.WiFi.EAP.Identity = $('#wifi-identity').val();
-      network.WiFi.EAP.Password = $('#wifi-password').val();
-    }
-    if (wiFiDialog.wifiRequiresServerCertificate()) {
-      if ($('#wifi-server-ca').val() != 'default') {
-        network.WiFi.EAP.ServerCARef = $('#wifi-server-ca').val();
+    case 'WEP-PSK':
+    case 'WPA-PSK':
+      network.WiFi.Passphrase = $('#passphrase').val();
+      delete network.WiFi.EAP;
+      break;
+    case 'WPA-EAP':
+      onc.setUpAssocArray(network.WiFi, 'EAP');
+      network.WiFi.EAP.Outer = $('#eap').val();
+      var serverCert = $('#wifi-server-ca').val();
+      network.WiFi.EAP.UseSystemCAs = serverCert != 'ignore';
+      if ($('#save-credentials').is(':checked')) {
+        network.WiFi.EAP.SaveCredentials = true;
+        // Don't bother getting the username/password if save
+        // credentials is off.  That would be an inconsistent state.
+        network.WiFi.EAP.Identity = $('#wifi-identity').val();
+        network.WiFi.EAP.Password = $('#wifi-password').val();
       }
-    }
-    if (wiFiDialog.wifiRequiresClientCertficate()) {
-      network.WiFi.EAP.ClientCertType = 'Pattern';
-      onc.setUpAssocArray(network.WiFi.EAP, 'ClientCertPattern');
-      if ($('#wifi-client-ca').val() != 'empty') {
-        network.WiFi.EAP.ClientCertPattern.IssuerCARef =
-          $('#wifi-client-ca').val();
+      if (wiFiDialog.wifiRequiresServerCertificate()) {
+        if (serverCert != 'default') {
+          if (serverCert == 'ignore') {
+            delete network.WiFi.EAP.ServerCARef;
+          } else {
+            network.WiFi.EAP.ServerCARef = serverCert;
+          }
+        }
       }
-      network.WiFi.EAP.ClientCertPattern.EnrollmentUri =
-        $('#wifi-enrollment-uri').val();
-    }
-    delete network.WiFi.Passphrase;
-    break;
+      if (wiFiDialog.wifiRequiresClientCertficate()) {
+        network.WiFi.EAP.ClientCertType = 'Pattern';
+        onc.setUpAssocArray(network.WiFi.EAP, 'ClientCertPattern');
+        if ($('#wifi-client-ca').val() != 'empty') {
+          network.WiFi.EAP.ClientCertPattern.IssuerCARef =
+            $('#wifi-client-ca').val();
+        }
+        if ($('#wifi-enrollment-uri').val()) {
+          network.WiFi.EAP.ClientCertPattern.EnrollmentURI = [
+              $('#wifi-enrollment-uri').val() ];
+        } else {
+          delete network.WiFi.EAP.ClientCertPattern.EnrollmentURI;
+        }
+      }
+      delete network.WiFi.Passphrase;
+      break;
   }
 
   if (network.WiFi.Security == 'WEP-PSK') {
@@ -250,13 +259,14 @@ wiFiDialog.setToUi = function(netConfig) {
   if ('HiddenSSID' in wifiConfig)
     $('#hidden-ssid')[0].checked = wifiConfig.HiddenSSID != false;
   if ('Passphrase' in wifiConfig) {
+    var tmpPassphrase = wifiConfig.Passphrase;
     // Strip off any '0x' from hex passphrases.  We'll correctly
     // interpret it as a hex passphrase when we save and add the
     // '0x' back on.
     if (wifiConfig.Security == 'WEP-PSK' &&
-        wifiConfig.Passphrase.substr(0, 2) == '0x')
-      wifiConfig.Passphrase = wifiConfig.Passphrase.substr(2);
-    $('#passphrase').val(wifiConfig.Passphrase);
+        tmpPassphrase.substr(0, 2) == '0x')
+      tmpPassphrase = tmpPassphrase.substr(2);
+    $('#passphrase').val(tmpPassphrase);
   }
   $('#security').val(wifiConfig.Security);
   if ('EAP' in wifiConfig && wifiConfig.Security == 'WPA-EAP') {
@@ -289,8 +299,9 @@ wiFiDialog.setToUi = function(netConfig) {
       var certPattern = eapConfig.ClientCertPattern;
       if ('IssuerCARef' in certPattern)
         $('#wifi-client-ca').val(certPattern.IssuerCARef);
-      if ('EnrollmentUri' in certPattern)
-        $('#wifi-enrollment-uri').val(certPattern.EnrollmentUri);
+      if ('EnrollmentURI' in certPattern) {
+        $('#wifi-enrollment-uri').val(certPattern.EnrollmentURI[0]);
+      }
     }
   }
   networkDialog.setToUi(netConfig);

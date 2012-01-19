@@ -27,8 +27,9 @@ onc.createUpdate = function(entity, type, oncData) {
   if (oncData == null)
     oncData = main.oncCurrent;
   var resultOnc = {
+    'Certificates': [],
     'NetworkConfigurations': [],
-    'Certificates': []
+    'Type': 'UnencryptedConfiguration'
   };
   resultOnc.NetworkConfigurations = oncData.NetworkConfigurations.slice(0);
   resultOnc.Certificates = oncData.Certificates.slice(0);
@@ -236,14 +237,27 @@ onc.validateClientCert = function(outer, index, oncData, result) {
     }
     var pattern = outer.ClientCertPattern;
     if (!('IssuerCARef' in pattern) &&
-        !('Subject' in pattern)) {
+        !('Subject' in pattern) &&
+        !('Issuer' in pattern)) {
       result.errors.push(['errorMissingClientCA', network.Name]);
       return result;
     }
-    if ('IssuerCARef' in pattern &&
-        onc.findCert(pattern.IssuerCARef, oncData) < 0) {
-      result.errors.push(['errorBadCertReference',
-                          network.Name, 'IssuerCARef', pattern.IssuerCARef]);
+    if ('IssuerCARef' in pattern) {
+      if (!pattern.IssuerCARef instanceof Array) {
+        result.errors.push(['errorBadCertificatePattern', network.Name]);
+      } else {
+        for (var i = 0; i < pattern.IssuerCARef.length; ++i) {
+          if (onc.findCert(pattern.IssuerCARef[i], oncData) < 0) {
+            result.warnings.push(['warningBadCertReference',
+                                  network.Name, 'IssuerCARef',
+                                  pattern.IssuerCARef[i]]);
+          }
+        }
+      }
+    }
+    if ('EnrollmentURI' in pattern &&
+        !(pattern.EnrollmentURI instanceof Array)) {
+      result.errors.push(['errorBadCertificatePattern', network.Name]);
     }
   } else {
     result.errors.push(['errorLoadRequiredObjectMissing', 'ClientCertType']);
@@ -618,17 +632,21 @@ onc.validateWiFiNetwork = function(index, oncData, result) {
   case 'WEP-PSK':
     result.warnings.push(['warningWEPInherentlyUnsafe', netConfig.Name]);
     if ('Passphrase' in netConfig.WiFi) {
-      // 5/13/16/29 characters are needed for 64/128/152/256-bit WEP ascii keys
-      // 10/26/32/58 characters are needed for 64/128/152/256-bit WEP hex keys
-      // Note that the actual bits supplied here are only
+      // 10/26/32/58 characters are needed for 64/128/152/256-bit WEP
+      // hex keys.  Note that the actual bits supplied here are only
       // 40/104/128/232 bits, respectively, but WEP adds some
-      // randomness to make up the rest of the bits.
-      var hexLengths = [10, 26, 32, 58];
+      // randomness to make up the rest of the bits.  Also, note that
+      // ASCII keys should be converted to hex for ONC files to comply
+      // with the spec.
       var passphrase = netConfig.WiFi.Passphrase;
-      if (passphrase.substr(0, 2) != '0x' ||
-          hexLengths.indexOf(passphrase.length - 2) == -1)
-        result.errors.push(['errorWEPKeyInvalidLength',
-                            netConfig.Name]);
+      if (passphrase.substr(0, 2) == '0x') {
+        var hexLengths = [10, 26, 32, 58];
+        if (hexLengths.indexOf(passphrase.length - 2) == -1)
+          result.errors.push(['errorWEPHexKeyInvalidLength',
+                              netConfig.Name, passphrase.length]);
+      } else {
+        result.errors.push(['errorWEPKeyNotHex', netConfig.Name]);
+      }
     } else {
       result.error.push(['errorPassphraseMissing',
                          netConfig.Name]);
@@ -653,36 +671,45 @@ onc.validateWiFiNetwork = function(index, oncData, result) {
       break;
     }
     var eapConfig = netConfig.WiFi.EAP;
-    if (wiFiDialog.wifiRequiresServerCertificate()) {
-      if ('ServerCARef' in eapConfig &&
-          onc.findCert(eapConfig.ServerCARef, oncData) < 0) {
-        result.errors.push(['errorBadCertReference',
-                            netConfig.Name, 'ServerCARef',
-                            eapConfig.ServerCARef]);
-      }
-    }
-    if (wiFiDialog.wifiRequiresClientCertficate()) {
-      onc.validateClientCert(eapConfig, index, oncData, result);
-    }
-    if (wiFiDialog.wifiRequiresPassword()) {
-      if (!('Password' in eapConfig))
-        result.warnings.push(['warningEAPPasswordEmpty',
-                              netConfig.Name]);
-    }
     if (!('Outer' in eapConfig)) {
       result.errors.push(['errorLoadRequiredObjectMissing',
                           'WiFi.EAP.Outer']);
       return result;
     }
+
+    // Check server certs.
     switch (eapConfig.Outer) {
-    case 'PEAP':
-    case 'EAP-TTLS':
-    case 'EAP-TLS':
-    case 'LEAP':
-      break;
-    default:
-      result.errors.push(['errorLoadUnhandledEapType',
-                          eapConfig.Outer, netConfig.Name]);
+      case 'EAP-TTLS':
+      case 'EAP-TLS':
+      case 'PEAP':
+        if ('ServerCARef' in eapConfig &&
+            eapConfig.ServerCARef != 'ignore' &&
+            onc.findCert(eapConfig.ServerCARef, oncData) < 0) {
+          result.errors.push(['errorBadCertReference',
+                              netConfig.Name, 'ServerCARef',
+                              eapConfig.ServerCARef]);
+        }
+        break;
+      default:
+        break;
+    }
+
+    // Check client certs/PSKs.
+    switch (eapConfig.Outer) {
+      case 'EAP-TLS':
+        onc.validateClientCert(eapConfig, index, oncData, result);
+        break;
+      case 'PEAP':
+      case 'EAP-TTLS':
+      case 'LEAP':
+        if (!('Password' in eapConfig)) {
+            result.warnings.push(['warningEAPPasswordEmpty',
+                                  netConfig.Name]);
+        }
+        break;
+      default:
+        result.errors.push(['errorLoadUnhandledEapType',
+                            eapConfig.Outer, netConfig.Name]);
       return result;
     }
     if (!('Identity' in eapConfig) || eapConfig.Identity == '') {

@@ -100,9 +100,12 @@
   "enrollmentUri": {
     "message": "Client Enrollment URI"
   },
+  "errorBadCertificatePattern": {
+    "message": "The CertificatePattern for network $1 is malformed."
+  },
   "errorBadCertReference": {
     "description": "This is displayed when a reference to a cert does not match any certificate.",
-    "message": "Network $1 has certificate reference $2 to $3, but no such certificate exist."
+    "message": "Network $1 has certificate reference $2 to $3, but no such certificate exists."
   },
   "errorCertificateMissingGUID": {
     "message": "Certificate missing GUID."
@@ -204,11 +207,14 @@
   "errorUploadCertificate": {
     "message": "You need to upload a certificate."
   },
-  "errorWEPKeyInvalidLength": {
-    "message": "Your WEP ASCII passphrase for the network '$1' is not a valid length.  A WEP passphrase must be either 5, 13, 16, or 29 characters for an ASCII passphrase, or 10, 26, 32 or 58 characters for a hexadecimal passphrase, depending on the bit length of the key desired."
+  "errorWEPHexKeyInvalidLength": {
+    "message": "Your WEP Hex passphrase for the network '$1' is not a valid length ($2).  A WEP hex passphrase must be 10, 26, 32 or 58 characters long, depending on the bit length of the key desired."
+  },
+  "errorWEPKeyNotHex": {
+    "message": "WEP passphrase for network $1 is not stored in hex format."
   },
   "errorWEPKeyNonHexCharacters": {
-    "message": "The hexadecimal WEP password for the network '$1' contains invalid hex characters.  Hexadecimal passwords can only contain the letters 'a' through 'f' and the numbers 0 through 9.  If you didn't intend to enter a hex password, then you must use an ASCII password of the correct length (5, 13, 16 or 29 characters, depending on the length of the key desired)."
+    "message": "The hexadecimal WEP passphrase for the network '$1' contains invalid hex characters.  Hexadecimal passphrases can only contain the letters 'a' through 'f' and the numbers 0 through 9.  If you didn't intend to enter a hex passphrase, then you must use an ASCII passphrase of the correct length (5, 13, 16 or 29 characters, depending on the length of the key desired)."
   },
   "errorWiFiNetworkMissingSSID": {
     "message": "Wi-Fi network must have SSID."
@@ -460,6 +466,10 @@
   "vpnType": {
     "message": "VPN Type"
   },
+  "warningBadCertReference": {
+    "description": "This is displayed when a reference to a cert in a pattern does not match any certificate in the file.",
+    "message": "Network $1 contains a pattern $2 that references certificate $3, but no such certificate exists in this ONC file."
+  },
   "warningConfigurationTypeMissing": {
     "message": "Configuration 'Type' field is missing."
   },
@@ -485,7 +495,7 @@
     "message": "Unrecognized top-level field in ONC file: $1."
   },
   "warningWEPInherentlyUnsafe": {
-    "message": "You are using WEP to secure the Wi-Fi network named '$1'.  WEP networks are inherently insecure.  Consider using WPA or WPA2 if possible."
+    "message": "You are using WEP to secure the Wi-Fi network named '$1'.  WEP networks are inherently insecure.  Consider using WPA or WPA Enterprise if possible."
   },
   "wifiSettings": {
     "message": "Wi-Fi Network Settings"

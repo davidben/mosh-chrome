@@ -63,9 +63,10 @@ vpnDialog.getCertsFromUi = function(container) {
     container.ClientCertPattern.IssuerCARef = clientCa;
   }
   if ($('#vpn-enrollment-uri').val()) {
-    container.ClientCertPattern.EnrollmentUri = $('#vpn-enrollment-uri').val();
+    container.ClientCertPattern.EnrollmentURI = [
+        $('#vpn-enrollment-uri').val() ];
   } else {
-    delete container.ClientCertPattern.EnrollmentUri;
+    delete container.ClientCertPattern.EnrollmentURI;
   }
 };
 
@@ -159,8 +160,11 @@ vpnDialog.setCertToUi = function(vpnConfig) {
                      main.oncCurrent) >= 0) {
       $('#vpn-client-ca').val(vpnConfig.ClientCertPattern.IssuerCARef);
     }
-    if ('EnrollmentUri' in vpnConfig.ClientCertPattern)
-      $('#vpn-enrollment-uri').val(vpnConfig.ClientCertPattern.EnrollmentUri);
+    if ('EnrollmentURI' in vpnConfig.ClientCertPattern) {
+      // TODO(gspencer): Support multiple entries in the enrollment
+      // URI array (since that is how they are specified).
+      $('#vpn-enrollment-uri').val(certPattern.EnrollmentURI[0]);
+    }
   }
 };
 
