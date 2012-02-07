@@ -17,6 +17,8 @@ function getQueryParam(key, defaultVal) {
 
 if (document.URL.match(/https\:\/\/www\.google\.com\/accounts\/ServiceLogin/) ||
     document.URL.match(/https\:\/\/accounts\.google\.com\/ServiceLogin/) ||
+    document.URL.match(
+        /https\:\/\/gaiastaging\.corp\.google\.com\/ServiceLogin/) ||
     document.URL.match(/https\:\/\/insecure\.com\/accounts\/ServiceLogin/)) {
   var testEmail = unescape(getQueryParam('test_email'));
   var testPassword = unescape(getQueryParam('test_pwd'));
