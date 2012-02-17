@@ -29,7 +29,6 @@ Authenticator.prototype = {
   email_: null,
   password_: null,
   attemptToken_: null,
-  frameLoaded_: false,
 
   // Input params from extension initialization URL.
   inputLang_ : undefined,
@@ -45,7 +44,6 @@ Authenticator.prototype = {
 
   initialize: function() {
     console.log('### Authenticator.initialize');
-    this.frameLoaded_ = false;
 
     var params = getUrlSearchParams(location.search);
     this.gaiaOrigin_ = params['gaiaOrigin'] || this.GAIA_PAGE_ORIGIN;
@@ -85,40 +83,13 @@ Authenticator.prototype = {
   },
 
   loadFrame_: function() {
-    console.log('Loading GAIA frame');
+    console.log('Authenticator loading GAIA frame');
     $('gaia-frame').src = this.getFrameUrl_();
   },
 
-  onFrameLoad: function(e) {
-    console.log('### Authenticator.loadFrame_: Frame loaded.');
-  },
-
   onPageLoad: function(e) {
-    window.addEventListener('offline', this.onOffline.bind(this), false);
-    window.addEventListener('online', this.onOnline.bind(this), false);
     window.addEventListener('message', this.onMessage.bind(this), false);
-    $('gaia-frame').addEventListener('load', this.onFrameLoad.bind(this));
-
-    console.log('#### Authenticator.onPageLoad: navigator.onLine = ' + navigator.onLine);
-    if (navigator.onLine) {
-      console.log('#### Authenticator.onPageLoad: loading frame...');
-      this.loadFrame_();
-    }
-  },
-
-  onOffline: function(e) {
-    if (this.frameLoaded_) {
-      console.log('#### Authenticator.onOffline: went offline, cancel auth...');
-      this.frameLoaded_ = false; // This triggers reload when back online.
-      // TODO(zelidrag): Signal parent page that we can't complete auth process.
-    }
-  },
-
-  onOnline: function(e) {
-    if (!this.frameLoaded_) {
-      // console.log('#### Authenticator.onOnline: loading frame...');
-      this.loadFrame_();
-    }
+    this.loadFrame_();
   },
 
   onLoginUILoaded: function() {
@@ -126,12 +97,12 @@ Authenticator.prototype = {
       'method': 'loginUILoaded'
     };
     window.parent.postMessage(msg, this.PARENT_PAGE);
-    this.frameLoaded_ = true;
+    console.log('### Authenticator.onLoginUILoaded.');
   },
 
   onMessage: function(e) {
     var msg = e.data;
-    // console.log('#### Authenticator.onMessage: ' + JSON.stringify(msg));
+    console.log('#### Authenticator.onMessage: method=' + msg.method);
     if (msg.method == 'attemptLogin' && this.isGaiaMessage_(e)) {
       this.email_ = msg.email;
       this.password_ = msg.password;

@@ -3,11 +3,9 @@
 <script src="util.js"></script>
 <script>
 function load() {
+  console.log('### Authenticator success page loaded.');
+
   var params = getUrlSearchParams(location.search);
-
-  console.log('### success url=' + location.href);
-  console.log('### success params=' + JSON.stringify(params));
-
   var msg = {
     'method': 'confirmLogin',
     'attemptToken': params['attemptToken']
@@ -19,6 +17,5 @@ function load() {
 document.addEventListener('DOMContentLoaded', load);
 </script>
 
-<body><div id='test-result' hidden style='color:white'></div></div>
-</body>
+<body></body>
 </html>
