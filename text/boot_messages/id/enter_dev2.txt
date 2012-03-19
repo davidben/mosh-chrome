@@ -1,4 +1,3 @@
-Menyiapkan sistem untuk Mode Pengembang (mungkin memakan waktu 5 - 10 menit).
+Menyiapkan sistem untuk Mode Pengembang.
+Mungkin agak lama.
 Jangan mematikan komputer Anda hingga komputer dimulai ulang.
-
-Saat reboot, tekan Ctrl+Alt+[->] (F2) untuk informasi tentang Mode Pengembang.

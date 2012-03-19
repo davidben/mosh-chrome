@@ -1,4 +1,3 @@
-Przygotowywanie systemu do przejścia w tryb programisty (może potrwać 5 do 10 minut).
+Przygotowywanie systemu do trybu programisty.
+To może chwilę potrwać.
 Nie wyłączaj komputera, dopóki nie uruchomi się ponownie.
-
-W trakcie ponownego uruchamiania naciśnij klawisze Ctrl+Alt+[->] (F2), aby dowiedzieć się więcej o trybie programisty.

@@ -1,4 +1,3 @@
-Süsteemi arendaja režiimi jaoks ettevalmistamine (selleks võib kuluda 5–10 minutit).
+Süsteemi ettevalmistamine arendaja režiimi jaoks.
+See võib pisut aega võtta.
 Ärge lülitage arvutit välja enne, kui see on taaskäivitunud.
-
-Taaskäivitamise ajal vajutage klahve Ctrl+Alt+[->] (F2), et saada teavet arendaja režiimi kohta.

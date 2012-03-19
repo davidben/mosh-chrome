@@ -1,4 +1,3 @@
-Sistema ruošiama kūrėjo režimui (gali užtrukti 5–10 min.).
+Sistema ruošiama kūrėjo režimui.
+Tai gali šiek tiek užtrukti.
 Neišjunkite kompiuterio, kol jis nepasileis iš naujo.
-
-Kai operacinė sistema paleidžiama iš naujo, paspauskite „Ctrl“ + „Alt“ + [->] (F2), kad gautumėte informacijos apie kūrėjo režimą.

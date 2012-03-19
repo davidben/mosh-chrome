@@ -1,4 +1,3 @@
-Chuẩn bị hệ thống cho Chế độ nhà phát triển (có thể mất từ 5 đến 10 phút).
+Đang chuẩn bị hệ thống cho Chế độ nhà phát triển.
+Quá trình này có thể mất một phút.
 Không tắt máy tính của bạn cho tới khi máy đã khởi động lại xong.
-
-Khi khởi động lại, nhấn Ctrl+Alt+[->] (F2) để biết thông tin về Chế độ nhà phát triển.

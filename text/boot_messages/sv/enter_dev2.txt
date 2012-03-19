@@ -1,4 +1,3 @@
-Systemet förbereds för utvecklarläge (kan ta fem till tio minuter).
+Systemet förbereds för utvecklarläge.
+Det kan ta en liten stund ...
 Stäng inte av datorn innan den har startat om.
-
-Vid omstarten trycker du på Ctrl+Alt+[->] (F2) om du vill ha information om utvecklarläget.

@@ -1,4 +1,3 @@
-Sistem, Geliştirici Moduna hazırlanıyor (5-10 dakika sürebilir).
+Sistem, Geliştirici Modu için hazırlanıyor.
+Bu işlem biraz zaman alabilir.
 Tekrar başlatılana kadar bilgisayarınızı kapatmayın.
-
-Açılış sırasında, Geliştirici Modu hakkında bilgi edinmek için Ctrl+Alt+[->] (F2) tuşlarına basın.

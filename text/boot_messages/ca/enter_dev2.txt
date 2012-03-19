@@ -1,4 +1,3 @@
-S'està preparant el sistema per al mode desenvolupador (és possible que trigui de 5 a 10 minuts).
+S'està preparant el sistema per al mode desenvolupador.
+Això pot trigar un moment.
 No apagueu l'equip fins que no s'hagi reiniciat.
-
-Quan es reiniciï, premeu Ctrl + Alt + [->] (F2) per obtenir informació sobre el mode desenvolupador.

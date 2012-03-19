@@ -1,4 +1,3 @@
-Preparazione del sistema per la modalità sviluppatore (tempo previsto: 5-10 minuti).
+Preparazione del sistema per la modalità sviluppatore in corso.
+L'operazione potrebbe richiedere un istante.
 Non spegnere il computer finché non si è riavviato.
-
-Una volta riavviato, premi Ctrl+Alt+[->] (F2) per visualizzare informazioni sulla modalità sviluppatore.

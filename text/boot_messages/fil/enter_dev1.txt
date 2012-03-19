@@ -1,5 +1,5 @@
 Lumilipat ang iyong system sa Mode ng Developer.
 Maki-clear ang lokal na data.
 
-Upang kanselahin, i-off ang iyong computer ngayon at
+Upang kanselahin, i-off ang iyong computer at
 i-toggle ang switch ng developer pabalik sa Normal na (Na-verify) Mode.

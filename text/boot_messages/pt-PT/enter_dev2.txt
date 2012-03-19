@@ -1,4 +1,3 @@
-A preparar o sistema para o Modo de Programador (poderá demorar entre 5 e 10 minutos).
+A preparar o sistema para o Modo de Programador.
+Isto poderá demorar algum tempo.
 Não desligue o computador até reiniciar.
-
-Ao reiniciar, prima Ctrl+Alt+[->] (F2) para obter informações sobre o Modo de Programador.

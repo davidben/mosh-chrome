@@ -1,4 +1,3 @@
-Das System wird auf den Entwicklermodus vorbereitet. Dieser Vorgang kann fünf bis zehn Minuten dauern.
+Das System wird für den Entwicklermodus vorbereitet.
+Das kann etwas dauern.
 Schalten Sie Ihren Computer erst aus, nachdem er neu gestartet wurde.
-
-Drücken Sie während des Neustarts Strg+Alt+[->] (F2), um Informationen zum Entwicklermodus anzuzeigen.

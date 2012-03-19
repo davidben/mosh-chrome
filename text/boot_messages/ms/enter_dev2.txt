@@ -1,4 +1,0 @@
-Sedang menyediakan sistem untuk Mod Pembangun (mungkin mengambil masa 5 - 10 minit).
-Jangan matikan komputer anda sehingga ia telah dimulakan semula.
-
-Apabila dibut semula, tekan Ctrl+Alt+[->] (F2) untuk mendapatkan maklumat mengenai Mod Pembangun.

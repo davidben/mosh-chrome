@@ -1,4 +1,4 @@
-﻿Teie süsteem viiakse üle arendaja režiimi.
+Teie süsteemi viiakse üle arendaja režiimi.
 Kohalikud andmed kustutatakse.
 
 Tühistamiseks lülitage arvuti nüüd välja ja
