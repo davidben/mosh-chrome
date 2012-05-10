@@ -45,13 +45,15 @@ get_png_width() {
 txt_to_png() {
   local input="$1"
   local output="$2"
-  local option="$3"
+  local locale="$3"
+  local option="$4"
   pango-view -q --output="$output" \
     --dpi=72 --align=left --hinting=full \
     --margin="$IMAGE_MARGIN_SIZE"\
     --font="$IMAGE_FONT_NAME $IMAGE_FONT_SIZE" \
     --foreground="$IMAGE_TEXT_COLOR" \
     --background="#$IMAGE_BACKGROUND_RGB" \
+    --language="$locale" \
     $option "$input"
 }
 
@@ -59,9 +61,10 @@ txt_to_png() {
 message_to_png() {
   local input="$1"
   local output="$2"
-  local max_size_file="$3"
+  local locale="$3"
+  local max_size_file="$4"
 
-  txt_to_png "$input" "$output"
+  txt_to_png "$input" "$output" "$locale"
 
   # We prefer a "left-aligned text image on center of screen, with text
   # wrapped by margin of its background image (max_size_file)". However if a
@@ -74,7 +77,7 @@ message_to_png() {
     local max_width="$(get_png_width "$max_size_file")"
     local width="$(get_png_width "$output")"
     if [ "$max_width" -gt 0 -a "$width" -gt "$max_width" ]; then
-      txt_to_png "$input" "$output" "--width=$max_width"
+      txt_to_png "$input" "$output" "$locale" "--width=$max_width"
     fi
   fi
 }
@@ -131,7 +134,7 @@ main() {
     # File extension (.png) is required for render engine (pango-view) to decide
     # output format.
     TEMP_FILE="$(mktemp --tmpdir -u).png"
-    message_to_png "$text_file" "$TEMP_FILE" \
+    message_to_png "$text_file" "$TEMP_FILE" "$locale" \
                    "$ASSETS_IMAGE_PATH/boot_message.png"
     ply-image --clear 0x"$IMAGE_BACKGROUND_RGB" \
               "$ASSETS_IMAGE_PATH/boot_message.png"
