@@ -29,7 +29,6 @@ class PluginInstance : public pp::Instance,
   pp::Core* core() { return core_; }
   pthread_t plugin_thread() { return plugin_thread_; }
 
-  const char* GetEnvironmentVariable(const char* name);
   void PrintLog(const std::string& msg);
   void SessionClosed(int error);
 

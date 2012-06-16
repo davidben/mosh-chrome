@@ -203,16 +203,6 @@ void* PluginInstance::SessionThread(void* arg) {
   return NULL;
 }
 
-const char* PluginInstance::GetEnvironmentVariable(const char* name) {
-  if (session_args_.isMember(kEnvironmentAttr) &&
-      session_args_[kEnvironmentAttr].isObject() &&
-      session_args_[kEnvironmentAttr].isMember(name)) {
-    return session_args_[kEnvironmentAttr][name].asCString();
-  }
-
-  return NULL;
-}
-
 void PluginInstance::StartSession(const Json::Value& args) {
   if (args.size() == 1 && args[(size_t)0].isObject() && !plugin_thread_) {
     session_args_ = args[(size_t)0];
@@ -226,6 +216,17 @@ void PluginInstance::StartSession(const Json::Value& args) {
   if (session_args_.isMember(kUseJsSocketAttr) &&
       session_args_[kUseJsSocketAttr].isBool()) {
     file_system_.UseJsSocket(session_args_[kUseJsSocketAttr].asBool());
+  }
+  if (session_args_.isMember(kEnvironmentAttr) &&
+      session_args_[kEnvironmentAttr].isObject()) {
+    Json::Value::Members members =
+      session_args_[kEnvironmentAttr].getMemberNames();
+    for (size_t i = 0; i < members.size(); i++) {
+      if (session_args_[kEnvironmentAttr][members[i]].isString()) {
+        setenv(members[i].c_str(),
+               session_args_[kEnvironmentAttr][members[i]].asCString(), 1);
+      }
+    }
   }
   if (pthread_create(&plugin_thread_, NULL,
                      &PluginInstance::SessionThread, this)) {
