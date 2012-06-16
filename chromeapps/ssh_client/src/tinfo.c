@@ -1,27 +1,32 @@
+#include <string.h>
+
 #include <curses.h>
 #include <term.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 
 /* Fake libtinfo for mosh on NaCl */
 
 int setupterm(char *term, int filedes, int *errret) {
-  fprintf(stderr, "setupterm not implemented\n");
-  abort();
+  if (errret) *errret = 1;
+  return OK;
 }
 
 int tigetflag(char *capname) {
-  fprintf(stderr, "setupterm not implemented\n");
-  abort();
+  if (strcmp(capname, "bce") == 0) {
+    return 1;
+  }
+  return -1;
 }
 
 int tigetnum(char *capname) {
-  fprintf(stderr, "tigetnum not implemented\n");
-  abort();
+  if (strcmp(capname, "colors") == 0) {
+    return 256;
+  }
+  return -1;
 }
 
 char *tigetstr(char *capname) {
-  fprintf(stderr, "tigetstr not implemented\n");
-  abort();
+  if (strcmp(capname, "ech") == 0) {
+    return (char *)"\033[%p1%dX";
+  }
+  return (char *)-1;
 }
