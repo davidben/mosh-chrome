@@ -2,22 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef SSH_PLUGIN_H
-#define SSH_PLUGIN_H
+#ifndef MOSH_PLUGIN_H
+#define MOSH_PLUGIN_H
 
 #include "plugin.h"
 
-class SshPluginInstance : public PluginInstance {
+class MoshPluginInstance : public PluginInstance {
  public:
-  explicit SshPluginInstance(PP_Instance instance);
-  virtual ~SshPluginInstance();
+  explicit MoshPluginInstance(PP_Instance instance);
+  virtual ~MoshPluginInstance();
 
  protected:
   // Implements PluginInstance.
   virtual void SessionThreadImpl();
 
  private:
-  DISALLOW_COPY_AND_ASSIGN(SshPluginInstance);
+  DISALLOW_COPY_AND_ASSIGN(MoshPluginInstance);
 };
 
-#endif  // SSH_PLUGIN_H
+#endif  // MOSH_PLUGIN_H

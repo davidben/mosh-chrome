@@ -14,7 +14,7 @@
 #include "nacl-mounts/base/irt_syscalls.h"
 
 #include "file_system.h"
-#include "ssh_plugin.h"
+#include "plugin.h"
 
 extern "C" {
 
@@ -139,19 +139,19 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
 
 void exit(int status) {
   LOG("exit: %d\n", status);
-  SshPluginInstance::GetInstance()->SessionClosed(status);
+  PluginInstance::GetInstance()->SessionClosed(status);
   pthread_exit(NULL);
 }
 
 void _exit(int status) {
   LOG("_exit: %d\n", status);
-  SshPluginInstance::GetInstance()->SessionClosed(status);
+  PluginInstance::GetInstance()->SessionClosed(status);
   pthread_exit(NULL);
 }
 
 void abort() {
   LOG("abort\n");
-  SshPluginInstance::GetInstance()->SessionClosed(-1);
+  PluginInstance::GetInstance()->SessionClosed(-1);
   pthread_exit(NULL);
 }
 
@@ -304,7 +304,7 @@ int tcsetattr(int fd, int optional_actions, const struct termios *termios_p) {
 
 char* getenv(const char* name) {
   char* value = const_cast<char*>(
-      SshPluginInstance::GetInstance()->GetEnvironmentVariable(name));
+      PluginInstance::GetInstance()->GetEnvironmentVariable(name));
   LOG("getenv: %s=%s\n", name, value ? value : "<NULL>");
   return value;
 }

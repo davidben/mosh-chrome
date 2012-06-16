@@ -1,0 +1,50 @@
+diff --git a/src/crypto/crypto.cc b/src/crypto/crypto.cc
+index 9d5c03b..6c2a0a5 100644
+--- a/src/crypto/crypto.cc
++++ b/src/crypto/crypto.cc
+@@ -282,6 +282,7 @@ Message Session::decrypt( string ciphertext )
+   return ret;
+ }
+ 
++#ifndef __native_client__
+ static rlim_t saved_core_rlimit;
+ 
+ /* Disable dumping core, as a precaution to avoid saving sensitive data
+@@ -311,3 +312,4 @@ void Crypto::reenable_dumping_core( void ) {
+     setrlimit( RLIMIT_CORE, &limit );
+   }
+ }
++#endif  /* __native_client__ */
+diff --git a/src/crypto/crypto.h b/src/crypto/crypto.h
+index 1754c4c..28b6a5a 100644
+--- a/src/crypto/crypto.h
++++ b/src/crypto/crypto.h
+@@ -122,8 +122,10 @@ namespace Crypto {
+     Session & operator=( const Session & );
+   };
+ 
++#ifndef __native_client__
+   void disable_dumping_core( void );
+   void reenable_dumping_core( void );
++#endif
+ }
+ 
+ #endif
+diff --git a/src/frontend/mosh-client.cc b/src/frontend/mosh-client.cc
+index a9ab798..7545325 100644
+--- a/src/frontend/mosh-client.cc
++++ b/src/frontend/mosh-client.cc
+@@ -53,10 +53,12 @@ void print_colorcount( void )
+   printf( "%d\n", color_val );
+ }
+ 
+-int main( int argc, char *argv[] )
++extern "C" int mosh_main( int argc, char *argv[] )
+ {
++#ifndef __native_client__
+   /* For security, make sure we don't dump core */
+   Crypto::disable_dumping_core();
++#endif
+ 
+   /* Get arguments */
+   int opt;

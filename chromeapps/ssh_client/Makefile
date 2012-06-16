@@ -2,7 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-PROJECT:=output/ssh_client
+SSH_CLIENT:=output/ssh_client
+MOSH_CLIENT:=output/mosh_client
 CXX_SOURCES:=\
 	src/dev_null.cc \
 	src/dev_random.cc \
@@ -10,10 +11,16 @@ CXX_SOURCES:=\
 	src/file_system.cc \
 	src/js_file.cc \
 	src/pepper_file.cc \
+	src/plugin.cc \
 	src/tcp_server_socket.cc \
 	src/tcp_socket.cc \
-	src/syscalls.cc \
+	src/syscalls.cc
+
+SSH_SOURCES:=\
 	src/ssh_plugin.cc
+
+MOSH_SOURCES:=\
+	src/mosh_plugin.cc
 
 CXX_HEADERS:=\
 	src/dev_null.h \
@@ -22,7 +29,9 @@ CXX_HEADERS:=\
 	src/file_interfaces.h \
 	src/file_system.h \
 	src/js_file.h \
+	src/mosh_plugin.h \
 	src/pepper_file.h \
+	src/plugin.h \
 	src/proxy_stream.h \
 	src/pthread_helpers.h \
 	src/ssh_plugin.h \
@@ -42,25 +51,44 @@ CXX:=$(TC_PATH)/bin/i686-nacl-g++
 THIS_MAKEFILE:=$(abspath $(lastword $(MAKEFILE_LIST)))
 
 # Declare the ALL target first, to make the 'all' target the default build
-all: $(PROJECT)_x86_32.nexe $(PROJECT)_x86_64.nexe
+all: $(SSH_CLIENT)_x86_32.nexe $(SSH_CLIENT)_x86_64.nexe \
+	$(MOSH_CLIENT)_x86_32.nexe $(MOSH_CLIENT)_x86_64.nexe
 
 # Define 32 bit compile and link rules for C++ sources
-x86_32_OBJS:=$(patsubst src/%.cc,output/%_32.o,$(CXX_SOURCES))
+x86_32_COMMON_OBJS:=$(patsubst src/%.cc,output/%_32.o,$(CXX_SOURCES))
+x86_32_SSH_OBJS:=$(patsubst src/%.cc,output/%_32.o,$(SSH_SOURCES))
+x86_32_MOSH_OBJS:=$(patsubst src/%.cc,output/%_32.o,$(MOSH_SOURCES))
+x86_32_OBJS:=$(x86_32_COMMON_OBJS) $(x86_32_SSH_OBJS) $(x86_32_MOSH_OBJS)
 $(x86_32_OBJS) : output/%_32.o : src/%.cc $(THIS_MAKE) $(CXX_HEADERS)
 	$(CXX) -o $@ -c $< -m32 $(CXXFLAGS)
 
-$(PROJECT)_x86_32.nexe : $(x86_32_OBJS)
+$(SSH_CLIENT)_x86_32.nexe : $(x86_32_COMMON_OBJS) $(x86_32_SSH_OBJS)
 	$(CXX) -o $@ $^ -m32 -lopenssh32 -lssh32 -lopenbsd-compat32 \
 		$(CXXFLAGS) $(LDFLAGS)
 
+$(MOSH_CLIENT)_x86_32.nexe : $(x86_32_COMMON_OBJS) $(x86_32_MOSH_OBJS)
+	$(CXX) -o $@ $^ -m32 -lmosh32 -lmoshcrypto32 -lmoshnetwork32 \
+	        -lmoshstatesync32 -lmoshterminal32 -lmoshutil32 \
+                -lmoshprotos32 -ltinfo32 \
+		$(CXXFLAGS) $(LDFLAGS) -lprotobuf -lrt
+
 # Define 64 bit compile and link rules for C++ sources
-x86_64_OBJS:=$(patsubst src/%.cc,output/%_64.o,$(CXX_SOURCES))
-$(x86_64_OBJS) : output/%_64.o : src/%.cc $(THIS_MAKE)
+x86_64_COMMON_OBJS:=$(patsubst src/%.cc,output/%_64.o,$(CXX_SOURCES))
+x86_64_SSH_OBJS:=$(patsubst src/%.cc,output/%_64.o,$(SSH_SOURCES))
+x86_64_MOSH_OBJS:=$(patsubst src/%.cc,output/%_64.o,$(MOSH_SOURCES))
+x86_64_OBJS:=$(x86_64_COMMON_OBJS) $(x86_64_SSH_OBJS) $(x86_64_MOSH_OBJS)
+$(x86_64_OBJS) : output/%_64.o : src/%.cc $(THIS_MAKE) $(CXX_HEADERS)
 	$(CXX) -o $@ -c $< -m64 $(CXXFLAGS)
 
-$(PROJECT)_x86_64.nexe : $(x86_64_OBJS)
+$(SSH_CLIENT)_x86_64.nexe : $(x86_64_COMMON_OBJS) $(x86_64_SSH_OBJS)
 	$(CXX) -o $@ $^ -m64 -lopenssh64 -lssh64 -lopenbsd-compat64 \
 		$(CXXFLAGS) $(LDFLAGS)
 
+$(MOSH_CLIENT)_x86_64.nexe : $(x86_64_COMMON_OBJS) $(x86_64_MOSH_OBJS)
+	$(CXX) -o $@ $^ -m64 -lmosh64 -lmoshcrypto64 -lmoshnetwork64 \
+	        -lmoshstatesync64 -lmoshterminal64 -lmoshutil64 \
+                -lmoshprotos64 -ltinfo64 \
+		$(CXXFLAGS) $(LDFLAGS) -lprotobuf -lrt
+
 clean:
-	rm -rf output/*.o $(PROJECT)*.nexe
+	rm -rf output/*.o $(SSH_CLIENT)*.nexe $(MOSH_CLIENT)*.nexe
