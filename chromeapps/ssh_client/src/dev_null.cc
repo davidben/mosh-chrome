@@ -24,6 +24,8 @@ void DevNullHandler::release() {
 }
 
 FileStream* DevNullHandler::open(int fd, const char* pathname, int oflag) {
+  if (*pathname)
+    return NULL;
   return new DevNull(fd, oflag);
 }
 

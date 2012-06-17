@@ -28,6 +28,8 @@ void DevRandomHandler::release() {
 }
 
 FileStream* DevRandomHandler::open(int fd, const char* pathname, int oflag) {
+  if (*pathname)
+    return NULL;
   return new DevRandom(fd, oflag, get_random_bytes_);
 }
 

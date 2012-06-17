@@ -106,6 +106,8 @@ class FileSystem {
   void AddFileStream(int fd, FileStream* stream);
   void RemoveFileStream(int fd);
 
+  PathHandler* GetPathHandler(const char* pathname, std::string* remainder);
+
   bool IsKnowDescriptor(int fd);
   FileStream* GetStream(int fd);
 

@@ -136,6 +136,30 @@ void FileSystem::RemoveFileStream(int fd) {
   streams_.erase(fd);
 }
 
+PathHandler* FileSystem::GetPathHandler(const char* pathname,
+                                        std::string* remainder) {
+  std::string path_prefix = pathname;
+  // Check shorter and shorter prefixes until we find a match. A
+  // PathHandler applies to its entire subtree.
+  while (true) {
+    PathHandlerMap::iterator it = paths_.find(path_prefix);
+    if (it != paths_.end()) {
+      *remainder = pathname + path_prefix.length();
+      return it->second;
+    }
+
+    // Remove a path component and retry.
+    size_t pos = path_prefix.rfind('/');
+    if (pos == std::string::npos)
+      break;
+    path_prefix.erase(pos);
+  }
+
+  // Default to the pepper file handler.
+  *remainder = pathname;
+  return ppfs_path_handler_;
+}
+
 int FileSystem::GetFirstUnusedDescriptor() {
   int fd = kFileIDOffset;
   while (IsKnowDescriptor(fd))
@@ -155,15 +179,15 @@ FileStream* FileSystem::GetStream(int fd) {
 int FileSystem::open(const char* pathname, int oflag, mode_t cmode,
                      int* newfd) {
   Mutex::Lock lock(mutex_);
-  PathHandlerMap::iterator it = paths_.find(pathname);
-  PathHandler* handler = (it != paths_.end()) ? it->second : ppfs_path_handler_;
+  std::string remainder;
+  PathHandler* handler = GetPathHandler(pathname, &remainder);
   if (!handler)
     return ENOENT;
 
   int fd = GetFirstUnusedDescriptor();
   // mark descriptor as used
   AddFileStream(fd, NULL);
-  FileStream* stream = handler->open(fd, pathname, oflag);
+  FileStream* stream = handler->open(fd, remainder.c_str(), oflag);
   if (!stream) {
     RemoveFileStream(fd);
     return EACCES;

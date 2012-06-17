@@ -29,6 +29,8 @@ void DevTtyHandler::release() {
 }
 
 FileStream* DevTtyHandler::open(int fd, const char* pathname, int oflag) {
+  if (*pathname)
+    return NULL;
   return new DevTty(fd, oflag, stdin_, stdout_);
 }
 
