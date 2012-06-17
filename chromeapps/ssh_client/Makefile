@@ -39,8 +39,9 @@ CXX_HEADERS:=\
 	src/tcp_socket.h
 
 # Project Build flags
-override LDFLAGS+=-lppapi_cpp -lppapi -lutil -lcrypto -lz -lresolv -ldl -lnsl \
-	-ljsoncpp -Loutput
+override LDFLAGS+=-lppapi_cpp -lppapi -lz -lresolv -ldl -ljsoncpp -Loutput
+SSH_LIBS=-lutil -lcrypto -lnsl
+MOSH_LIBS=-lprotobuf -lrt
 override WARNINGS+=-Wno-long-long -Wall -Wswitch-enum -Werror
 override CXXFLAGS+=-pthread -std=gnu++0x $(WARNINGS) -Iinclude
 
@@ -64,13 +65,13 @@ $(x86_32_OBJS) : output/%_32.o : src/%.cc $(THIS_MAKE) $(CXX_HEADERS)
 
 $(SSH_CLIENT)_x86_32.nexe : $(x86_32_COMMON_OBJS) $(x86_32_SSH_OBJS)
 	$(CXX) -o $@ $^ -m32 -lopenssh32 -lssh32 -lopenbsd-compat32 \
-		$(CXXFLAGS) $(LDFLAGS)
+		$(CXXFLAGS) $(LDFLAGS) $(SSH_LIBS)
 
 $(MOSH_CLIENT)_x86_32.nexe : $(x86_32_COMMON_OBJS) $(x86_32_MOSH_OBJS)
 	$(CXX) -o $@ $^ -m32 -lmosh32 -lmoshcrypto32 -lmoshnetwork32 \
 	        -lmoshstatesync32 -lmoshterminal32 -lmoshutil32 \
                 -lmoshprotos32 -ltinfo32 \
-		$(CXXFLAGS) $(LDFLAGS) -lprotobuf -lrt
+		$(CXXFLAGS) $(LDFLAGS) $(MOSH_LIBS)
 
 # Define 64 bit compile and link rules for C++ sources
 x86_64_COMMON_OBJS:=$(patsubst src/%.cc,output/%_64.o,$(CXX_SOURCES))
@@ -82,13 +83,13 @@ $(x86_64_OBJS) : output/%_64.o : src/%.cc $(THIS_MAKE) $(CXX_HEADERS)
 
 $(SSH_CLIENT)_x86_64.nexe : $(x86_64_COMMON_OBJS) $(x86_64_SSH_OBJS)
 	$(CXX) -o $@ $^ -m64 -lopenssh64 -lssh64 -lopenbsd-compat64 \
-		$(CXXFLAGS) $(LDFLAGS)
+		$(CXXFLAGS) $(LDFLAGS) $(SSH_LIBS)
 
 $(MOSH_CLIENT)_x86_64.nexe : $(x86_64_COMMON_OBJS) $(x86_64_MOSH_OBJS)
 	$(CXX) -o $@ $^ -m64 -lmosh64 -lmoshcrypto64 -lmoshnetwork64 \
 	        -lmoshstatesync64 -lmoshterminal64 -lmoshutil64 \
                 -lmoshprotos64 -ltinfo64 \
-		$(CXXFLAGS) $(LDFLAGS) -lprotobuf -lrt
+		$(CXXFLAGS) $(LDFLAGS) $(MOSH_LIBS)
 
 clean:
 	rm -rf output/*.o $(SSH_CLIENT)*.nexe $(MOSH_CLIENT)*.nexe
