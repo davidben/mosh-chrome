@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/mman.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <termios.h>
@@ -36,6 +37,7 @@ DECLARE(dup2);
 DECLARE(stat);
 DECLARE(fstat);
 DECLARE(getdents);
+DECLARE(mmap);
 
 const char* __progname = "ssh";
 
@@ -103,6 +105,18 @@ int WRAP(fstat)(int fd, struct nacl_abi_stat *buf) {
 int WRAP(getdents)(int fd, dirent* nacl_buf, size_t nacl_count, size_t *nread) {
   LOG("getdents: %d\n", fd);
   return FileSystem::GetFileSystem()->getdents(fd, nacl_buf, nacl_count, nread);
+}
+
+int WRAP(mmap)(void **addr, size_t len, int prot, int flags, int fd,
+               nacl_abi_off_t off) {
+  // Per http://code.google.com/p/nativeclient/issues/detail?id=2542
+  // and nacl-mouts, we need to return ENOSYS on our file descriptors
+  // so glibc will fall back to read.
+  LOG("mmap: %d\n", fd);
+  if (flags & MAP_ANONYMOUS)
+    return REAL(mmap)(addr, len, prot, flags, fd, off);
+  else
+    return ENOSYS;
 }
 
 int isatty(int fd) {
@@ -321,5 +335,6 @@ extern "C" void DoWrapSysCalls() {
   DO_WRAP(stat);
   DO_WRAP(fstat);
   DO_WRAP(getdents);
+  DO_WRAP(mmap);
   LOG("DoWrapSysCalls done\n");
 }
