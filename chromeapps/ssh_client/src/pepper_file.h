@@ -33,10 +33,10 @@ class PepperFileHandler : public PathHandler {
   DISALLOW_COPY_AND_ASSIGN(PepperFileHandler);
 };
 
-class PepperFile : public FileStream {
+class FileRefStream : public FileStream {
  public:
-  PepperFile(int fd, int oflag, pp::FileSystem* file_system);
-  virtual ~PepperFile();
+  FileRefStream(int fd, int oflag);
+  virtual ~FileRefStream();
 
   bool is_block() { return !(oflag_ & O_NONBLOCK); }
   bool is_open() { return file_io_ != NULL; }
@@ -60,6 +60,12 @@ class PepperFile : public FileStream {
   virtual bool is_write_ready();
   virtual bool is_exception();
 
+ protected:
+  // TODO(davidben): This interface is kinda silly.
+  virtual void GetFileRef(const char* pathname, int32_t* pres) = 0;
+  virtual void CleanupOnMainThread() { }
+  void GotFileRef(const pp::FileRef& file_ref, int32_t* pres);
+
  private:
   void Open(int32_t result, const char* pathname, int32_t* pres);
   void OnOpen(int32_t result, int32_t* pres);
@@ -78,8 +84,7 @@ class PepperFile : public FileStream {
   int ref_;
   int fd_;
   int oflag_;
-  pp::CompletionCallbackFactory<PepperFile, ThreadSafeRefCount> factory_;
-  pp::FileSystem* file_system_;
+  pp::CompletionCallbackFactory<FileRefStream, ThreadSafeRefCount> factory_;
   pp::FileIO* file_io_;
   int64_t offset_;
   PP_FileInfo file_info_;
@@ -88,6 +93,20 @@ class PepperFile : public FileStream {
   std::vector<char> read_buf_;
   std::vector<char> write_buf_;
   bool write_sent_;
+
+  DISALLOW_COPY_AND_ASSIGN(FileRefStream);
+};
+
+class PepperFile : public FileRefStream {
+ public:
+  PepperFile(int fd, int oflag, pp::FileSystem* file_system);
+  virtual ~PepperFile();
+
+ protected:
+  virtual void GetFileRef(const char* pathname, int32_t* pres);
+
+ private:
+  pp::FileSystem* file_system_;
 
   DISALLOW_COPY_AND_ASSIGN(PepperFile);
 };

@@ -12,7 +12,7 @@
 
 #include "file_system.h"
 
-const size_t PepperFile::kBufSize;
+const size_t FileRefStream::kBufSize;
 
 PepperFileHandler::PepperFileHandler(pp::FileSystem* file_system)
     : ref_(1), file_system_(file_system) {
@@ -49,49 +49,49 @@ int PepperFileHandler::stat(const char* pathname, nacl_abi_stat* out) {
 
 //------------------------------------------------------------------------------
 
-PepperFile::PepperFile(int fd, int oflag, pp::FileSystem* file_system)
-  : ref_(1), fd_(fd), oflag_(oflag), factory_(this), file_system_(file_system),
+FileRefStream::FileRefStream(int fd, int oflag)
+  : ref_(1), fd_(fd), oflag_(oflag), factory_(this),
     file_io_(NULL), offset_(0), file_info_(), write_sent_(false) {
 }
 
-PepperFile::~PepperFile() {
+FileRefStream::~FileRefStream() {
   assert(!ref_);
 }
 
-void PepperFile::addref() {
+void FileRefStream::addref() {
   ++ref_;
 }
 
-void PepperFile::release() {
+void FileRefStream::release() {
   if (!--ref_)
     delete this;
 }
 
-FileStream* PepperFile::dup(int fd) {
+FileStream* FileRefStream::dup(int fd) {
   assert(0);
   return NULL;
 }
 
-bool PepperFile::open(const char* pathname) {
+bool FileRefStream::open(const char* pathname) {
   int32_t result = PP_OK_COMPLETIONPENDING;
   pp::Module::Get()->core()->CallOnMainThread(0,
-      factory_.NewCallback(&PepperFile::Open, pathname, &result));
+      factory_.NewCallback(&FileRefStream::Open, pathname, &result));
   FileSystem* sys = FileSystem::GetFileSystem();
   while(result == PP_OK_COMPLETIONPENDING)
     sys->cond().wait(sys->mutex());
   return result == PP_OK;
 }
 
-void PepperFile::close() {
+void FileRefStream::close() {
   int32_t result = PP_OK_COMPLETIONPENDING;
   pp::Module::Get()->core()->CallOnMainThread(0,
-      factory_.NewCallback(&PepperFile::Close, &result));
+      factory_.NewCallback(&FileRefStream::Close, &result));
   FileSystem* sys = FileSystem::GetFileSystem();
   while(result == PP_OK_COMPLETIONPENDING)
     sys->cond().wait(sys->mutex());
 }
 
-int PepperFile::read(char* buf, size_t count, size_t* nread) {
+int FileRefStream::read(char* buf, size_t count, size_t* nread) {
   if (!is_open())
     return EIO;
 
@@ -99,7 +99,7 @@ int PepperFile::read(char* buf, size_t count, size_t* nread) {
   if (is_block() && in_buf_.empty()) {
     int32_t result = PP_OK_COMPLETIONPENDING;
     pp::Module::Get()->core()->CallOnMainThread(0,
-        factory_.NewCallback(&PepperFile::Read, count, &result));
+        factory_.NewCallback(&FileRefStream::Read, count, &result));
     while(result == PP_OK_COMPLETIONPENDING)
       sys->cond().wait(sys->mutex());
     if (result < 0) {
@@ -121,7 +121,7 @@ int PepperFile::read(char* buf, size_t count, size_t* nread) {
   return 0;
 }
 
-int PepperFile::write(const char* buf, size_t count, size_t* nwrote) {
+int FileRefStream::write(const char* buf, size_t count, size_t* nwrote) {
   if (!is_open())
     return EIO;
 
@@ -129,7 +129,7 @@ int PepperFile::write(const char* buf, size_t count, size_t* nwrote) {
   if (is_block()) {
     int32_t result = PP_OK_COMPLETIONPENDING;
     pp::Module::Get()->core()->CallOnMainThread(0,
-        factory_.NewCallback(&PepperFile::Write, &result));
+        factory_.NewCallback(&FileRefStream::Write, &result));
     FileSystem* sys = FileSystem::GetFileSystem();
     while(result == PP_OK_COMPLETIONPENDING)
       sys->cond().wait(sys->mutex());
@@ -144,15 +144,15 @@ int PepperFile::write(const char* buf, size_t count, size_t* nwrote) {
     if (!write_sent_) {
       write_sent_ = true;
       pp::Module::Get()->core()->CallOnMainThread(0,
-        factory_.NewCallback(&PepperFile::Write, (int32_t*)NULL));
+        factory_.NewCallback(&FileRefStream::Write, (int32_t*)NULL));
     }
     *nwrote = count;
     return 0;
   }
 }
 
-int PepperFile::seek(nacl_abi_off_t offset, int whence,
-                     nacl_abi_off_t* new_offset) {
+int FileRefStream::seek(nacl_abi_off_t offset, int whence,
+                        nacl_abi_off_t* new_offset) {
   switch (whence) {
     case SEEK_SET:
       offset_ = offset;
@@ -179,20 +179,20 @@ int PepperFile::seek(nacl_abi_off_t offset, int whence,
   }
 }
 
-int PepperFile::fstat(nacl_abi_stat* out) {
+int FileRefStream::fstat(nacl_abi_stat* out) {
   memset(out, 0, sizeof(nacl_abi_stat));
   out->nacl_abi_st_size = file_info_.size;
   return 0;
 }
 
-int PepperFile::fcntl(int cmd, va_list ap) {
+int FileRefStream::fcntl(int cmd, va_list ap) {
   if (cmd == F_GETFL) {
     return oflag_;
   } else if (cmd == F_SETFL) {
     int oflag = va_arg(ap, long);
     if (is_block() && (oflag & O_NONBLOCK)) {
       pp::Module::Get()->core()->CallOnMainThread(0,
-          factory_.NewCallback(&PepperFile::Read,
+          factory_.NewCallback(&FileRefStream::Read,
                                        kBufSize, (int32_t*)NULL));
     }
     oflag_ = oflag;
@@ -202,22 +202,27 @@ int PepperFile::fcntl(int cmd, va_list ap) {
   }
 }
 
-bool PepperFile::is_read_ready() {
+bool FileRefStream::is_read_ready() {
   return !in_buf_.empty();
 }
 
-bool PepperFile::is_write_ready() {
+bool FileRefStream::is_write_ready() {
   return out_buf_.size() < kBufSize;
 }
 
-bool PepperFile::is_exception() {
+bool FileRefStream::is_exception() {
   return !is_open();
 }
 
-void PepperFile::Open(int32_t result, const char* pathname, int32_t* pres) {
+void FileRefStream::Open(int32_t result, const char* pathname, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
-  pp::FileRef file_ref(*file_system_, pathname);
+  GetFileRef(pathname, pres);
+}
+
+void FileRefStream::GotFileRef(const pp::FileRef& file_ref,
+                               int32_t* pres) {
+  FileSystem* sys = FileSystem::GetFileSystem();
   file_io_ = new pp::FileIO(sys->instance());
   int open_flags;
   if ((oflag_ & O_ACCMODE) == O_WRONLY)
@@ -231,27 +236,29 @@ void PepperFile::Open(int32_t result, const char* pathname, int32_t* pres) {
   if (oflag_ & O_TRUNC)
     open_flags |= PP_FILEOPENFLAG_TRUNCATE;
   *pres = file_io_->Open(file_ref, open_flags,
-      factory_.NewCallback(&PepperFile::OnOpen, pres));
+      factory_.NewCallback(&FileRefStream::OnOpen, pres));
   if (*pres != PP_OK_COMPLETIONPENDING)
     sys->cond().broadcast();
+  LOG("*pres = %d\n", *pres);
 }
 
-void PepperFile::OnOpen(int32_t result, int32_t* pres) {
+void FileRefStream::OnOpen(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   if (result == PP_OK) {
     result = file_io_->Query(&file_info_,
-        factory_.NewCallback(&PepperFile::OnQuery, pres));
+        factory_.NewCallback(&FileRefStream::OnQuery, pres));
     if (result == PP_OK_COMPLETIONPENDING)
       return;
   }
   delete file_io_;
   file_io_ = NULL;
+  CleanupOnMainThread();
   *pres = result;
   sys->cond().broadcast();
 }
 
-void PepperFile::OnQuery(int32_t result, int32_t* pres) {
+void FileRefStream::OnQuery(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   if (result == PP_OK) {
@@ -264,28 +271,30 @@ void PepperFile::OnQuery(int32_t result, int32_t* pres) {
   } else {
     delete file_io_;
     file_io_ = NULL;
+    CleanupOnMainThread();
   }
   *pres = result;
   sys->cond().broadcast();
 }
 
-void PepperFile::Read(int32_t result, size_t count, int32_t* pres) {
+void FileRefStream::Read(int32_t result, size_t count, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   assert(file_io_);
   read_buf_.resize(count);
   result = file_io_->Read(offset_, &read_buf_[0], read_buf_.size(),
-      factory_.NewCallback(&PepperFile::OnRead, pres));
+      factory_.NewCallback(&FileRefStream::OnRead, pres));
   if (result != PP_OK_COMPLETIONPENDING) {
     delete file_io_;
     file_io_ = NULL;
+    CleanupOnMainThread();
     if (pres)
       *pres = result;
     sys->cond().broadcast();
   }
 }
 
-void PepperFile::OnRead(int32_t result, int32_t* pres) {
+void FileRefStream::OnRead(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   if (result >= 0) {
@@ -295,13 +304,14 @@ void PepperFile::OnRead(int32_t result, int32_t* pres) {
   } else {
     delete file_io_;
     file_io_ = NULL;
+    CleanupOnMainThread();
   }
   if (pres)
     *pres = result;
   sys->cond().broadcast();
 }
 
-void PepperFile::Write(int32_t result, int32_t* pres) {
+void FileRefStream::Write(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   assert(file_io_);
@@ -309,13 +319,13 @@ void PepperFile::Write(int32_t result, int32_t* pres) {
     if (write_buf_.size()) {
       // Previous write operation is in progress.
       pp::Module::Get()->core()->CallOnMainThread(1,
-          factory_.NewCallback(&PepperFile::Write, &result));
+          factory_.NewCallback(&FileRefStream::Write, &result));
       return;
     }
     assert(out_buf_.size());
     write_buf_.swap(out_buf_);
     result = file_io_->Write(offset_, &write_buf_[0], write_buf_.size(),
-        factory_.NewCallback(&PepperFile::OnWrite, pres));
+        factory_.NewCallback(&FileRefStream::OnWrite, pres));
     write_sent_ = false;
   } else {
     result = PP_ERROR_FAILED;
@@ -323,18 +333,20 @@ void PepperFile::Write(int32_t result, int32_t* pres) {
   if (result != PP_OK_COMPLETIONPENDING) {
     delete file_io_;
     file_io_ = NULL;
+    CleanupOnMainThread();
     if (pres)
       *pres = result;
     sys->cond().broadcast();
   }
 }
 
-void PepperFile::OnWrite(int32_t result, int32_t* pres) {
+void FileRefStream::OnWrite(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   if ((size_t)result != write_buf_.size()) {
     delete file_io_;
     file_io_ = NULL;
+    CleanupOnMainThread();
   } else {
     offset_ += result;
   }
@@ -344,12 +356,26 @@ void PepperFile::OnWrite(int32_t result, int32_t* pres) {
   sys->cond().broadcast();
 }
 
-void PepperFile::Close(int32_t result, int32_t* pres) {
+void FileRefStream::Close(int32_t result, int32_t* pres) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   delete file_io_;
   file_io_ = NULL;
+  CleanupOnMainThread();
   if (pres)
     *pres = PP_OK;
   sys->cond().broadcast();
+}
+
+//------------------------------------------------------------------------------
+
+PepperFile::PepperFile(int fd, int oflag, pp::FileSystem* file_system)
+  : FileRefStream(fd, oflag), file_system_(file_system) {
+}
+
+PepperFile::~PepperFile() {
+}
+
+void PepperFile::GetFileRef(const char* pathname, int32_t* pres) {
+  GotFileRef(pp::FileRef(*file_system_, pathname), pres);
 }
