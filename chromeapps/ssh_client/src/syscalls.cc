@@ -163,11 +163,16 @@ void _exit(int status) {
   pthread_exit(NULL);
 }
 
+#if 0
+// Comment this out to avoid problems with
+// std::terminate. TODO(davidben): Are these overrides even sensible?
+// They certainly break for a multithreaded program.
 void abort() {
   LOG("abort\n");
   PluginInstance::GetInstance()->SessionClosed(-1);
   pthread_exit(NULL);
 }
+#endif
 
 int seteuid(uid_t euid) {
   LOG("seteuid: %d\n", euid);
