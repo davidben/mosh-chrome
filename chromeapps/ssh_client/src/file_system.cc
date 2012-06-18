@@ -388,9 +388,12 @@ int FileSystem::IsReady(int nfds, fd_set* fds, bool (FileStream::*is_ready)(),
   int nset = 0;
   for (int i = 0; i < nfds; i++) {
     if (FD_ISSET(i, fds)) {
-      FileStream* stream = GetStream(i);
-      if (!stream)
+      if (!IsKnowDescriptor(i))
         return -1;
+      FileStream* stream = GetStream(i);
+      // NULL is okay; it may be a socket we haven't setup yet.
+      if (!stream)
+        continue;
       if ((stream->*is_ready)()) {
         if (!apply)
           return 1;
