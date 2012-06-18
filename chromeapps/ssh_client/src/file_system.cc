@@ -910,7 +910,9 @@ int FileSystem::sigaction(int signum,
       oldact->sa_handler = handler_sigwinch_;
     return 0;
   } else {
-    return -1;
+    // Ignore this but claim success so programs can continue. We
+    // "set" the signal handler. It just never got sent.
+    return 0;
   }
 }
 
