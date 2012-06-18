@@ -272,7 +272,7 @@ int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
 }
 
 int sigprocmask(int how, const sigset_t *set, sigset_t *oldset) {
-  LOG("sigprocmask");
+  LOG("sigprocmask\n");
   // TODO(davidben): This doesn't do anything. We assume the program
   // is written to mask off signals everywhere outside calls to
   // select.
