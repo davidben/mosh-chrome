@@ -149,6 +149,22 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
                                            timeout);
 }
 
+int pselect(int nfds, fd_set *readfds, fd_set *writefds,
+            fd_set *exceptfds, const struct timespec *timeout,
+            const sigset_t *sigmask) {
+  LOG("pselect: %d\n", nfds);
+  struct timeval tv;
+  if (timeout) {
+    // TODO(davidben): Don't throw away the nanosecond precision.
+    tv.tv_sec = timeout->tv_sec;
+    tv.tv_usec = timeout->tv_nsec / 1000;
+  }
+  // We only handle SIGWINCH for now only deliver it during selects,
+  // ignoring signal masks.
+  return FileSystem::GetFileSystem()->select(nfds, readfds, writefds, exceptfds,
+                                             timeout ? &tv : NULL);
+}
+
 //------------------------------------------------------------------------------
 
 void exit(int status) {
