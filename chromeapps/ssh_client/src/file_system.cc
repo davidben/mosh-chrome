@@ -82,9 +82,12 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
   if (nacl_interface_query(NACL_IRT_RANDOM_v0_1, &random, sizeof(random))) {
     AddPathHandler("/dev/random",
                    new DevRandomHandler(random.get_random_bytes));
+    AddPathHandler("/dev/urandom",
+                   new DevRandomHandler(random.get_random_bytes));
   } else {
     LOG("Can't get " NACL_IRT_RANDOM_v0_1 " interface\n");
     AddPathHandler("/dev/random", new JsFileHandler(out));
+    AddPathHandler("/dev/urandom", new JsFileHandler(out));
   }
 
   // Add /lib/locale for glibc.
