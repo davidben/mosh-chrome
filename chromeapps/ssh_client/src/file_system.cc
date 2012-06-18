@@ -23,6 +23,7 @@
 #include "pepper_file.h"
 #include "tcp_server_socket.h"
 #include "tcp_socket.h"
+#include "url_file.h"
 
 extern "C" void DoWrapSysCalls();
 
@@ -85,6 +86,12 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
     LOG("Can't get " NACL_IRT_RANDOM_v0_1 " interface\n");
     AddPathHandler("/dev/random", new JsFileHandler(out));
   }
+
+  // Add /lib/locale for glibc.
+  UrlFileHandler *locale_mount = new UrlFileHandler("/plugin/locale-data");
+  locale_mount->AddDirectory("/C.UTF-8");
+  locale_mount->AddDirectory("/C.UTF-8/LC_MESSAGES");
+  AddPathHandler("/lib/locale", locale_mount);
 
   // Add localhost 127.0.0.1
   AddHostAddress("localhost", 0x7F000001);

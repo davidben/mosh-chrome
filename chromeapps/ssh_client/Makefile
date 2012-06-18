@@ -4,6 +4,8 @@
 
 SSH_CLIENT:=output/ssh_client
 MOSH_CLIENT:=output/mosh_client
+# TODO(davidben): Build these into a shared library and see if this
+# improves space.
 CXX_SOURCES:=\
 	src/dev_null.cc \
 	src/dev_random.cc \
@@ -12,9 +14,10 @@ CXX_SOURCES:=\
 	src/js_file.cc \
 	src/pepper_file.cc \
 	src/plugin.cc \
+	src/syscalls.cc \
 	src/tcp_server_socket.cc \
 	src/tcp_socket.cc \
-	src/syscalls.cc
+	src/url_file.cc
 
 SSH_SOURCES:=\
 	src/ssh_plugin.cc
@@ -36,7 +39,8 @@ CXX_HEADERS:=\
 	src/pthread_helpers.h \
 	src/ssh_plugin.h \
 	src/tcp_server_socket.h \
-	src/tcp_socket.h
+	src/tcp_socket.h \
+	src/url_file.h
 
 # Project Build flags
 override LDFLAGS+=-lppapi_cpp -lppapi -lz -lresolv -ldl -ljsoncpp -Loutput
