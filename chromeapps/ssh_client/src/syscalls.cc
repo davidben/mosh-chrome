@@ -255,6 +255,14 @@ int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
   return FileSystem::GetFileSystem()->sigaction(signum, act, oldact);
 }
 
+int sigprocmask(int how, const sigset_t *set, sigset_t *oldset) {
+  LOG("sigprocmask");
+  // TODO(davidben): This doesn't do anything. We assume the program
+  // is written to mask off signals everywhere outside calls to
+  // select.
+  return 0;
+}
+
 int kill(pid_t pid, int sig) {
   LOG("kill: %d\n", pid);
   return -1;
