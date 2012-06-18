@@ -31,15 +31,18 @@ index 1754c4c..28b6a5a 100644
  
  #endif
 diff --git a/src/frontend/mosh-client.cc b/src/frontend/mosh-client.cc
-index a9ab798..7545325 100644
+index a9ab798..b77d1d1 100644
 --- a/src/frontend/mosh-client.cc
 +++ b/src/frontend/mosh-client.cc
-@@ -53,10 +53,12 @@ void print_colorcount( void )
+@@ -53,10 +53,16 @@ void print_colorcount( void )
    printf( "%d\n", color_val );
  }
  
--int main( int argc, char *argv[] )
++#ifdef __native_client__
 +extern "C" int mosh_main( int argc, char *argv[] )
++#else
+ int main( int argc, char *argv[] )
++#endif
  {
 +#ifndef __native_client__
    /* For security, make sure we don't dump core */
