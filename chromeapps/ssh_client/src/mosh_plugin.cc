@@ -68,7 +68,8 @@ void MoshPluginInstance::SessionThreadImpl() {
   argv.push_back("mosh");
   argv.push_back("127.0.0.1");
   argv.push_back("12345");
-  setenv("MOSH_KEY", "123456", 1);
+  // (sample key from mosh website)
+  setenv("MOSH_KEY", "4NeCCgvZFe2RnPgrcU1PQw", 1);
 
   LOG("mosh main args:\n");
   for (size_t i = 0; i < argv.size(); i++)
