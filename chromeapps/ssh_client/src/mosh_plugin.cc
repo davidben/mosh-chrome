@@ -63,9 +63,12 @@ void MoshPluginInstance::SessionThreadImpl() {
     argv.push_back(username_hostname.c_str());
   }
 
-  // TODO: Pick correct arguments.
+  // TODO(davidben): Pick correct arguments.
   argv.clear();
   argv.push_back("mosh");
+  argv.push_back("127.0.0.1");
+  argv.push_back("12345");
+  setenv("MOSH_KEY", "123456", 1);
 
   LOG("mosh main args:\n");
   for (size_t i = 0; i < argv.size(); i++)
