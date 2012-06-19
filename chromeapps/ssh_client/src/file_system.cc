@@ -753,8 +753,19 @@ int FileSystem::getnameinfo(const sockaddr *sa, socklen_t salen,
 int FileSystem::socket(int socket_family, int socket_type, int protocol) {
   Mutex::Lock lock(mutex_);
   int fd = GetFirstUnusedDescriptor();
-  // mark descriptor as used
-  AddFileStream(fd, NULL);
+
+  if (socket_family == AF_INET || socket_family == AF_INET6) {
+    if (socket_type == SOCK_STREAM) {
+      // mark descriptor as used
+      AddFileStream(fd, NULL);
+    } else {
+      errno = EPROTONOSUPPORT;
+      return -1;
+    }
+  } else {
+    errno = EAFNOSUPPORT;
+    return -1;
+  }
   return fd;
 }
 
