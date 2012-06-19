@@ -350,6 +350,20 @@ int mkdir(const char* pathname, mode_t mode) {
   return FileSystem::GetFileSystem()->mkdir(pathname, mode);
 }
 
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+                 struct sockaddr *src_addr, socklen_t *addrlen) {
+  LOG("recvfrom: %d\n", sockfd);
+  errno = ENOSYS;
+  return -1;
+}
+
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+               const struct sockaddr *dest_addr, socklen_t addrlen) {
+  LOG("sendto: %d\n", sockfd);
+  errno = ENOSYS;
+  return -1;
+}
+
 }
 
 extern "C" void DoWrapSysCalls() {
