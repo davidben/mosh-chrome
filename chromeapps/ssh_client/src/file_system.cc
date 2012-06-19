@@ -392,9 +392,7 @@ int FileSystem::IsReady(int nfds, fd_set* fds, bool (FileStream::*is_ready)(),
         return -1;
       FileStream* stream = GetStream(i);
       // NULL is okay; it may be a socket we haven't setup yet.
-      if (!stream)
-        continue;
-      if ((stream->*is_ready)()) {
+      if (stream && (stream->*is_ready)()) {
         if (!apply)
           return 1;
         else
