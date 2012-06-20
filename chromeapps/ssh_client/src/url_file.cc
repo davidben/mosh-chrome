@@ -110,12 +110,9 @@ void UrlFile::GetFileRef(const char* pathname, int32_t* pres) {
   request.SetMethod("GET");
   request.SetStreamToFile(true);
 
-  int32_t result = loader_->Open(
+  int ret = loader_->Open(
       request, factory_.NewCallback(&UrlFile::OnUrlOpen, pres));
-  if (result != PP_OK_COMPLETIONPENDING) {
-    pp::Module::Get()->core()->CallOnMainThread(
-        0, factory_.NewCallback(&UrlFile::OnUrlOpen, pres), result);
-  }
+  assert(ret == PP_OK_COMPLETIONPENDING);
 }
 
 void UrlFile::OnUrlOpen(int32_t result, int32_t* pres) {
@@ -130,12 +127,9 @@ void UrlFile::OnUrlOpen(int32_t result, int32_t* pres) {
   }
 
   if (result == PP_OK) {
-    result = loader_->FinishStreamingToFile(
+    int ret = loader_->FinishStreamingToFile(
         factory_.NewCallback(&UrlFile::OnUrlFinished, pres));
-    if (result != PP_OK_COMPLETIONPENDING) {
-      pp::Module::Get()->core()->CallOnMainThread(
-          0, factory_.NewCallback(&UrlFile::OnUrlFinished, pres), result);
-    }
+    assert(ret == PP_OK_COMPLETIONPENDING);
   } else {
     delete loader_;
     loader_ = NULL;
