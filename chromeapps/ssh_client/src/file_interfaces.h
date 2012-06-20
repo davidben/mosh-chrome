@@ -61,6 +61,17 @@ class FileStream {
     return -1;
   }
 
+  virtual ssize_t recvfrom(void* buf, size_t len, int flags,
+                           struct sockaddr* src_addr, socklen_t* addrlen) {
+    errno = ENOTSOCK;
+    return -1;
+  }
+  virtual ssize_t sendto(const void* buf, size_t len, int flags,
+                         const struct sockaddr* dest_addr, socklen_t addrlen) {
+    errno = ENOTSOCK;
+    return -1;
+  }
+
   virtual bool is_read_ready() {
     return true;
   }

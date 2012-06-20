@@ -82,6 +82,10 @@ class FileSystem {
   int bind(int sockfd, const sockaddr* serv_addr, socklen_t addrlen);
   int listen(int sockfd, int backlog);
   int accept(int sockfd, sockaddr* addr, socklen_t* addrlen);
+  ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+                   sockaddr *src_addr, socklen_t *addrlen);
+  ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+                 const sockaddr *dest_addr, socklen_t addrlen);
 
   int mkdir(const char* pathname, mode_t mode);
 

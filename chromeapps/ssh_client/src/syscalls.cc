@@ -351,17 +351,17 @@ int mkdir(const char* pathname, mode_t mode) {
 }
 
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
-                 struct sockaddr *src_addr, socklen_t *addrlen) {
+                 sockaddr *src_addr, socklen_t *addrlen) {
   LOG("recvfrom: %d\n", sockfd);
-  errno = ENOSYS;
-  return -1;
+  return FileSystem::GetFileSystem()->recvfrom(
+      sockfd, buf, len, flags, src_addr, addrlen);
 }
 
 ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
-               const struct sockaddr *dest_addr, socklen_t addrlen) {
+               const sockaddr *dest_addr, socklen_t addrlen) {
   LOG("sendto: %d\n", sockfd);
-  errno = ENOSYS;
-  return -1;
+  return FileSystem::GetFileSystem()->sendto(
+      sockfd, buf, len, flags, dest_addr, addrlen);
 }
 
 }

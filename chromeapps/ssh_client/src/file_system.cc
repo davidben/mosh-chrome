@@ -23,6 +23,7 @@
 #include "pepper_file.h"
 #include "tcp_server_socket.h"
 #include "tcp_socket.h"
+#include "udp_socket.h"
 #include "url_file.h"
 
 extern "C" void DoWrapSysCalls();
@@ -759,8 +760,21 @@ int FileSystem::socket(int socket_family, int socket_type, int protocol) {
 
   if (socket_family == AF_INET || socket_family == AF_INET6) {
     if (socket_type == SOCK_STREAM) {
-      // mark descriptor as used
+      // Mark descriptor as used. We should put a TCPSocket here, but
+      // TCPSocket and TCPServer socket are implemented by different
+      // classes, so the fd is in an awkward state right now..
       AddFileStream(fd, NULL);
+    } else if (socket_type == SOCK_DGRAM) {
+      // Mark descriptor as used, so UDPSocket's ctor can block if it
+      // wants.
+      AddFileStream(fd, NULL);
+      UDPSocket* sock = new UDPSocket(fd, O_RDWR);
+      if (!sock->open()) {
+        RemoveFileStream(fd);
+        delete sock;
+        return -1;
+      }
+      AddFileStream(fd, sock);
     } else {
       errno = EPROTONOSUPPORT;
       return -1;
@@ -898,6 +912,30 @@ int FileSystem::accept(int sockfd, sockaddr* addr, socklen_t* addrlen) {
     return -1;
   }
 }
+
+ssize_t FileSystem::recvfrom(int sockfd, void *buf, size_t len, int flags,
+                             sockaddr *src_addr, socklen_t *addrlen) {
+  Mutex::Lock lock(mutex_);
+  FileStream* stream = GetStream(sockfd);
+  if (!stream || stream == kBadFileStream) {
+    errno = EBADF;
+    return -1;
+  }
+  return stream->recvfrom(buf, len, flags, src_addr, addrlen);
+}
+
+ssize_t FileSystem::sendto(int sockfd, const void *buf, size_t len, int flags,
+                           const sockaddr *dest_addr,
+                           socklen_t addrlen) {
+  Mutex::Lock lock(mutex_);
+  FileStream* stream = GetStream(sockfd);
+  if (!stream || stream == kBadFileStream) {
+    errno = EBADF;
+    return -1;
+  }
+  return stream->sendto(buf, len, flags, dest_addr, addrlen);
+}
+
 
 int FileSystem::mkdir(const char* pathname, mode_t mode) {
   Mutex::Lock lock(mutex_);

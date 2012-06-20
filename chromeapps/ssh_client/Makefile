@@ -17,6 +17,7 @@ CXX_SOURCES:=\
 	src/syscalls.cc \
 	src/tcp_server_socket.cc \
 	src/tcp_socket.cc \
+	src/udp_socket.cc \
 	src/url_file.cc
 
 SSH_SOURCES:=\
@@ -40,6 +41,7 @@ CXX_HEADERS:=\
 	src/ssh_plugin.h \
 	src/tcp_server_socket.h \
 	src/tcp_socket.h \
+	src/udp_socket.h \
 	src/url_file.h
 
 # Project Build flags
