@@ -22,9 +22,9 @@ class ScopedDeleter {
   DISALLOW_COPY_AND_ASSIGN(ScopedDeleter);
 };
 
-UDPSocket::UDPSocket(int fd, int oflag)
-  : ref_(1), fd_(fd), oflag_(oflag), factory_(this),
-    socket_(NULL), recvfrom_len_(0) {
+UDPSocket::UDPSocket(int domain, int type, int fd, int oflag)
+  : ref_(1), fd_(fd), oflag_(oflag), domain_(domain),
+    type_(type), factory_(this), socket_(NULL), recvfrom_len_(0) {
 }
 
 UDPSocket::~UDPSocket() {
@@ -87,7 +87,7 @@ ssize_t UDPSocket::recvfrom(void* buf, size_t len, int flags,
 
   FileSystem* sys = FileSystem::GetFileSystem();
   if (is_block()) {
-    while (recvfrom_len_ && is_open())
+    while (!recvfrom_len_ && is_open())
       sys->cond().wait(sys->mutex());
   }
 
@@ -163,6 +163,7 @@ int UDPSocket::fcntl(int cmd, va_list ap) {
 }
 
 bool UDPSocket::is_read_ready() {
+  LOG("is_read_ready: len = %d\n", recvfrom_len_);
   return !is_open() || recvfrom_len_ > 0;
 }
 
@@ -187,13 +188,44 @@ void UDPSocket::Open(int32_t result, int32_t* pres) {
   if (!pp::UDPSocketPrivate::IsAvailable()) {
     LOG("UDPSocketPrivate not available\n");
     *pres = PP_ERROR_NOTSUPPORTED;
-  } else {
-    socket_ = new pp::UDPSocketPrivate(sys->instance());
-    *pres = PP_OK;
-
-    // Fire off the first RecvFrom.
-    RecvFrom(PP_OK);
+    sys->cond().broadcast();
+    return;
   }
+
+  socket_ = new pp::UDPSocketPrivate(sys->instance());
+
+  // PPAPI requires us to bind sockets before they can be used, but
+  // POSIX binds to a random address by default. Bind it now. To be
+  // more accurate, we should probably delay this until we know the
+  // user won't bind it manually, but this is enough for now.
+  PP_NetAddress_Private addr;
+  if (!pp::NetAddressPrivate::GetAnyAddress(domain_ == AF_INET6, &addr)) {
+    LOG("pp::NetAddressPrivate::GetAnyAddress failed!\n");
+    *pres = PP_ERROR_FAILED;
+    sys->cond().broadcast();
+    return;
+  }
+
+  int ret = socket_->Bind(
+      &addr, factory_.NewCallback(&UDPSocket::OnBind, pres));
+  assert(ret == PP_OK_COMPLETIONPENDING);
+}
+
+void UDPSocket::OnBind(int32_t result, int32_t* pres) {
+  FileSystem* sys = FileSystem::GetFileSystem();
+  Mutex::Lock lock(sys->mutex());
+
+  assert(socket_);
+  if (result != PP_OK) {
+    LOG("pp::UDPSocket::OnBind failed!\n");
+    *pres = PP_ERROR_FAILED;
+    sys->cond().broadcast();
+    return;
+  }
+
+  // Finally, we're ready. Fire off the first RecvFrom and go.
+  RecvFrom(PP_OK);
+  *pres = PP_OK;
   sys->cond().broadcast();
 }
 
@@ -204,6 +236,7 @@ void UDPSocket::RecvFrom(int32_t) {
     return;
 
   assert(recvfrom_len_ == 0);
+  LOG("RecvFrom\n");
   int ret = socket_->RecvFrom(recvfrom_buf_, kBufSize,
                               factory_.NewCallback(&UDPSocket::OnRecvFrom));
   assert(ret == PP_OK_COMPLETIONPENDING);
@@ -214,6 +247,7 @@ void UDPSocket::OnRecvFrom(int32_t result) {
   Mutex::Lock lock(sys->mutex());
   if (!is_open())
     return;
+  LOG("OnRecvFrom (%d)\n", result);
 
   PP_NetAddress_Private address = { };
   if (result > 0 && !socket_->GetRecvFromAddress(&address)) {
@@ -273,7 +307,7 @@ void UDPSocket::OnSendTo(int32_t result) {
   // TODO(davidben): It would be good to map this to an errno and
   // plumb back to mosh. But we can't be sure that won't block the
   // caller.
-  if (result != PP_OK)
+  if (result < 0)
     LOG("UDPSocket::SendTo failed (%d)!\n", result);
 }
 

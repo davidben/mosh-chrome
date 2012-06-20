@@ -17,7 +17,7 @@
 
 class UDPSocket : public FileStream {
  public:
-  UDPSocket(int fd, int oflag);
+  UDPSocket(int domain, int type, int fd, int oflag);
   virtual ~UDPSocket();
 
   bool open();
@@ -56,6 +56,8 @@ class UDPSocket : public FileStream {
   void Open(int32_t result, int32_t* pres);
   void Close(int32_t result, int32_t* pres);
 
+  void OnBind(int32_t result, int32_t* pres);
+
   void RecvFrom(int32_t result);
   void OnRecvFrom(int32_t result);
 
@@ -73,6 +75,8 @@ class UDPSocket : public FileStream {
   int ref_;
   int fd_;
   int oflag_;
+  int domain_;
+  int type_;
   pp::CompletionCallbackFactory<UDPSocket, ThreadSafeRefCount> factory_;
   pp::UDPSocketPrivate* socket_;
 

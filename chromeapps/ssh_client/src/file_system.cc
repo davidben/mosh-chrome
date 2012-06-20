@@ -768,7 +768,7 @@ int FileSystem::socket(int socket_family, int socket_type, int protocol) {
       // Mark descriptor as used, so UDPSocket's ctor can block if it
       // wants.
       AddFileStream(fd, NULL);
-      UDPSocket* sock = new UDPSocket(fd, O_RDWR);
+      UDPSocket* sock = new UDPSocket(socket_family, socket_type, fd, O_RDWR);
       if (!sock->open()) {
         RemoveFileStream(fd);
         delete sock;
