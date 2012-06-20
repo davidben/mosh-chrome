@@ -435,6 +435,10 @@ int FileSystem::select(int nfds, fd_set* readfds, fd_set* writefds,
         break;
 
       if (cond_.timedwait(mutex_, &ts_abs)) {
+        // For some reason, this likes stuffing -EINTR in errno. A bug
+        // in NaCl somewhere? They occasionally transform error codes
+        // and stuff in IRT.
+        if (errno < 0) errno = -errno;
         if (errno == ETIMEDOUT)
           break;
         else
