@@ -32,7 +32,7 @@ void MoshPluginInstance::SessionThreadImpl() {
   // Call renamed mosh main.
   std::vector<const char*> argv;
   // argv[0]
-  argv.push_back("mosh");
+  argv.push_back("mosh-client");
 #ifdef DEBUG
   argv.push_back("-vvv");
 #endif
@@ -65,7 +65,7 @@ void MoshPluginInstance::SessionThreadImpl() {
 
   // TODO(davidben): Pick correct arguments.
   argv.clear();
-  argv.push_back("mosh");
+  argv.push_back("mosh-client");
   argv.push_back("127.0.0.1");
   argv.push_back("12345");
   // (sample key from mosh website)
