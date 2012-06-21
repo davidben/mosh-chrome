@@ -1,3 +1,21 @@
+diff --git a/src/crypto/byteorder.h b/src/crypto/byteorder.h
+index a341427..dfe72ad 100644
+--- a/src/crypto/byteorder.h
++++ b/src/crypto/byteorder.h
+@@ -21,7 +21,12 @@
+ 
+ #include "config.h"
+ 
+-#ifdef HAVE_HTOBE64
++/* x86-64 NaCl glibc's bswap64 is broken because it doesn't expect an x86-64
++ * architecture to have a 32-bit long.
++ *
++ * See https://code.google.com/p/chromium/issues/detail?id=133889
++ */
++#if defined(HAVE_HTOBE64) && !__native_client__
+ # if defined(HAVE_ENDIAN_H)
+ #  include <endian.h>
+ # elif defined(HAVE_SYS_ENDIAN_H)
 diff --git a/src/crypto/crypto.cc b/src/crypto/crypto.cc
 index 9d5c03b..6c2a0a5 100644
 --- a/src/crypto/crypto.cc
