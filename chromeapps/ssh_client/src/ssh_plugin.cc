@@ -87,3 +87,7 @@ Module* CreateModule() {
 }
 
 }  // namespace pp
+
+extern "C" {
+const char* __progname = "ssh";
+}

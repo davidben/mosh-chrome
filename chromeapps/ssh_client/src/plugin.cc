@@ -124,6 +124,7 @@ void PluginInstance::SessionClosed(int error) {
   core_->CallOnMainThread(0, factory_.NewCallback(
       &PluginInstance::SessionClosedImpl, error));
   plugin_thread_ = NULL;
+  pthread_exit(NULL);
 }
 
 bool PluginInstance::OpenFile(int fd, const char* name, int mode,

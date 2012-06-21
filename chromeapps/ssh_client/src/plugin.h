@@ -29,9 +29,6 @@ class PluginInstance : public pp::Instance,
   pp::Core* core() { return core_; }
   pthread_t plugin_thread() { return plugin_thread_; }
 
-  void PrintLog(const std::string& msg);
-  void SessionClosed(int error);
-
   // Implements OutputInterface.
   virtual bool OpenFile(int fd, const char* name, int mode,
                         InputInterface* stream);
@@ -41,9 +38,11 @@ class PluginInstance : public pp::Instance,
   virtual bool Read(int fd, size_t size);
   virtual bool Close(int fd);
   virtual size_t GetWriteWindow();
+  virtual void SessionClosed(int error);
 
  protected:
   virtual void SessionThreadImpl() = 0;
+  void PrintLog(const std::string& msg);
 
   Json::Value session_args_;
 
@@ -63,6 +62,7 @@ class PluginInstance : public pp::Instance,
   void InvokeJS(const std::string& function, const Json::Value& args);
 
   void PrintLogImpl(int32_t result, const std::string& msg);
+
   void SessionClosedImpl(int32_t result, const int& error);
 
   static PluginInstance* instance_;

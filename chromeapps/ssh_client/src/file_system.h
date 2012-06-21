@@ -37,6 +37,8 @@ class FileSystem {
   // Return current file system for process. Instance of FileSystem must be
   // created before calling this function.
   static FileSystem* GetFileSystem();
+  // Same as above function but return NULL if FileSystem doesn't exist yet.
+  static FileSystem* GetFileSystemNoCrash();
 
   Cond& cond() { return cond_; }
   Mutex& mutex() { return mutex_; }
@@ -92,6 +94,7 @@ class FileSystem {
   int sigaction(int signum,
                 const struct sigaction *act,
                 struct sigaction *oldact);
+  void exit(int status);
 
  private:
   typedef std::map<int, FileStream*> FileStreamMap;
