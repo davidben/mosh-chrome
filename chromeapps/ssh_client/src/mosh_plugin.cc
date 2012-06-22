@@ -12,9 +12,6 @@
 #include "file_system.h"
 
 // Known startSession attributes.
-const char kUsernameAttr[] = "username";
-const char kHostAttr[] = "host";
-const char kPortAttr[] = "port";
 const char kArgumentsAttr[] = "arguments";
 
 extern "C" int mosh_main(int ac, const char **av);
@@ -31,11 +28,10 @@ MoshPluginInstance::~MoshPluginInstance() {
 void MoshPluginInstance::SessionThreadImpl() {
   // Call renamed mosh main.
   std::vector<const char*> argv;
+
   // argv[0]
   argv.push_back("mosh-client");
-#ifdef DEBUG
-  argv.push_back("-vvv");
-#endif
+
   if (session_args_.isMember(kArgumentsAttr) &&
       session_args_[kArgumentsAttr].isArray()) {
     const Json::Value& args = session_args_[kArgumentsAttr];
@@ -47,29 +43,24 @@ void MoshPluginInstance::SessionThreadImpl() {
     }
   }
 
-  std::string port;
-  if (session_args_.isMember(kPortAttr)) {
-    char buf[64];
-    snprintf(buf, sizeof(buf), "-p%d", session_args_[kPortAttr].asInt());
-    port = buf;
-    argv.push_back(port.c_str());
-  }
-
-  std::string username_hostname;
-  if (session_args_.isMember(kUsernameAttr) &&
-      session_args_.isMember(kHostAttr)) {
-    username_hostname = session_args_[kUsernameAttr].asString() + "@" +
-        session_args_[kHostAttr].asString();
-    argv.push_back(username_hostname.c_str());
-  }
-
-  // TODO(davidben): Pick correct arguments.
-  argv.clear();
-  argv.push_back("mosh-client");
-  argv.push_back("127.0.0.1");
-  argv.push_back("12345");
-  // (sample key from mosh website)
-  setenv("MOSH_KEY", "4NeCCgvZFe2RnPgrcU1PQw", 1);
+  // We inherit LC_* variables from the parent environment, but we
+  // don't ship a full set, so they're unlikely to work anyway. Unset
+  // them all and use our shipped C.UTF-8 for mosh-client. Let ssh
+  // keep the inherited locale values to forward over to the server.
+  unsetenv("LANGUAGE");
+  unsetenv("LC_CTYPE");
+  unsetenv("LC_NUMERIC");
+  unsetenv("LC_TIME");
+  unsetenv("LC_COLLATE");
+  unsetenv("LC_MONETARY");
+  unsetenv("LC_MESSAGES");
+  unsetenv("LC_PAPER");
+  unsetenv("LC_NAME");
+  unsetenv("LC_ADDRESS");
+  unsetenv("LC_TELEPHONE");
+  unsetenv("LC_MEASUREMENT");
+  unsetenv("LC_IDENTIFICATION");
+  setenv("LANG", "C.UTF-8", 1);
 
   LOG("mosh main args:\n");
   for (size_t i = 0; i < argv.size(); i++)

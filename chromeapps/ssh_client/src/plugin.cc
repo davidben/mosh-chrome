@@ -219,10 +219,6 @@ void PluginInstance::StartSession(const Json::Value& args) {
     file_system_.UseJsSocket(session_args_[kUseJsSocketAttr].asBool());
   }
 
-  // We inherit LC_* variables from the parent environment, but we
-  // don't ship a full set, so they're unlikely to work anyway. Set
-  // LC_ALL to override all the others.
-  setenv("LC_ALL", "C.UTF-8", 1);
   if (session_args_.isMember(kEnvironmentAttr) &&
       session_args_[kEnvironmentAttr].isObject()) {
     Json::Value::Members members =
