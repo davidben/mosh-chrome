@@ -511,7 +511,7 @@ nassh.CommandInstance.prototype.onPlugin_.openFile = function(fd, path, mode) {
     self.sendToPlugin_('onOpenFile', [fd, success]);
   }
 
-  if (path == '/dev/random') {
+  if (path == '/dev/random' || path == '/dev/urandom') {
     var streamClass = nassh.Stream.Random;
     var stream = this.streamTable_.openStream(streamClass, fd, path, onOpen);
     stream.onClose = function(reason) {
