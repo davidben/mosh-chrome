@@ -3,7 +3,7 @@
   "minimum_chrome_version": "18",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "name": "Secure Shell (dev)",
+  "name": "Mosh",
   "version": "0.8.2.0",
   "default_locale": "en",
   "icons": {
@@ -12,19 +12,17 @@
     "32": "images/vt-32.png",
     "16": "images/vt-16.png"
   },
-  "description": "Terminal emulator and SSH client.",
+  "description": "Mobile shell that supports roaming and intelligent local echo.",
   "offline_enabled": true,
   "permissions": [
-    "unlimitedStorage",
-    "terminalPrivate"
+    "unlimitedStorage"
   ],
   "web_accessible_resources": [
-    "html/nassh_google_relay.html",
     "html/nassh_connect_dialog.html"
   ],
   "app": {
     "launch": {
-      "local_path": "html/nassh.html"
+      "local_path": "html/namosh.html"
     }
   }
 }
