@@ -42,6 +42,8 @@ tar xvzf ${PACKAGE_NAME}.tar.gz
 cd $PACKAGE_NAME
 patch -p1 -i $PATCH_FILE || exit 1
 
+# FIXME: --disable-hardening is really poor. Find some way to keep
+# those flags. Or at least some of them.
 ./configure --host=${NACL_CROSS_PREFIX} \
     --without-utempter --disable-server --disable-hardening || exit 1
 
