@@ -90,8 +90,8 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
                    new DevRandomHandler(random.get_random_bytes));
   } else {
     LOG("Can't get " NACL_IRT_RANDOM_v0_1 " interface\n");
-    AddPathHandler("/dev/random", new JsFileHandler(out));
-    AddPathHandler("/dev/urandom", new JsFileHandler(out));
+    AddPathHandler("/dev/random", new JsFileHandler(out, "/dev/random"));
+    AddPathHandler("/dev/urandom", new JsFileHandler(out, "/dev/urandom"));
   }
 
   // Add /lib/locale for glibc.

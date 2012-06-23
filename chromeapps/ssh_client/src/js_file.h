@@ -73,7 +73,7 @@ class JsFile : public FileStream,
 
 class JsFileHandler : public PathHandler {
  public:
-  explicit JsFileHandler(OutputInterface* out);
+  explicit JsFileHandler(OutputInterface* out, const char* base);
   virtual ~JsFileHandler();
 
   virtual void addref();
@@ -88,6 +88,7 @@ class JsFileHandler : public PathHandler {
   int ref_;
   pp::CompletionCallbackFactory<JsFileHandler, ThreadSafeRefCount> factory_;
   OutputInterface* out_;
+  std::string base_;
 
   DISALLOW_COPY_AND_ASSIGN(JsFileHandler);
 };

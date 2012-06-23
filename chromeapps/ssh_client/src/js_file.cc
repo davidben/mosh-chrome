@@ -16,8 +16,8 @@
 
 termios JsFile::tio_ = {};
 
-JsFileHandler::JsFileHandler(OutputInterface* out)
-    : ref_(1), factory_(this), out_(out) {
+JsFileHandler::JsFileHandler(OutputInterface* out, const char* base)
+    : ref_(1), factory_(this), out_(out), base_(base) {
 }
 
 JsFileHandler::~JsFileHandler() {
@@ -39,8 +39,9 @@ void JsFileHandler::Open(int32_t result, JsFile* stream, const char* pathname) {
 
 FileStream* JsFileHandler::open(int fd, const char* pathname, int oflag) {
   JsFile* stream = new JsFile(fd, (oflag & ~O_NONBLOCK), out_);
+  std::string fullpath = base_ + pathname;
   pp::Module::Get()->core()->CallOnMainThread(0,
-      factory_.NewCallback(&JsFileHandler::Open, stream, pathname));
+      factory_.NewCallback(&JsFileHandler::Open, stream, fullpath.c_str()));
 
   FileSystem* sys = FileSystem::GetFileSystem();
   while(!stream->is_open())
