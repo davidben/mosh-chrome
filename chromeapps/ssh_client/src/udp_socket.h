@@ -87,7 +87,7 @@ class UDPSocket : public FileStream {
   // larger than what mosh needs and appears to be what Chrome uses
   // internally?
   static const size_t kBufSize = 4096;
-  sockaddr_in6 recvfrom_address_;
+  sockaddr_storage recvfrom_address_;
   char recvfrom_buf_[kBufSize];
   size_t recvfrom_len_;
 

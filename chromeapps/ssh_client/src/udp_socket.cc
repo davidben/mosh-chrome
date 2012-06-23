@@ -97,7 +97,7 @@ ssize_t UDPSocket::recvfrom(void* buf, size_t len, int flags,
     memcpy(buf, recvfrom_buf_, bytes_received);
     memcpy(src_addr, &recvfrom_address_,
            std::min(*addrlen, sizeof(recvfrom_address_)));
-    *addrlen = (recvfrom_address_.sin6_family == AF_INET6) ?
+    *addrlen = (recvfrom_address_.ss_family == AF_INET6) ?
         sizeof(sockaddr_in6) : sizeof(sockaddr_in);
   }
 
