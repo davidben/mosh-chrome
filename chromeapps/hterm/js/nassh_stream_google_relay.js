@@ -8,8 +8,8 @@
  * This class manages the read and write XML http requests used to communicate
  * with the Google relay server.
  */
-nassh.Stream.GoogleRelay = function(fd) {
-  nassh.Stream.apply(this, [fd]);
+nassh.Stream.GoogleRelay = function(table, fd) {
+  nassh.Stream.apply(this, [table, fd]);
 
   this.host_ = null;
   this.port_ = null;

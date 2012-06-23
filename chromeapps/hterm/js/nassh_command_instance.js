@@ -29,6 +29,9 @@ nassh.CommandInstance = function(argv) {
   // Command environment.
   this.environment_ = argv.environment || {};
 
+  // Stream table.
+  this.streamTable_ = new nassh.StreamTable();
+
   // hterm.Terminal.IO instance.
   this.io = null;
 
@@ -293,7 +296,7 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
     return false;
 
   if (params.relayHost) {
-    this.relay_ = new nassh.GoogleRelay(this.io, params.relayHost);
+    this.relay_ = new nassh.GoogleRelay(this.table_, this.io, params.relayHost);
     this.io.println(hterm.msg('INITIALIZING_RELAY', [params.relayHost]));
     if (!this.relay_.init()) {
       // A false return value means we have to redirect to complete
@@ -510,7 +513,7 @@ nassh.CommandInstance.prototype.onPlugin_.openFile = function(fd, path, mode) {
 
   if (path == '/dev/random') {
     var streamClass = nassh.Stream.Random;
-    var stream = nassh.Stream.openStream(streamClass, fd, path, onOpen);
+    var stream = this.streamTable_.openStream(streamClass, fd, path, onOpen);
     stream.onClose = function(reason) {
       self.sendToPlugin_('onClose', [fd, reason]);
     };
@@ -567,7 +570,7 @@ nassh.CommandInstance.prototype.onPlugin_.write = function(fd, data) {
     return;
   }
 
-  var stream = nassh.Stream.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamByFd(fd);
   if (!stream) {
     console.warn('Attempt to write to unknown fd: ' + fd);
     return;
@@ -583,7 +586,7 @@ nassh.CommandInstance.prototype.onPlugin_.write = function(fd, data) {
  */
 nassh.CommandInstance.prototype.onPlugin_.read = function(fd, size) {
   var self = this;
-  var stream = nassh.Stream.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamByFd(fd);
 
   if (!stream) {
     if (fd)
@@ -601,7 +604,7 @@ nassh.CommandInstance.prototype.onPlugin_.read = function(fd, size) {
  */
 nassh.CommandInstance.prototype.onPlugin_.close = function(fd) {
   var self = this;
-  var stream = nassh.Stream.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamByFd(fd);
   if (!stream) {
     console.warn('Attempt to close unknown fd: ' + fd);
     return;
