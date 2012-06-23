@@ -85,7 +85,7 @@ nassh.ColumnList.prototype.redraw = function() {
   var baseID = div.getAttribute('id');
   if (!baseID) {
     baseID = Math.floor(Math.random() * 0xffff + 1).toString(16);
-    baseID = nassh.zpad(baseID, 4);
+    baseID = lib.f.zpad(baseID, 4);
     baseID = 'columnlist-' + baseID;
   }
 
