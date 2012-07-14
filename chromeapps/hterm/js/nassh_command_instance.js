@@ -451,6 +451,10 @@ nassh.CommandInstance.prototype.exit = function(code) {
   this.exited_ = true;
   this.io.pop();
   window.onbeforeunload = null;
+  if (this.plugin_) {
+    this.plugin_.parentNode.removeChild(this.plugin_);
+    this.plugin_ = null;
+  }
 
   if (this.argv_.onExit)
     this.argv_.onExit(code);
