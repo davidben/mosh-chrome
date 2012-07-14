@@ -30,7 +30,7 @@ nassh.CommandInstance = function(argv) {
   this.environment_ = argv.environment || {};
 
   // Stream table.
-  this.streamTable_ = new nassh.StreamTable();
+  this.streamTable_ = null;
 
   // hterm.Terminal.IO instance.
   this.io = null;
@@ -299,7 +299,7 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
     return false;
 
   if (params.relayHost) {
-    this.relay_ = new nassh.GoogleRelay(this.table_, this.io, params.relayHost);
+    this.relay_ = new nassh.GoogleRelay(this.io, params.relayHost);
     this.io.println(hterm.msg('INITIALIZING_RELAY', [params.relayHost]));
     if (!this.relay_.init()) {
       // A false return value means we have to redirect to complete
@@ -356,6 +356,11 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
   this.initPlugin_(function() {
     if (!self.argv_.argString)
       self.io.println(hterm.msg('WELCOME_TIP'));
+
+    self.streamTable_ = new nassh.StreamTable();
+    self.streamTable_.onClose = function(stream, reason) {
+      self.sendToPlugin_('onClose', [stream.id, reason]);
+    };
 
     // TODO(davidben): Queue up any terminal input processed before
     // the plugin is loaded.
@@ -530,11 +535,7 @@ nassh.CommandInstance.prototype.onPlugin_.openFile = function(fd, path, mode) {
   }
 
   if (path == '/dev/random' || path == '/dev/urandom') {
-    var streamClass = nassh.Stream.Random;
-    var stream = this.streamTable_.openStream(streamClass, path, onOpen);
-    stream.onClose = function(reason) {
-      self.sendToPlugin_('onClose', [stream.id, reason]);
-    };
+    this.streamTable_.openStream(nassh.Stream.Random, path, onOpen);
   } else {
     self.sendToPlugin_('onOpenFile', [fd, -1]);
   }
@@ -549,18 +550,13 @@ nassh.CommandInstance.prototype.onPlugin_.openSocket = function(
 
   var self = this;
   var stream = this.relay_.openSocket(
-      fd, host, port,
+      this.streamTable_, fd, host, port,
       function onOpen(streamId) {
         self.sendToPlugin_('onOpenSocket', [fd, streamId]);
       });
 
   stream.onDataAvailable = function(data) {
     self.sendToPlugin_('onRead', [fd, data]);
-  };
-
-  stream.onClose = function(reason) {
-    console.log('close: ' + fd);
-    self.sendToPlugin_('onClose', [fd, reason]);
   };
 };
 

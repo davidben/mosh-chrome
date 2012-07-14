@@ -67,9 +67,12 @@ nassh.StreamTable.prototype.openStream = function(streamClass, arg, onOpen) {
 /**
  * Clean up after a stream is closed.
  */
-nassh.StreamTable.prototype.onClose_ = function(stream) {
+nassh.StreamTable.prototype.onClose_ = function(stream, reason) {
   if (stream.open)
     throw nassh.Stream.ERR_STREAM_OPENED;
+
+  if (this.onClose)
+    this.onClose(stream, reason);
 
   delete this.openStreams_[stream.id];
 };
@@ -104,10 +107,7 @@ nassh.Stream.prototype.close = function(reason) {
 
   this.open = false;
 
-  if (this.onClose)
-    this.onClose(reason || 'closed');
-
-  this.table_.onClose_(this);
+  this.table_.onClose_(this, reason || 'closed');
 };
 
 /**

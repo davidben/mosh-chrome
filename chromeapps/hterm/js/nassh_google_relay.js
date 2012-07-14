@@ -68,8 +68,7 @@ lib.rtdep('lib.f');
  * 6. Writes are queued up and sent to /write.
  */
 
-nassh.GoogleRelay = function(table, io, proxy) {
-  this.table_ = table;
+nassh.GoogleRelay = function(io, proxy) {
   this.io = io;
   this.proxy = proxy;
 };
@@ -152,7 +151,7 @@ nassh.GoogleRelay.prototype.init = function(opt_resumePath) {
  * for this relay.
  */
 nassh.GoogleRelay.prototype.openSocket = function(
-    host, port, onOpen) {
-  return this.table_.openStream(nassh.Stream.GoogleRelay,
+  table, host, port, onOpen) {
+  return table.openStream(nassh.Stream.GoogleRelay,
             {relay: this, host: host, port: port}, onOpen);
 };
