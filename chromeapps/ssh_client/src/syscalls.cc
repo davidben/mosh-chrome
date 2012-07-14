@@ -179,17 +179,6 @@ void _exit(int status) {
   abort();  // Can we call the real _exit?
 }
 
-#if 0
-// Comment this out to avoid problems with
-// std::terminate. TODO(davidben): Are these overrides even sensible?
-// They certainly break for a multithreaded program.
-void abort() {
-  LOG("abort\n");
-  FileSystem::GetFileSystem()->exit(-1);
-  assert(0);
-}
-#endif
-
 int seteuid(uid_t euid) {
   LOG("seteuid: %d\n", euid);
   return 0;
