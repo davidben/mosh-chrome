@@ -49,12 +49,10 @@ void DevNull::addref() {
 }
 
 void DevNull::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* DevNull::dup(int fd) {
-  return new DevNull(fd, oflag_);
+  }
 }
 
 void DevNull::close() {

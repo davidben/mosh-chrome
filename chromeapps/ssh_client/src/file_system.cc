@@ -223,7 +223,6 @@ int FileSystem::close(int fd) {
 
   FileStream* stream = GetStream(fd);
   if (stream && stream != kBadFileStream) {
-    stream->close();
     stream->release();
   }
   RemoveFileStream(fd);
@@ -265,15 +264,8 @@ int FileSystem::dup(int fd, int *newfd) {
     return EBADF;
 
   *newfd = GetFirstUnusedDescriptor();
-  // Mark as used.
-  AddFileStream(*newfd, NULL);
-  FileStream* new_stream = stream->dup(*newfd);
-  if (!new_stream) {
-    RemoveFileStream(*newfd);
-    return EACCES;
-  }
-
-  AddFileStream(*newfd, new_stream);
+  stream->addref();
+  AddFileStream(*newfd, stream);
   return 0;
 }
 
@@ -284,20 +276,13 @@ int FileSystem::dup2(int fd, int newfd) {
     return EBADF;
 
   FileStream* new_stream = GetStream(newfd);
-  if (stream == kBadFileStream) {
-    return EBADF;
-  } else if (!new_stream) {
-    new_stream->close();
+  if (new_stream && new_stream != kBadFileStream) {
     new_stream->release();
     RemoveFileStream(newfd);
   }
 
-  AddFileStream(newfd, NULL);
-  new_stream = stream->dup(newfd);
-  if (!new_stream)
-    return EACCES;
-
-  AddFileStream(newfd, new_stream);
+  stream->addref();
+  AddFileStream(newfd, stream);
   return 0;
 }
 

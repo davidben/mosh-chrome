@@ -23,7 +23,6 @@ class FileStream {
 
   virtual void addref() = 0;
   virtual void release() = 0;
-  virtual FileStream* dup(int fd) = 0;
 
   virtual void close() = 0;
   virtual int read(char* buf, size_t count, size_t* nread) = 0;

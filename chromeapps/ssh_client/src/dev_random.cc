@@ -54,12 +54,10 @@ void DevRandom::addref() {
 }
 
 void DevRandom::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* DevRandom::dup(int fd) {
-  return new DevRandom(fd, oflag_, get_random_bytes_);
+  }
 }
 
 void DevRandom::close() {

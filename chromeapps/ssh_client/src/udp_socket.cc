@@ -49,12 +49,10 @@ void UDPSocket::addref() {
 }
 
 void UDPSocket::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* UDPSocket::dup(int fd) {
-  return NULL;
+  }
 }
 
 void UDPSocket::close() {

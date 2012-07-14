@@ -28,12 +28,10 @@ void TCPSocket::addref() {
 }
 
 void TCPSocket::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* TCPSocket::dup(int fd) {
-  return NULL;
+  }
 }
 
 bool TCPSocket::connect(const char* host, uint16_t port) {

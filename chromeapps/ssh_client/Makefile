@@ -36,7 +36,6 @@ CXX_HEADERS:=\
 	src/mosh_plugin.h \
 	src/pepper_file.h \
 	src/plugin.h \
-	src/proxy_stream.h \
 	src/pthread_helpers.h \
 	src/ssh_plugin.h \
 	src/tcp_server_socket.h \

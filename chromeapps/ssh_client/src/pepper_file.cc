@@ -63,13 +63,10 @@ void FileRefStream::addref() {
 }
 
 void FileRefStream::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* FileRefStream::dup(int fd) {
-  assert(0);
-  return NULL;
+  }
 }
 
 bool FileRefStream::open(const char* pathname) {

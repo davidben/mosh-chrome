@@ -12,7 +12,6 @@
 #include "ppapi/cpp/module.h"
 
 #include "file_system.h"
-#include "proxy_stream.h"
 
 termios JsFile::tio_ = {};
 
@@ -119,12 +118,10 @@ void JsFile::addref() {
 }
 
 void JsFile::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* JsFile::dup(int fd) {
-  return new ProxyStream(fd, oflag_, this);
+  }
 }
 
 void JsFile::close() {

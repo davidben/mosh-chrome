@@ -58,12 +58,10 @@ void DevTty::addref() {
 }
 
 void DevTty::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* DevTty::dup(int fd) {
-  return new DevTty(fd, oflag_, stdin_, stdout_);
+  }
 }
 
 void DevTty::close() {

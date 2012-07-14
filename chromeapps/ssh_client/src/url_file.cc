@@ -19,14 +19,11 @@ class UrlDirectory : public FileStream {
 
   virtual void addref() { ++ref_; }
   virtual void release() {
-    if (!--ref_)
+    if (!--ref_) {
+      close();
       delete this;
+    }
   }
-  virtual FileStream* dup(int fd) {
-    assert(0);
-    return NULL;
-  }
-
   virtual void close() { }
   virtual int read(char* buf, size_t count, size_t* nread) { return ENOSYS; }
   virtual int write(const char* buf, size_t count, size_t* nwrote) {

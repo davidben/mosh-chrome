@@ -31,12 +31,10 @@ void TCPServerSocket::addref() {
 }
 
 void TCPServerSocket::release() {
-  if (!--ref_)
+  if (!--ref_) {
+    close();
     delete this;
-}
-
-FileStream* TCPServerSocket::dup(int fd) {
-  return NULL;
+  }
 }
 
 int TCPServerSocket::read(char* buf, size_t count, size_t* nread) {

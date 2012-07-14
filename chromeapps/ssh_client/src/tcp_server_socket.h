@@ -24,7 +24,6 @@ class TCPServerSocket : public FileStream {
 
   virtual void addref();
   virtual void release();
-  virtual FileStream* dup(int fd);
 
   virtual int read(char* buf, size_t count, size_t* nread);
   virtual int write(const char* buf, size_t count, size_t* nwrote);

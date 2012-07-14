@@ -34,7 +34,6 @@ class DevTty : public FileStream {
 
   virtual void addref();
   virtual void release();
-  virtual FileStream* dup(int fd);
 
   virtual void close();
   virtual int read(char* buf, size_t count, size_t* nread);
