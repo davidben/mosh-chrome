@@ -520,33 +520,33 @@ nassh.CommandInstance.prototype.onPlugin_.exit = function(code) {
  */
 nassh.CommandInstance.prototype.onPlugin_.openFile = function(fd, path, mode) {
   var self = this;
-  function onOpen(success) {
-    self.sendToPlugin_('onOpenFile', [fd, success]);
+  function onOpen(streamId) {
+    self.sendToPlugin_('onOpenFile', [fd, streamId]);
   }
 
   if (path == '/dev/random' || path == '/dev/urandom') {
     var streamClass = nassh.Stream.Random;
-    var stream = this.streamTable_.openStream(streamClass, fd, path, onOpen);
+    var stream = this.streamTable_.openStream(streamClass, path, onOpen);
     stream.onClose = function(reason) {
-      self.sendToPlugin_('onClose', [fd, reason]);
+      self.sendToPlugin_('onClose', [stream.id, reason]);
     };
   } else {
-    self.sendToPlugin_('onOpenFile', [fd, false]);
+    self.sendToPlugin_('onOpenFile', [fd, -1]);
   }
 };
 
 nassh.CommandInstance.prototype.onPlugin_.openSocket = function(
     fd, host, port) {
   if (!this.relay_) {
-    this.sendToPlugin_('onOpenSocket', [fd, false]);
+    this.sendToPlugin_('onOpenSocket', [fd, -1]);
     return;
   }
 
   var self = this;
   var stream = this.relay_.openSocket(
       fd, host, port,
-      function onOpen(success) {
-        self.sendToPlugin_('onOpenSocket', [fd, success]);
+      function onOpen(streamId) {
+        self.sendToPlugin_('onOpenSocket', [fd, streamId]);
       });
 
   stream.onDataAvailable = function(data) {
@@ -560,16 +560,16 @@ nassh.CommandInstance.prototype.onPlugin_.openSocket = function(
 };
 
 /**
- * Plugin wants to write some data to a file descriptor.
+ * Plugin wants to write some data to a stream.
  *
  * This is used to write to HTML5 Filesystem files.
  */
-nassh.CommandInstance.prototype.onPlugin_.write = function(fd, data) {
+nassh.CommandInstance.prototype.onPlugin_.write = function(id, data) {
   var self = this;
 
-  if (fd == 1 || fd == 2) {
+  if (id == 1 || id == 2) {
     var string = atob(data);
-    var ackCount = (fd == 1 ?
+    var ackCount = (id == 1 ?
                     this.stdoutAcknowledgeCount_ += string.length :
                     this.stderrAcknowledgeCount_ += string.length);
     //console.log('write start: ' + ackCount);
@@ -578,48 +578,48 @@ nassh.CommandInstance.prototype.onPlugin_.write = function(fd, data) {
 
     setTimeout(function() {
         //console.log('ack: ' + ackCount);
-        self.sendToPlugin_('onWriteAcknowledge', [fd, ackCount]);
+        self.sendToPlugin_('onWriteAcknowledge', [id, ackCount]);
       }, 0);
     return;
   }
 
-  var stream = this.streamTable_.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamById(id);
   if (!stream) {
-    console.warn('Attempt to write to unknown fd: ' + fd);
+    console.warn('Attempt to write to unknown id: ' + id);
     return;
   }
 
   stream.asyncWrite(data, function(writeCount) {
-      self.sendToPlugin_('onWriteAcknowledge', [fd, writeCount]);
+      self.sendToPlugin_('onWriteAcknowledge', [id, writeCount]);
     }, 100);
 };
 
 /**
- * Plugin wants to read from a fd.
+ * Plugin wants to read from a stream.
  */
-nassh.CommandInstance.prototype.onPlugin_.read = function(fd, size) {
+nassh.CommandInstance.prototype.onPlugin_.read = function(id, size) {
   var self = this;
-  var stream = this.streamTable_.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamById(id);
 
   if (!stream) {
-    if (fd)
-      console.warn('Attempt to read from unknown fd: ' + fd);
+    if (id != 0)
+      console.warn('Attempt to read from unknown id: ' + id);
     return;
   }
 
   stream.asyncRead(size, function(b64bytes) {
-      self.sendToPlugin_('onRead', [fd, b64bytes]);
+      self.sendToPlugin_('onRead', [id, b64bytes]);
     });
 };
 
 /**
  * Plugin wants to close a file descriptor.
  */
-nassh.CommandInstance.prototype.onPlugin_.close = function(fd) {
+nassh.CommandInstance.prototype.onPlugin_.close = function(id) {
   var self = this;
-  var stream = this.streamTable_.getStreamByFd(fd);
+  var stream = this.streamTable_.getStreamById(id);
   if (!stream) {
-    console.warn('Attempt to close unknown fd: ' + fd);
+    console.warn('Attempt to close unknown id: ' + id);
     return;
   }
 

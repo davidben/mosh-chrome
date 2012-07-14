@@ -59,23 +59,23 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
   }
 
   JsFile::InitTerminal();
-  JsFile* stdin = new JsFile(0, O_RDONLY, out);
+  JsFile* stdin = new JsFile(O_RDONLY, out);
   if (out->OpenFile(0, NULL, O_RDONLY, stdin)) {
     AddFileStream(0, stdin);
-    stdin->OnOpen(true);
+    stdin->OnOpen(0);
   }
 
-  JsFile* stdout = new JsFile(1, O_WRONLY, out);
+  JsFile* stdout = new JsFile(O_WRONLY, out);
   if (out->OpenFile(1, NULL, O_WRONLY, stdout)) {
     AddFileStream(1, stdout);
-    stdout->OnOpen(true);
+    stdout->OnOpen(1);
     AddPathHandler("/dev/tty", new DevTtyHandler(stdin, stdout));
   }
 
-  JsFile* stderr = new JsFile(2, O_WRONLY, out);
+  JsFile* stderr = new JsFile(O_WRONLY, out);
   if (out->OpenFile(2, NULL, O_WRONLY, stderr)) {
     AddFileStream(2, stderr);
-    stderr->OnOpen(true);
+    stderr->OnOpen(2);
   }
 
   AddPathHandler("/dev/null", new DevNullHandler());
@@ -821,8 +821,8 @@ int FileSystem::connect(int fd, const sockaddr* serv_addr, socklen_t addrlen) {
     // Only first socket will use JS proxy, other sockets are created for
     // connections made localhost so use Pepper sockets for them.
     use_js_socket_ = false;
-    JsSocket* socket = new JsSocket(fd, O_RDWR, output_);
-    if (!socket->connect(hostname.c_str(), port)) {
+    JsSocket* socket = new JsSocket(O_RDWR, output_);
+    if (!socket->connect(fd, hostname.c_str(), port)) {
       errno = ECONNREFUSED;
       socket->release();
       return -1;

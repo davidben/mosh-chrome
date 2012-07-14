@@ -15,17 +15,17 @@
 class JsFile : public FileStream,
                public InputInterface {
  public:
-  JsFile(int fd, int oflag, OutputInterface* out);
+  JsFile(int oflag, OutputInterface* out);
   virtual ~JsFile();
 
   static void InitTerminal();
 
-  int fd() { return fd_; }
+  int stream_id() { return stream_id_; }
   int oflag() { return oflag_; }
   bool is_block() { return !(oflag_ & O_NONBLOCK); }
   bool is_open() { return is_open_; }
 
-  virtual void OnOpen(bool success);
+  virtual void OnOpen(int stream_id);
   virtual void OnRead(const char* buf, size_t size);
   virtual void OnWriteAcknowledge(uint64_t count);
   virtual void OnClose();
@@ -55,7 +55,7 @@ class JsFile : public FileStream,
   void Close(int32_t result);
 
   int ref_;
-  int fd_;
+  int stream_id_;
   int oflag_;
   OutputInterface* out_;
   pp::CompletionCallbackFactory<JsFile, ThreadSafeRefCount> factory_;
@@ -78,7 +78,7 @@ class JsFileHandler : public PathHandler {
   virtual void addref();
   virtual void release();
 
-  void Open(int32_t result, JsFile* stream, const char* pathname);
+  void Open(int32_t result, int fd, JsFile* stream, const char* pathname);
 
   virtual FileStream* open(int fd, const char* pathname, int oflag);
   virtual int stat(const char* pathname, nacl_abi_stat* out);
@@ -94,15 +94,15 @@ class JsFileHandler : public PathHandler {
 
 class JsSocket : public JsFile {
  public:
-  JsSocket(int fd, int oflag, OutputInterface* out);
+  JsSocket(int oflag, OutputInterface* out);
   virtual ~JsSocket();
 
-  bool connect(const char* host, uint16_t port);
+  bool connect(int fd, const char* host, uint16_t port);
 
   bool is_read_ready();
 
  private:
-  void Connect(int32_t result, const char* host, uint16_t port);
+  void Connect(int32_t result, int fd, const char* host, uint16_t port);
 
   pp::CompletionCallbackFactory<JsSocket, ThreadSafeRefCount> factory_;
   DISALLOW_COPY_AND_ASSIGN(JsSocket);

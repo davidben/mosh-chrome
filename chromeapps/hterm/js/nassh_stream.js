@@ -13,9 +13,9 @@
 /**
  * Base class for streams required by the plugin.
  */
-nassh.Stream = function(table, fd, path) {
+nassh.Stream = function(table, id, path) {
   this.table_ = table;
-  this.fd_ = fd;
+  this.id = id;
   this.path = path;
   this.open = false;
 };
@@ -25,7 +25,6 @@ nassh.Stream = function(table, fd, path) {
  */
 nassh.Stream.ERR_STREAM_CLOSED = 'Stream closed';
 nassh.Stream.ERR_STREAM_OPENED = 'Stream opened';
-nassh.Stream.ERR_FD_IN_USE = 'File descriptor in use';
 nassh.Stream.ERR_NOT_IMPLEMENTED = 'Not implemented';
 
 /**
@@ -33,33 +32,33 @@ nassh.Stream.ERR_NOT_IMPLEMENTED = 'Not implemented';
  */
 nassh.StreamTable = function() {
   this.openStreams_ = {};
+  // HACK: Terminal IO is special-cased as stdout/stdin/stderr's
+  // streams.
+  this.nextId_ = 3;
 };
 
 /**
  * Look up a stream instance.
  */
-nassh.StreamTable.prototype.getStreamByFd = function(fd) {
-  return this.openStreams_[fd];
+nassh.StreamTable.prototype.getStreamById = function(id) {
+  return this.openStreams_[id];
 };
 
 /**
  * Open a new stream of a given class.
  */
-nassh.StreamTable.prototype.openStream = function(streamClass, fd, arg,
-                                                  onOpen) {
-  if (fd in this.openStreams_)
-    throw nassh.Stream.ERR_FD_IN_USE;
-
-  var stream = new streamClass(this, fd, arg);
+nassh.StreamTable.prototype.openStream = function(streamClass, arg, onOpen) {
+  var id = this.nextId_++;
+  var stream = new streamClass(this, id, arg);
   var self = this;
 
   stream.asyncOpen_(arg, function(success) {
       if (success) {
-        self.openStreams_[fd] = stream;
+        self.openStreams_[id] = stream;
         stream.open = true;
       }
 
-      onOpen(success);
+      onOpen(success ? stream.id : -1);
     });
 
   return stream;
@@ -72,7 +71,7 @@ nassh.StreamTable.prototype.onClose_ = function(stream) {
   if (stream.open)
     throw nassh.Stream.ERR_STREAM_OPENED;
 
-  delete this.openStreams_[stream.fd_];
+  delete this.openStreams_[stream.id];
 };
 
 /**
@@ -116,8 +115,8 @@ nassh.Stream.prototype.close = function(reason) {
  *
  * This special case stream just returns random bytes when read.
  */
-nassh.Stream.Random = function(table, fd) {
-  nassh.Stream.apply(this, [table, fd]);
+nassh.Stream.Random = function(table, id) {
+  nassh.Stream.apply(this, [table, id]);
 };
 
 nassh.Stream.Random.prototype = {

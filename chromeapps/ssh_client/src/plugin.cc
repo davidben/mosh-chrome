@@ -135,9 +135,14 @@ bool PluginInstance::OpenFile(int fd, const char* name, int mode,
     call_args.append(std::string(name));
     call_args.append(mode);
     InvokeJS(kOpenFileMethodId, call_args);
+    assert(pending_opens_.find(fd) == pending_opens_.end());
+    pending_opens_[fd] = stream;
+  } else {
+    // HACK: /dev/tty streams are completely special-cased. Assume
+    // that fd == stream_id and install directly.
+    assert(streams_.find(fd) == streams_.end());
+    streams_[fd] = stream;
   }
-  assert(streams_.find(fd) == streams_.end());
-  streams_[fd] = stream;
   return true;
 }
 
@@ -148,18 +153,18 @@ bool PluginInstance::OpenSocket(int fd, const char* host, uint16_t port,
   call_args.append(std::string(host));
   call_args.append(port);
   InvokeJS(kOpenSocketMethodId, call_args);
-  assert(streams_.find(fd) == streams_.end());
-  streams_[fd] = stream;
+  assert(pending_opens_.find(fd) == pending_opens_.end());
+  pending_opens_[fd] = stream;
   return true;
 }
 
-bool PluginInstance::Write(int fd, const char* data, size_t size) {
+bool PluginInstance::Write(int id, const char* data, size_t size) {
   const size_t kMaxWriteSize = 24*1024;
   std::vector<char> buf(kMaxWriteSize * 4 / 3 + 4);
   size_t start = 0;
   while(start < size) {
     Json::Value call_args(Json::arrayValue);
-    call_args.append(fd);
+    call_args.append(id);
     size_t chunk_size = ((size - start) <= kMaxWriteSize) ? (size - start)
                                                           : kMaxWriteSize;
     int res = b64_ntop((const unsigned char*)data + start, chunk_size,
@@ -175,17 +180,17 @@ bool PluginInstance::Write(int fd, const char* data, size_t size) {
   return true;
 }
 
-bool PluginInstance::Read(int fd, size_t size) {
+bool PluginInstance::Read(int id, size_t size) {
   Json::Value call_args(Json::arrayValue);
-  call_args.append(fd);
+  call_args.append(id);
   call_args.append(size);
   InvokeJS(kReadMethodId, call_args);
   return true;
 }
 
-bool PluginInstance::Close(int fd) {
+bool PluginInstance::Close(int id) {
   Json::Value call_args(Json::arrayValue);
-  call_args.append(fd);
+  call_args.append(id);
   InvokeJS(kCloseMethodId, call_args);
   return true;
 }
@@ -242,12 +247,14 @@ void PluginInstance::StartSession(const Json::Value& args) {
 void PluginInstance::OnOpen(const Json::Value& args) {
   const Json::Value& fd = args[(size_t)0];
   const Json::Value& result = args[(size_t)1];
-  if (fd.isNumeric() && result.isBool()) {
-    InputStreams::iterator it = streams_.find(fd.asInt());
-    if (it != streams_.end()) {
-      it->second->OnOpen(result.asBool());
-      if (!result.asBool())
-        streams_.erase(it);
+  if (fd.isNumeric() && result.isNumeric()) {
+    PendingOpens::iterator it = pending_opens_.find(fd.asInt());
+    if (it != pending_opens_.end()) {
+      it->second->OnOpen(result.asInt());
+      if (!result.asInt() >= 0) {
+        streams_[result.asInt()] = it->second;
+      }
+      pending_opens_.erase(it);
     } else {
       PrintLogImpl(0, "onOpen: for unknown file descriptor\n");
     }
@@ -257,10 +264,10 @@ void PluginInstance::OnOpen(const Json::Value& args) {
 }
 
 void PluginInstance::OnRead(const Json::Value& args) {
-  const Json::Value& fd = args[(size_t)0];
+  const Json::Value& id = args[(size_t)0];
   const Json::Value& data = args[(size_t)1];
-  if (fd.isNumeric() && data.isString()) {
-    InputStreams::iterator it = streams_.find(fd.asInt());
+  if (id.isNumeric() && data.isString()) {
+    InputStreams::iterator it = streams_.find(id.asInt());
     if (it != streams_.end()) {
       const std::string& str = data.asString();
       std::vector<char> buf(str.size() * 3 / 4);
@@ -276,10 +283,10 @@ void PluginInstance::OnRead(const Json::Value& args) {
 }
 
 void PluginInstance::OnWriteAcknowledge(const Json::Value& args) {
-  const Json::Value& fd = args[(size_t)0];
+  const Json::Value& id = args[(size_t)0];
   const Json::Value& count = args[(size_t)1];
-  if (fd.isNumeric() && count.isNumeric()) {
-    InputStreams::iterator it = streams_.find(fd.asInt());
+  if (id.isNumeric() && count.isNumeric()) {
+    InputStreams::iterator it = streams_.find(id.asInt());
     if (it != streams_.end()) {
       // TODO(dpolukhin): UInt here is only 32-bit, current version of json lib
       // don't support 64-bit integer numbers.
@@ -293,8 +300,8 @@ void PluginInstance::OnWriteAcknowledge(const Json::Value& args) {
 }
 
 void PluginInstance::OnClose(const Json::Value& args) {
-  const Json::Value& fd = args[(size_t)0];
-  InputStreams::iterator it = streams_.find(fd.asInt());
+  const Json::Value& id = args[(size_t)0];
+  InputStreams::iterator it = streams_.find(id.asInt());
   if (it != streams_.end()) {
     it->second->OnClose();
     streams_.erase(it);

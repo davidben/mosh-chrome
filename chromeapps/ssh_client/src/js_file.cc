@@ -32,21 +32,22 @@ void JsFileHandler::release() {
     delete this;
 }
 
-void JsFileHandler::Open(int32_t result, JsFile* stream, const char* pathname) {
-  out_->OpenFile(stream->fd(), pathname, stream->oflag(), stream);
+void JsFileHandler::Open(
+    int32_t result, int fd, JsFile* stream, const char* pathname) {
+  out_->OpenFile(fd, pathname, stream->oflag(), stream);
 }
 
 FileStream* JsFileHandler::open(int fd, const char* pathname, int oflag) {
-  JsFile* stream = new JsFile(fd, (oflag & ~O_NONBLOCK), out_);
+  JsFile* stream = new JsFile((oflag & ~O_NONBLOCK), out_);
   std::string fullpath = base_ + pathname;
-  pp::Module::Get()->core()->CallOnMainThread(0,
-      factory_.NewCallback(&JsFileHandler::Open, stream, fullpath.c_str()));
+  pp::Module::Get()->core()->CallOnMainThread(
+      0, factory_.NewCallback(&JsFileHandler::Open, fd, stream, fullpath.c_str()));
 
   FileSystem* sys = FileSystem::GetFileSystem();
   while(!stream->is_open())
     sys->cond().wait(sys->mutex());
 
-  if (stream->fd() == -1) {
+  if (stream->stream_id() == -1) {
     stream->release();
     return NULL;
   }
@@ -61,8 +62,8 @@ int JsFileHandler::stat(const char* pathname, nacl_abi_stat* out) {
 
 //------------------------------------------------------------------------------
 
-JsFile::JsFile(int fd, int oflag, OutputInterface* out)
-  : ref_(1), fd_(fd), oflag_(oflag), out_(out),
+JsFile::JsFile(int oflag, OutputInterface* out)
+  : ref_(1), oflag_(oflag), out_(out),
     factory_(this), out_task_sent_(false), is_open_(false),
     write_sent_(0), write_acknowledged_(0) {
 }
@@ -71,12 +72,11 @@ JsFile::~JsFile() {
   assert(!ref_);
 }
 
-void JsFile::OnOpen(bool success) {
+void JsFile::OnOpen(int stream_id) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
   is_open_ = true;
-  if (!success)
-    fd_ = -1;
+  stream_id_ = stream_id;
   sys->cond().broadcast();
 }
 
@@ -126,7 +126,7 @@ void JsFile::release() {
 
 void JsFile::close() {
   if (is_open()) {
-    assert(fd_ >= 3);
+    assert(stream_id_ >= 3);
     pp::Module::Get()->core()->CallOnMainThread(0,
         factory_.NewCallback(&JsFile::Close));
 
@@ -136,7 +136,7 @@ void JsFile::close() {
     while(is_open_)
       sys->cond().wait(sys->mutex());
 
-    fd_ = -1;
+    stream_id_ = -1;
   }
 }
 
@@ -194,13 +194,13 @@ int JsFile::fstat(nacl_abi_stat* out) {
   memset(out, 0, sizeof(nacl_abi_stat));
   // openssl uses st_ino and st_dev to distinguish random sources and doesn't
   // expect 0 there.
-  out->nacl_abi_st_ino = fd_;
-  out->nacl_abi_st_dev = fd_;
+  out->nacl_abi_st_ino = stream_id_;
+  out->nacl_abi_st_dev = stream_id_;
   return 0;
 }
 
 int JsFile::isatty() {
-  return fd_ < 3;
+  return stream_id_ < 3;
 }
 
 void JsFile::InitTerminal() {
@@ -264,10 +264,10 @@ int JsFile::ioctl(int request, va_list ap) {
 }
 
 bool JsFile::is_read_ready() {
-  // HACK: fd_ != 0 is required for reading /dev/random in openssl, it expects
+  // HACK: stream_id_ != 0 is required for reading /dev/random in openssl, it expects
   // that /dev/random has some data ready to read. If there is no data,
   // it won't call read at all.
-  return fd_ != 0 || !in_buf_.empty();
+  return stream_id_ != 0 || !in_buf_.empty();
 }
 
 bool JsFile::is_write_ready() {
@@ -290,7 +290,7 @@ void JsFile::PostWriteTask(bool always_post) {
 }
 
 void JsFile::Read(int32_t result, size_t size) {
-  out_->Read(fd_, size);
+  out_->Read(stream_id_, size);
 }
 
 void JsFile::Write(int32_t result) {
@@ -303,7 +303,7 @@ void JsFile::Write(int32_t result) {
       out_buf_.size());
   if (count == 0) {
     LOG("JsFile::Write: %d is not ready for write, cached %d\n",
-        fd_, out_buf_.size());
+        stream_id_, out_buf_.size());
     return;
   }
 
@@ -312,7 +312,7 @@ void JsFile::Write(int32_t result) {
   // below will require copy for the whole remaining bytes (will be slow with
   // small writeWindow).
   std::vector<char> buf(out_buf_.begin(), out_buf_.begin() + count);
-  if (out_->Write(fd_, &buf[0], count)) {
+  if (out_->Write(stream_id_, &buf[0], count)) {
     write_sent_ += count;
     out_buf_.erase(out_buf_.begin(), out_buf_.begin() + count);
     sys->cond().broadcast();
@@ -323,26 +323,26 @@ void JsFile::Write(int32_t result) {
 }
 
 void JsFile::Close(int32_t result) {
-  out_->Close(fd_);
+  out_->Close(stream_id_);
 }
 
 //------------------------------------------------------------------------------
 
-JsSocket::JsSocket(int fd, int oflag, OutputInterface* out)
-  : JsFile(fd, oflag, out), factory_(this) {
+JsSocket::JsSocket(int oflag, OutputInterface* out)
+  : JsFile(oflag, out), factory_(this) {
 }
 
 JsSocket::~JsSocket() {
 }
 
-bool JsSocket::connect(const char* host, uint16_t port) {
-  pp::Module::Get()->core()->CallOnMainThread(0,
-      factory_.NewCallback(&JsSocket::Connect, host, port));
+bool JsSocket::connect(int fd, const char* host, uint16_t port) {
+  pp::Module::Get()->core()->CallOnMainThread(
+      0, factory_.NewCallback(&JsSocket::Connect, fd, host, port));
   FileSystem* sys = FileSystem::GetFileSystem();
   while(!is_open())
     sys->cond().wait(sys->mutex());
 
-  if (fd() == -1)
+  if (stream_id() == -1)
     return false;
 
   return true;
@@ -352,8 +352,9 @@ bool JsSocket::is_read_ready() {
   return !in_buf_.empty();
 }
 
-void JsSocket::Connect(int32_t result, const char* host, uint16_t port) {
+void JsSocket::Connect(int32_t result, int fd,
+                       const char* host, uint16_t port) {
   FileSystem* sys = FileSystem::GetFileSystem();
   Mutex::Lock lock(sys->mutex());
-  out_->OpenSocket(fd_, host, port, this);
+  out_->OpenSocket(fd, host, port, this);
 }

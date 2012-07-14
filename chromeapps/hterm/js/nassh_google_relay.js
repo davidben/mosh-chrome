@@ -152,7 +152,7 @@ nassh.GoogleRelay.prototype.init = function(opt_resumePath) {
  * for this relay.
  */
 nassh.GoogleRelay.prototype.openSocket = function(
-    fd, host, port, onOpen) {
+    host, port, onOpen) {
   return this.table_.openStream(nassh.Stream.GoogleRelay,
-            fd, {relay: this, host: host, port: port}, onOpen);
+            {relay: this, host: host, port: port}, onOpen);
 };

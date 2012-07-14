@@ -22,7 +22,6 @@ class UDPSocket : public FileStream {
 
   bool open();
 
-  int fd() { return fd_; }
   int oflag() { return oflag_; }
   bool is_block() { return !(oflag_ & O_NONBLOCK); }
   bool is_open() { return socket_ != NULL; }

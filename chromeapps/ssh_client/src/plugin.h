@@ -34,9 +34,9 @@ class PluginInstance : public pp::Instance,
                         InputInterface* stream);
   virtual bool OpenSocket(int fd, const char* host, uint16_t port,
                           InputInterface* stream);
-  virtual bool Write(int fd, const char* data, size_t size);
-  virtual bool Read(int fd, size_t size);
-  virtual bool Close(int fd);
+  virtual bool Write(int id, const char* data, size_t size);
+  virtual bool Read(int id, size_t size);
+  virtual bool Close(int id);
   virtual size_t GetWriteWindow();
   virtual void SessionClosed(int error);
 
@@ -47,6 +47,7 @@ class PluginInstance : public pp::Instance,
   Json::Value session_args_;
 
  private:
+  typedef std::map<int, InputInterface*> PendingOpens;
   typedef std::map<int, InputInterface*> InputStreams;
 
   void StartSession(const Json::Value& args);
@@ -70,6 +71,9 @@ class PluginInstance : public pp::Instance,
   pp::Core* core_;
   pthread_t plugin_thread_;
   pp::CompletionCallbackFactory<PluginInstance, ThreadSafeRefCount> factory_;
+  // pending_opens_ is keyed by fd to correlate request and
+  // response. streams_ is keyed by the JavaScript-side stream ID.
+  PendingOpens pending_opens_;
   InputStreams streams_;
   FileSystem file_system_;
 

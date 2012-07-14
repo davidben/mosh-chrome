@@ -97,7 +97,7 @@ class InputInterface {
  public:
   virtual ~InputInterface() {}
 
-  virtual void OnOpen(bool success) = 0;
+  virtual void OnOpen(int stream_id) = 0;
   virtual void OnRead(const char* buf, size_t size) = 0;
   virtual void OnWriteAcknowledge(uint64_t count) = 0;
   virtual void OnClose() = 0;
@@ -111,9 +111,9 @@ class OutputInterface {
                         InputInterface* stream) = 0;
   virtual bool OpenSocket(int fd, const char* host, uint16_t port,
                           InputInterface* stream) = 0;
-  virtual bool Write(int fd, const char* data, size_t size) = 0;
-  virtual bool Read(int fd, size_t size) = 0;
-  virtual bool Close(int fd) = 0;
+  virtual bool Write(int id, const char* data, size_t size) = 0;
+  virtual bool Read(int id, size_t size) = 0;
+  virtual bool Close(int id) = 0;
   virtual size_t GetWriteWindow() = 0;
   virtual void SessionClosed(int error) = 0;
 };

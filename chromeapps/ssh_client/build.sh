@@ -60,7 +60,8 @@ if [[ $1 == "--debug" ]]; then
 else
   BUILD_ARGS="CXXFLAGS=-g -O2 -DNDEBUG"
 fi
-make clean && make -j "$BUILD_ARGS" || exit 1
+make clean && 
+make -j "$BUILD_ARGS" || exit 1
 
 cd output
 mkdir -p hterm/plugin
