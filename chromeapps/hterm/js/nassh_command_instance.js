@@ -352,8 +352,10 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
   if (commandArgs)
     argv.arguments.push(commandArgs);
 
+  this.io.print(hterm.msg('PLUGIN_LOADING'));
   var self = this;
   this.initPlugin_(function() {
+    self.io.println(hterm.msg('PLUGIN_LOADING_COMPLETE'));
     if (!self.argv_.argString)
       self.io.println(hterm.msg('WELCOME_TIP'));
 
@@ -391,12 +393,6 @@ nassh.CommandInstance.prototype.dispatchMessage_ = function(
 
 nassh.CommandInstance.prototype.initPlugin_ = function(onComplete) {
   var self = this;
-  function onPluginLoaded() {
-    self.io.println(hterm.msg('PLUGIN_LOADING_COMPLETE'));
-    onComplete();
-  };
-
-  this.io.print(hterm.msg('PLUGIN_LOADING'));
 
   this.plugin_ = window.document.createElement('embed');
   this.plugin_.style.cssText =
@@ -406,7 +402,7 @@ nassh.CommandInstance.prototype.initPlugin_ = function(onComplete) {
        'height: 0;');
   this.plugin_.setAttribute('src', '../plugin/ssh_client.nmf');
   this.plugin_.setAttribute('type', 'application/x-nacl');
-  this.plugin_.addEventListener('load', onPluginLoaded);
+  this.plugin_.addEventListener('load', onComplete);
   this.plugin_.addEventListener('message', this.onPluginMessage_.bind(this));
   this.plugin_.addEventListener('crash', function (ev) {
     console.log('plugin crashed');
