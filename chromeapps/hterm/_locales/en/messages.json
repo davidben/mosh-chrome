@@ -140,6 +140,21 @@
     "description": "The aria-label for the Import link."
   },
 
+  "MOSH_SERVER_LABEL": {
+    "message": "Mosh Server",
+    "description": "The label for the 'mosh-server' field."
+  },
+
+  "FIELD_MOSH_SERVER_PLACEHOLDER": {
+    "message": "command to run the mosh-server",
+    "description": "Text use as the placeholder for the 'mosh-server' field."
+  },
+
+  "FIELD_MOSH_SERVER_ARIA_LABEL": {
+    "message": "command to run the mosh-server",
+    "description": "Text use as the aria-label for the 'mosh-server' field."
+  },
+
   "SSH_ARGSTR_LABEL": {
     "message": "SSH Arguments",
     "description": "The label for the 'argstr' field."
