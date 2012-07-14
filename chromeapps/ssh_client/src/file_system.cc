@@ -93,6 +93,7 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
     AddPathHandler("/dev/random", new JsFileHandler(out, "/dev/random"));
     AddPathHandler("/dev/urandom", new JsFileHandler(out, "/dev/urandom"));
   }
+  AddPathHandler("/dev/js", new JsFileHandler(out, "/dev/js"));
 
   // Add /lib/locale for glibc.
   UrlFileHandler *locale_mount = new UrlFileHandler("/plugin/locale-data");
