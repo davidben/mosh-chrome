@@ -319,9 +319,6 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
   this.io.println(hterm.msg('CONNECTING',
                             [params.username + '@' + params.hostname,
                              (params.port || '??')]));
-  this.io.onVTKeystroke = this.sendString_.bind(this);
-  this.io.sendString = this.sendString_.bind(this);
-  this.io.onTerminalResize = this.onTerminalResize_.bind(this);
 
   var argv = {};
   argv.terminalWidth = this.io.terminal_.screenSize.width;
@@ -353,12 +350,18 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
 
   var self = this;
   this.initPlugin_(function() {
-      if (!self.argv_.argString)
-        self.io.println(hterm.msg('WELCOME_TIP'));
+    if (!self.argv_.argString)
+      self.io.println(hterm.msg('WELCOME_TIP'));
 
-      window.onbeforeunload = self.onBeforeUnload_.bind(self);
-      self.sendToPlugin_('startSession', [argv]);
-    });
+    // TODO(davidben): Queue up any terminal input processed before
+    // the plugin is loaded.
+    self.io.onVTKeystroke = self.sendString_.bind(self);
+    self.io.sendString = self.sendString_.bind(self);
+    self.io.onTerminalResize = self.onTerminalResize_.bind(self);
+
+    window.onbeforeunload = self.onBeforeUnload_.bind(self);
+    self.sendToPlugin_('startSession', [argv]);
+  });
 
   document.querySelector('#terminal').focus();
 
