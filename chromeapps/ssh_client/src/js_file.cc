@@ -125,7 +125,7 @@ void JsFile::release() {
 }
 
 void JsFile::close() {
-  if (is_open()) {
+  if (is_open() && stream_id_ >= 0) {
     assert(stream_id_ >= 3);
     pp::Module::Get()->core()->CallOnMainThread(0,
         factory_.NewCallback(&JsFile::Close));
