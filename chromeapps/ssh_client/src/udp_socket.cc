@@ -209,6 +209,7 @@ void UDPSocket::Open(int32_t result, int32_t* pres) {
   int ret = socket_->Bind(
       &addr, factory_.NewCallback(&UDPSocket::OnBind, pres));
   assert(ret == PP_OK_COMPLETIONPENDING);
+  (void)ret;
 }
 
 void UDPSocket::OnBind(int32_t result, int32_t* pres) {
@@ -240,6 +241,7 @@ void UDPSocket::RecvFrom(int32_t) {
   int ret = socket_->RecvFrom(recvfrom_buf_, kBufSize,
                               factory_.NewCallback(&UDPSocket::OnRecvFrom));
   assert(ret == PP_OK_COMPLETIONPENDING);
+  (void)ret;
 }
 
 void UDPSocket::OnRecvFrom(int32_t result) {
@@ -317,10 +319,13 @@ bool UDPSocket::SockAddrToNetAddress(const sockaddr* addr,
                                      PP_NetAddress_Private* netaddress) {
   if (addr->sa_family == AF_INET) {
     const sockaddr_in* sin4 = reinterpret_cast<const sockaddr_in*>(addr);
-    uint8_t ip[4];
-    *(reinterpret_cast<uint32_t*>(&ip)) = sin4->sin_addr.s_addr;
+    union {
+      uint8_t bytes[4];
+      uint32_t word;
+    } ip;
+    ip.word = sin4->sin_addr.s_addr;
     if (!pp::NetAddressPrivate::CreateFromIPv4Address(
-            ip, ntohs(sin4->sin_port), netaddress)) {
+            ip.bytes, ntohs(sin4->sin_port), netaddress)) {
       LOG("pp::NetAddressPrivate::CreateFromIPv4Address failed!\n");
       return false;
     }

@@ -113,6 +113,7 @@ void UrlFile::GetFileRef(const char* pathname, int32_t* pres) {
   int ret = loader_->Open(
       request, factory_.NewCallback(&UrlFile::OnUrlOpen, pres));
   assert(ret == PP_OK_COMPLETIONPENDING);
+  (void)ret;
 }
 
 void UrlFile::OnUrlOpen(int32_t result, int32_t* pres) {
@@ -130,6 +131,7 @@ void UrlFile::OnUrlOpen(int32_t result, int32_t* pres) {
     int ret = loader_->FinishStreamingToFile(
         factory_.NewCallback(&UrlFile::OnUrlFinished, pres));
     assert(ret == PP_OK_COMPLETIONPENDING);
+    (void)ret;
   } else {
     delete loader_;
     loader_ = NULL;

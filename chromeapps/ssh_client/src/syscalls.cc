@@ -170,13 +170,13 @@ int pselect(int nfds, fd_set *readfds, fd_set *writefds,
 void exit(int status) {
   LOG("exit: %d\n", status);
   FileSystem::GetFileSystem()->exit(status);
-  assert(0);
+  abort();  // Can we call the real exit?
 }
 
 void _exit(int status) {
   LOG("_exit: %d\n", status);
   FileSystem::GetFileSystem()->exit(status);
-  assert(0);
+  abort();  // Can we call the real _exit?
 }
 
 #if 0
