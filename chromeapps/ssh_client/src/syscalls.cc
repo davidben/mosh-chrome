@@ -152,7 +152,7 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
 int pselect(int nfds, fd_set *readfds, fd_set *writefds,
             fd_set *exceptfds, const struct timespec *timeout,
             const sigset_t *sigmask) {
-  LOG("pselect: %d\n", nfds);
+  VLOG("pselect: %d\n", nfds);
   struct timeval tv;
   if (timeout) {
     // TODO(davidben): Don't throw away the nanosecond precision.
@@ -361,14 +361,14 @@ ssize_t recv(int fd, void *buf, size_t count, int flags) {
 
 ssize_t sendto(int sockfd, const void* buf, size_t len, int flags,
                const struct sockaddr* dest_addr, socklen_t addrlen) {
-  LOG("sendto: %d %d %d\n", sockfd, len, flags);
+  VLOG("sendto: %d %d %d\n", sockfd, len, flags);
   return FileSystem::GetFileSystem()->sendto(sockfd, buf, len, flags,
                                              dest_addr, addrlen);
 }
 
 ssize_t recvfrom(int socket, void * buffer, size_t len, int flags,
                  struct sockaddr* addr, socklen_t* addrlen) {
-  LOG("recvfrom: %d %d %d\n", socket, len, flags);
+  VLOG("recvfrom: %d %d %d\n", socket, len, flags);
   return FileSystem::GetFileSystem()->recvfrom(socket, buffer, len, flags,
                                                addr, addrlen);
 }
