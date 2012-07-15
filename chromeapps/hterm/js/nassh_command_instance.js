@@ -26,17 +26,11 @@ nassh.CommandInstance = function(argv) {
   // Command arguments.
   this.argv_ = argv;
 
-  // Command environment.
-  this.environment_ = argv.environment || {};
-
-  // Stream table.
-  this.streamTable_ = null;
-
   // hterm.Terminal.IO instance.
   this.io = null;
 
-  // Relay manager.
-  this.relay_ = null;
+  // nassh.PluginCommand instance.
+  this.command_ = null;
 
   // Parsed extension manifest.
   this.manifest_ = null;
@@ -49,13 +43,6 @@ nassh.CommandInstance = function(argv) {
 
   // Root preference manager.
   this.prefs_ = new nassh.GlobalPreferences();
-
-  // Counters used to acknowledge writes from the plugin.
-  this.stdoutAcknowledgeCount_ = 0;
-  this.stderrAcknowledgeCount_ = 0;
-
-  // Prevent us from reporting an exit twice.
-  this.exited_ = false;
 };
 
 /**
@@ -298,10 +285,11 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
   if (!(params.username && params.hostname))
     return false;
 
+  var relay;
   if (params.relayHost) {
-    this.relay_ = new nassh.GoogleRelay(this.io, params.relayHost);
+    relay = new nassh.GoogleRelay(this.io, params.relayHost);
     this.io.println(hterm.msg('INITIALIZING_RELAY', [params.relayHost]));
-    if (!this.relay_.init()) {
+    if (!relay.init()) {
       // A false return value means we have to redirect to complete
       // initialization.  Bail out of the connect for now.  We'll resume it
       // when the relay is done with its redirect.
@@ -309,7 +297,7 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
       // If we're going to have to redirect for the relay then we should make
       // sure not to re-prompt for the destination when we return.
       sessionStorage.setItem('nassh.pendingRelay', 'yes');
-      this.relay_.redirect();
+      relay.redirect();
       return true;
     }
   }
@@ -323,57 +311,54 @@ nassh.CommandInstance.prototype.connectTo = function(params) {
                             [params.username + '@' + params.hostname,
                              (params.port || '??')]));
 
-  var argv = {};
-  argv.terminalWidth = this.io.terminal_.screenSize.width;
-  argv.terminalHeight = this.io.terminal_.screenSize.height;
-  argv.useJsSocket = !!this.relay_;
-  argv.environment = this.environment_;
-  argv.writeWindow = 8 * 1024;
-
-  argv.arguments = ['-C'];  // enable compression
-  var commandArgs;
+  var args = ['-C'];  // enable compression
+  var command;
 
   if (params.argstr) {
     var ary = params.argstr.match(/^(.*?)(?:(?:^|\s+)(?:--\s+(.*)))?$/);
     if (ary) {
       console.log(ary);
       if (ary[1])
-        argv.arguments = argv.arguments.concat(ary[1].split(/\s+/));
-      commandArgs = ary[2];
+        args = args.concat(ary[1].split(/\s+/));
+      command = ary[2];
     }
   }
 
   if (params.identity)
-    argv.arguments.push('-i/.ssh/' + params.identity);
+    args.push('-i/.ssh/' + params.identity);
   if (params.port)
-    argv.arguments.push('-p' + params.port);
+    args.push('-p' + params.port);
 
-  argv.arguments.push(params.username + '@' + params.hostname);
-  if (commandArgs)
-    argv.arguments.push(commandArgs);
+  args.push(params.username + '@' + params.hostname);
+  if (command)
+    args.push(command);
 
   this.io.print(hterm.msg('PLUGIN_LOADING'));
   var self = this;
-  this.initPlugin_(function() {
-    self.io.println(hterm.msg('PLUGIN_LOADING_COMPLETE'));
-    if (!self.argv_.argString)
-      self.io.println(hterm.msg('WELCOME_TIP'));
 
-    self.streamTable_ = new nassh.StreamTable();
-    self.streamTable_.onClose = function(stream, reason) {
-      self.sendToPlugin_('onClose', [stream.id, reason]);
-    };
-
-    // TODO(davidben): Queue up any terminal input processed before
-    // the plugin is loaded.
-    self.io.onVTKeystroke = self.sendString_.bind(self);
-    self.io.sendString = self.sendString_.bind(self);
-    self.io.onTerminalResize = self.onTerminalResize_.bind(self);
-
-    window.onbeforeunload = self.onBeforeUnload_.bind(self);
-    self.sendToPlugin_('startSession', [argv]);
+  this.command_ = new nassh.PluginCommand({
+    nmf: '../plugin/ssh_client.nmf',
+    args: args,
+    environment: this.argv_.environment,
+    io: this.io,
+    relay: relay,
+    onLoad: function() {
+      self.io.println(hterm.msg('PLUGIN_LOADING_COMPLETE'));
+      if (!self.argv_.argString)
+        self.io.println(hterm.msg('WELCOME_TIP'));
+      window.onbeforeunload = self.onBeforeUnload_.bind(self);
+    },
+    onExit: function(code) {
+      self.exit(code);
+    },
+    pathHandler: function(path) {
+      if (path == '/dev/random' || path == '/dev/urandom') {
+        return nassh.Stream.Random;
+      } else {
+        return null;
+      }
+    }
   });
-
   document.querySelector('#terminal').focus();
 
   return true;
@@ -389,95 +374,6 @@ nassh.CommandInstance.prototype.dispatchMessage_ = function(
   } else {
     console.log('Unknown "' + desc + '" message: ' + msg.name);
   }
-};
-
-nassh.CommandInstance.prototype.initPlugin_ = function(onComplete) {
-  var self = this;
-
-  this.plugin_ = window.document.createElement('embed');
-  this.plugin_.style.cssText =
-      ('position: absolute;' +
-       'top: -99px' +
-       'width: 0;' +
-       'height: 0;');
-  this.plugin_.setAttribute('src', '../plugin/ssh_client.nmf');
-  this.plugin_.setAttribute('type', 'application/x-nacl');
-  this.plugin_.addEventListener('load', onComplete);
-  this.plugin_.addEventListener('message', this.onPluginMessage_.bind(this));
-  this.plugin_.addEventListener('crash', function (ev) {
-    console.log('plugin crashed');
-    self.exit(-1);
-  });
-
-  document.body.insertBefore(this.plugin_, document.body.firstChild);
-};
-
-/**
- * Send a message to the nassh plugin.
- *
- * @param {string} name The name of the message to send.
- * @param {Array} arguments The message arguments.
- */
-nassh.CommandInstance.prototype.sendToPlugin_ = function(name, args) {
-  var str = JSON.stringify({name: name, arguments: args});
-
-  this.plugin_.postMessage(str);
-};
-
-/**
- * Send a string to the remote host.
- *
- * @param {string} string The string to send.
- */
-nassh.CommandInstance.prototype.sendString_ = function(string) {
-  this.sendToPlugin_('onRead', [0, btoa(string)]);
-};
-
-/**
- * Notify plugin about new terminal size.
- *
- * @param {string|integer} terminal width.
- * @param {string|integer} terminal height.
- */
-nassh.CommandInstance.prototype.onTerminalResize_ = function(width, height) {
-  this.sendToPlugin_('onResize', [Number(width), Number(height)]);
-};
-
-/**
- * Exit the nassh command.
- */
-nassh.CommandInstance.prototype.exit = function(code) {
-  if (this.exited_)
-    return;
-  this.exited_ = true;
-  this.io.pop();
-  window.onbeforeunload = null;
-  if (this.plugin_) {
-    this.plugin_.parentNode.removeChild(this.plugin_);
-    this.plugin_ = null;
-  }
-
-  if (this.argv_.onExit)
-    this.argv_.onExit(code);
-};
-
-nassh.CommandInstance.prototype.onBeforeUnload_ = function(e) {
-  var msg = hterm.msg('BEFORE_UNLOAD');
-  e.returnValue = msg;
-  return msg;
-};
-
-/**
- * Called when the plugin sends us a message.
- *
- * Plugin messages are JSON strings rather than arbitrary JS values.  They
- * also use "arguments" instead of "argv".  This function translates the
- * plugin message into something dispatchMessage_ can digest.
- */
-nassh.CommandInstance.prototype.onPluginMessage_ = function(e) {
-  var msg = JSON.parse(e.data);
-  msg.argv = msg.arguments;
-  this.dispatchMessage_('plugin', this.onPlugin_, msg);
 };
 
 /**
@@ -497,128 +393,18 @@ nassh.CommandInstance.prototype.onConnectDialog_.connectToProfile = function(
 };
 
 /**
- * Plugin message handlers.
+ * Exit the nassh command.
  */
-nassh.CommandInstance.prototype.onPlugin_ = {};
+nassh.CommandInstance.prototype.exit = function(code) {
+  this.io.pop();
+  window.onbeforeunload = null;
 
-/**
- * Log a message from the plugin.
- */
-nassh.CommandInstance.prototype.onPlugin_.printLog = function(str) {
-  console.log('plugin log: ' + str);
+  if (this.argv_.onExit)
+    this.argv_.onExit(code);
 };
 
-/**
- * Plugin has exited.
- */
-nassh.CommandInstance.prototype.onPlugin_.exit = function(code) {
-  console.log('plugin exit: ' + code);
-  this.exit(code);
-};
-
-/**
- * Plugin wants to open a file.
- *
- * The plugin leans on JS to provide a persistent filesystem, which we do via
- * the HTML5 Filesystem API.
- *
- * In the future, the plugin may handle its own files.
- */
-nassh.CommandInstance.prototype.onPlugin_.openFile = function(fd, path, mode) {
-  var self = this;
-  function onOpen(streamId) {
-    self.sendToPlugin_('onOpenFile', [fd, streamId]);
-  }
-
-  if (path == '/dev/random' || path == '/dev/urandom') {
-    this.streamTable_.openStream(nassh.Stream.Random, path, onOpen);
-  } else {
-    self.sendToPlugin_('onOpenFile', [fd, -1]);
-  }
-};
-
-nassh.CommandInstance.prototype.onPlugin_.openSocket = function(
-    fd, host, port) {
-  if (!this.relay_) {
-    this.sendToPlugin_('onOpenSocket', [fd, -1]);
-    return;
-  }
-
-  var self = this;
-  var stream = this.relay_.openSocket(
-      this.streamTable_, fd, host, port,
-      function onOpen(streamId) {
-        self.sendToPlugin_('onOpenSocket', [fd, streamId]);
-      });
-
-  stream.onDataAvailable = function(data) {
-    self.sendToPlugin_('onRead', [fd, data]);
-  };
-};
-
-/**
- * Plugin wants to write some data to a stream.
- *
- * This is used to write to HTML5 Filesystem files.
- */
-nassh.CommandInstance.prototype.onPlugin_.write = function(id, data) {
-  var self = this;
-
-  if (id == 1 || id == 2) {
-    var string = atob(data);
-    var ackCount = (id == 1 ?
-                    this.stdoutAcknowledgeCount_ += string.length :
-                    this.stderrAcknowledgeCount_ += string.length);
-    //console.log('write start: ' + ackCount);
-    this.io.print(string);
-    //console.log('write done.');
-
-    setTimeout(function() {
-        //console.log('ack: ' + ackCount);
-        self.sendToPlugin_('onWriteAcknowledge', [id, ackCount]);
-      }, 0);
-    return;
-  }
-
-  var stream = this.streamTable_.getStreamById(id);
-  if (!stream) {
-    console.warn('Attempt to write to unknown id: ' + id);
-    return;
-  }
-
-  stream.asyncWrite(data, function(writeCount) {
-      self.sendToPlugin_('onWriteAcknowledge', [id, writeCount]);
-    }, 100);
-};
-
-/**
- * Plugin wants to read from a stream.
- */
-nassh.CommandInstance.prototype.onPlugin_.read = function(id, size) {
-  var self = this;
-  var stream = this.streamTable_.getStreamById(id);
-
-  if (!stream) {
-    if (id != 0)
-      console.warn('Attempt to read from unknown id: ' + id);
-    return;
-  }
-
-  stream.asyncRead(size, function(b64bytes) {
-      self.sendToPlugin_('onRead', [id, b64bytes]);
-    });
-};
-
-/**
- * Plugin wants to close a file descriptor.
- */
-nassh.CommandInstance.prototype.onPlugin_.close = function(id) {
-  var self = this;
-  var stream = this.streamTable_.getStreamById(id);
-  if (!stream) {
-    console.warn('Attempt to close unknown id: ' + id);
-    return;
-  }
-
-  stream.close();
+nassh.CommandInstance.prototype.onBeforeUnload_ = function(e) {
+  var msg = hterm.msg('BEFORE_UNLOAD');
+  e.returnValue = msg;
+  return msg;
 };
