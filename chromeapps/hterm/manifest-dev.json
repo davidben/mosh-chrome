@@ -3,7 +3,7 @@
   "minimum_chrome_version": "18",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "name": "Mosh",
+  "name": "Mobile Shell",
   "version": "0.8.2.0",
   "default_locale": "en",
   "icons": {
@@ -12,7 +12,7 @@
     "32": "images/vt-32.png",
     "16": "images/vt-16.png"
   },
-  "description": "Mobile shell that supports roaming and intelligent local echo.",
+  "description": "Remote terminal that supports roaming and intelligent local echo.",
   "offline_enabled": true,
   "permissions": [
     "unlimitedStorage"
