@@ -18,7 +18,7 @@
     "unlimitedStorage"
   ],
   "web_accessible_resources": [
-    "html/nassh_connect_dialog.html"
+    "html/namosh_connect_dialog.html"
   ],
   "app": {
     "launch": {
