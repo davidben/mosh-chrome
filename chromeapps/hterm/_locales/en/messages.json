@@ -141,17 +141,17 @@
   },
 
   "MOSH_SERVER_LABEL": {
-    "message": "Mosh Server",
+    "message": "Server Command",
     "description": "The label for the 'mosh-server' field."
   },
 
   "FIELD_MOSH_SERVER_PLACEHOLDER": {
-    "message": "command to run the mosh-server",
+    "message": "command to run the mosh server",
     "description": "Text use as the placeholder for the 'mosh-server' field."
   },
 
   "FIELD_MOSH_SERVER_ARIA_LABEL": {
-    "message": "command to run the mosh-server",
+    "message": "command to run the mosh server",
     "description": "Text use as the aria-label for the 'mosh-server' field."
   },
 
