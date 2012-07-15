@@ -36,6 +36,8 @@ void SshPluginInstance::SessionThreadImpl() {
     perror("open");
     exit(1);
   }
+  // This closes the original stdout, which would cause things to blow
+  // up, but the /dev/tty handler takes references to it.
   if (dup2(out, STDOUT_FILENO) < 0) {
     perror("dup2");
     exit(1);
