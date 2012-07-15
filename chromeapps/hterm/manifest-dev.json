@@ -7,10 +7,10 @@
   "version": "0.8.2.0",
   "default_locale": "en",
   "icons": {
-    "128": "images/vt-128.png",
-    "48": "images/vt-48.png",
-    "32": "images/vt-32.png",
-    "16": "images/vt-16.png"
+    "128": "images/mosh-128.png",
+    "48": "images/mosh-48.png",
+    "32": "images/mosh-32.png",
+    "16": "images/mosh-16.png"
   },
   "description": "Remote terminal that supports roaming and intelligent local echo.",
   "offline_enabled": true,
