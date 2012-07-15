@@ -4,6 +4,9 @@
 
 #include "ssh_plugin.h"
 
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
 #include "ppapi/cpp/module.h"
 
 #include "json/reader.h"
@@ -25,6 +28,9 @@ SshPluginInstance::SshPluginInstance(PP_Instance instance)
 
 SshPluginInstance::~SshPluginInstance() {
 }
+
+// Conveniently, OpenSSH stuffs the final hostaddr in here.
+extern struct sockaddr_storage hostaddr;
 
 void SshPluginInstance::SessionThreadImpl() {
   // Replace stdout with a pipe to the outside shell.
@@ -82,7 +88,33 @@ void SshPluginInstance::SessionThreadImpl() {
   for (size_t i = 0; i < argv.size(); i++)
     LOG("  argv[%d] = %s\n", i, argv[i]);
 
-  SessionClosed(ssh_main(argv.size(), &argv[0]));
+  int ret = ssh_main(argv.size(), &argv[0]);
+
+  // Pull the IP address we connected to out of the global |hostaddr|
+  // variable where OpenSSH is kind enough to put it for us.
+  if (ret == 0) {
+    if (hostaddr.ss_family == AF_INET) {
+      sockaddr_in* hostaddr_in = reinterpret_cast<sockaddr_in*>(&hostaddr);
+      char buf[INET_ADDRSTRLEN + 1];
+      const char* ip_str = inet_ntop(AF_INET, &hostaddr_in->sin_addr.s_addr,
+                                     buf, sizeof(buf));
+      if (ip_str) {
+        printf("\nMOSH IP %s\n", ip_str);
+        fflush(stdout);
+      }
+    } else if (hostaddr.ss_family == AF_INET6) {
+      sockaddr_in6* hostaddr_in6 = reinterpret_cast<sockaddr_in6*>(&hostaddr);
+      char buf[INET6_ADDRSTRLEN + 1];
+      const char* ip_str = inet_ntop(AF_INET6, hostaddr_in6->sin6_addr.s6_addr,
+                                     buf, sizeof(buf));
+      if (ip_str) {
+        printf("\nMOSH IP %s\n", ip_str);
+        fflush(stdout);
+      }
+    }
+  }
+
+  SessionClosed(ret);
 }
 
 //------------------------------------------------------------------------------
