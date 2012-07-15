@@ -36,12 +36,6 @@ void SshPluginInstance::SessionThreadImpl() {
     perror("open");
     exit(1);
   }
-  // HACK: Standard FDs are special-cased so keep a reference around
-  // to the original to avoid closing it and blowing up.
-  if (dup(STDOUT_FILENO) < 0) {
-    perror("dup");
-    exit(1);
-  }
   if (dup2(out, STDOUT_FILENO) < 0) {
     perror("dup2");
     exit(1);
