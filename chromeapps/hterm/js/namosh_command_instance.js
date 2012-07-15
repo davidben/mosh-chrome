@@ -300,7 +300,12 @@ namosh.CommandInstance.prototype.connectTo = function(params) {
     args.push('-p' + params.port);
 
   args.push(params.username + '@' + params.hostname);
-  args.push(params.moshServer || 'mosh-server');
+  args.push('--');
+  var serverCommand = params.moshServer || 'mosh-server';
+  serverCommand += ' new -s -c 256';
+  // TODO(davidben): Allow picking UDP port, locale, etc. Don't forget
+  // to shell-quote.
+  args.push(serverCommand);
 
   this.io.print(hterm.msg('PLUGIN_LOADING'));
   var self = this;
@@ -336,9 +341,35 @@ namosh.CommandInstance.prototype.connectTo = function(params) {
         self.io.print(stdout);
         self.exit(code);
       } else {
-        // TODO(davidben): Get the IP and key and launch mosh-client.
-        self.io.print(stdout);
-        self.exit(code);
+        var lines = stdout.split('\n');
+        var ip, port, key;
+        for (var i = 0; i < lines.length; i++) {
+          var m = lines[i].match(/^MOSH IP (\S+)\s*$/);
+          if (m) {
+            ip = m[1];
+            continue;
+          }
+          m = lines[i].match(/^MOSH CONNECT (\d+?) ([A-Za-z0-9\/+]{22})\s*$/);
+          if (m) {
+            port = m[1];
+            key = m[2];
+            continue;
+          }
+          // TODO(davidben): Parse this as the command is running, so
+          // we don't buffer all output like this. This also differs
+          // from the real mosh in that we still print the mosh
+          // welcome text. The real script breaks as soon as it sees
+          // MOSH CONNECT and prints MOSH IP before MOSH CONNECT
+          self.io.println(lines[i]);
+        }
+
+        if (!key || !port) {
+          self.io.println("Did not find mosh server startup message.");
+        } else if (!ip) {
+          self.io.println("Did not find remote IP address\n");
+        } else {
+          self.launchMoshClient_(ip, port, key);
+        }
       }
     },
     pathHandler: function(path) {
@@ -354,6 +385,42 @@ namosh.CommandInstance.prototype.connectTo = function(params) {
   document.querySelector('#terminal').focus();
 
   return true;
+};
+
+/**
+ * Launch mosh-client with given parameters.
+ */
+namosh.CommandInstance.prototype.launchMoshClient_ = function(ip, port, key) {
+  // Is there really no better way to do this?
+  var env = {};
+  for (var attr in this.argv_.environment) {
+    if (this.argv_.environment.hasOwnProperty(attr))
+      env[attr] = this.argv_.environment[attr];
+  }
+  env['MOSH_KEY'] = key;
+
+  this.io.print(hterm.msg('PLUGIN_LOADING'));
+  var self = this;
+  this.command_ = new nassh.PluginCommand({
+    nmf: '../plugin/mosh_client.nmf',
+    args: [ip, port],
+    environment: env,
+    io: this.io,
+    relay: null,
+    onLoad: function() {
+      self.io.println(hterm.msg('PLUGIN_LOADING_COMPLETE'));
+    },
+    onExit: function(code) {
+      self.exit(code);
+    },
+    pathHandler: function(path) {
+      if (path == '/dev/random' || path == '/dev/urandom') {
+        return nassh.Stream.Random;
+      } else {
+        return null;
+      }
+    }
+  });
 };
 
 /**
