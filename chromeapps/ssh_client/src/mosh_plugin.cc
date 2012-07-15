@@ -45,7 +45,7 @@ void MoshPluginInstance::SessionThreadImpl() {
 
   // We inherit LC_* variables from the parent environment, but we
   // don't ship a full set, so they're unlikely to work anyway. Unset
-  // them all and use our shipped C.UTF-8 for mosh-client. Let ssh
+  // them all and use our shipped en_US.UTF-8 for mosh-client. Let ssh
   // keep the inherited locale values to forward over to the server.
   unsetenv("LANGUAGE");
   unsetenv("LC_CTYPE");
@@ -60,7 +60,7 @@ void MoshPluginInstance::SessionThreadImpl() {
   unsetenv("LC_TELEPHONE");
   unsetenv("LC_MEASUREMENT");
   unsetenv("LC_IDENTIFICATION");
-  setenv("LANG", "C.UTF-8", 1);
+  setenv("LANG", "en_US.UTF-8", 1);
 
   LOG("mosh main args:\n");
   for (size_t i = 0; i < argv.size(); i++)

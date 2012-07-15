@@ -97,8 +97,8 @@ FileSystem::FileSystem(pp::Instance* instance, OutputInterface* out)
 
   // Add /lib/locale for glibc.
   UrlFileHandler *locale_mount = new UrlFileHandler("/plugin/locale-data");
-  locale_mount->AddDirectory("/C.UTF-8");
-  locale_mount->AddDirectory("/C.UTF-8/LC_MESSAGES");
+  locale_mount->AddDirectory("/en_US.UTF-8");
+  locale_mount->AddDirectory("/en_US.UTF-8/LC_MESSAGES");
   AddPathHandler("/lib/locale", locale_mount);
 
   // Add localhost 127.0.0.1

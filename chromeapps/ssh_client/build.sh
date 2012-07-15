@@ -72,7 +72,12 @@ mkdir hterm/plugin/lib32
 mkdir hterm/plugin/lib64
 mkdir hterm/plugin/locale-data
 
-cp -R -f ../C.UTF-8 hterm/plugin/locale-data/
+# We ship a copy of en_US.UTF-8 to appease mosh. It needs a UTF-8
+# locale and wcwidth needs LC_CTYPE to determine whether a character
+# is printable or not. That subset of locale data should be the same
+# across locales. (C.UTF-8 lacks anything remotely resembling a useful
+# LC_CTYPE file.)
+cp -R -f ../en_US.UTF-8 hterm/plugin/locale-data/
 
 export GLIBC_VERSION=`ls $NACL_SDK_ROOT/toolchain/linux_x86_glibc/x86_64-nacl/lib32/libc.so.* | sed s/.*libc.so.//`
 sed -i s/xxxxxxxx/$GLIBC_VERSION/ hterm/plugin/ssh_client.nmf || exit 1
