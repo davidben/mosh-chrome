@@ -42,10 +42,14 @@ tar xvzf ${PACKAGE_NAME}.tar.gz
 cd $PACKAGE_NAME
 patch -p1 -i $PATCH_FILE || exit 1
 
-# FIXME: --disable-hardening is really poor. Find some way to keep
-# those flags. Or at least some of them.
+# The stack protector and PIE give us issues, so manually enable the
+# hardening flags that do work.
+readonly HARDEN_CFLAGS="-fno-strict-overflow -D_FORTIFY_SOURCE=2"
+readonly HARDEN_LDFLAGS="-Wl,-z,relro -Wl,-z,now"
 ./configure --host=${NACL_CROSS_PREFIX} \
-    --without-utempter --disable-server --disable-hardening || exit 1
+    --without-utempter --disable-server --disable-hardening \
+    CXXFLAGS="$HARDEN_CFLAGS" CFLAGS="$HARDEN_CFLAGS" \
+    LDFLAGS="$LDFLAGS $HARDEN_LDFLAGS" || exit 1
 
 # HACK: Like the openssh port, ignore the link error and steal
 # the component pieces instead. The difficulty is that we no longer
