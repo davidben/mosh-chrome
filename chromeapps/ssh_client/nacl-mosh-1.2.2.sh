@@ -44,6 +44,9 @@ patch -p1 -i $PATCH_FILE || exit 1
 
 # The stack protector and PIE give us issues, so manually enable the
 # hardening flags that do work.
+#
+# https://code.google.com/p/nativeclient/issues/detail?id=1357
+# https://code.google.com/p/chromium/issues/detail?id=116916
 readonly HARDEN_CFLAGS="-fno-strict-overflow -D_FORTIFY_SOURCE=2"
 readonly HARDEN_LDFLAGS="-Wl,-z,relro -Wl,-z,now"
 ./configure --host=${NACL_CROSS_PREFIX} \
